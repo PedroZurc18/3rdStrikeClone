@@ -1,0 +1,8 @@
+[gd_resource type="Resource" script_class="MoveData" format=3 uid="uid://d1u45ynbvdoog"]
+
+[ext_resource type="Script" uid="uid://dbsv06p54a28n" path="res://src/MoveData.cs" id="1_ks2ry"]
+
+[resource]
+script = ExtResource("1_ks2ry")
+AnimationName = "kick"
+metadata/_custom_type_script = "uid://dbsv06p54a28n"

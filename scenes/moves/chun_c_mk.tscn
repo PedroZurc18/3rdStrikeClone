@@ -1,0 +1,71 @@
+[gd_scene format=3 uid="uid://b470ouwqo5w7p"]
+
+[ext_resource type="Script" uid="uid://c0dt4u73yg6ob" path="res://src/NormalAttack.cs" id="1_buiwl"]
+[ext_resource type="Script" uid="uid://dyu4wjrnkjq5b" path="res://src/HurtboxData.cs" id="1_ls3o4"]
+[ext_resource type="Script" uid="uid://dupwtu1u4aic8" path="res://src/HitboxData.cs" id="2_buiwl"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_s6m3s"]
+size = Vector2(96.77905, 20.5)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_u4l2d"]
+size = Vector2(67.558105, 26.25)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_7jj27"]
+size = Vector2(104.375, 25.8125)
+
+[node name="Chun_cMk" type="Node2D" unique_id=999089122]
+visible = false
+script = ExtResource("1_buiwl")
+StartupFrames = 6
+RecoveryFrames = 19
+AnimationName = "kick"
+Damage = 100
+HitStunFrames = 19
+BlockStunFrames = 15
+HitStopFrames = 11
+CancelWindowEnd = 12
+
+[node name="Hurtboxes" type="Node2D" parent="." unique_id=1075417066]
+visible = false
+
+[node name="Hurtbox1" type="Area2D" parent="Hurtboxes" unique_id=1643176484]
+z_index = 9
+collision_layer = 2
+collision_mask = 0
+script = ExtResource("1_ls3o4")
+Duration = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hurtboxes/Hurtbox1" unique_id=697650115]
+visibility_layer = 17
+position = Vector2(89.61047, 54)
+shape = SubResource("RectangleShape2D_s6m3s")
+
+[node name="Hurtbox2" type="Area2D" parent="Hurtboxes" unique_id=691940123]
+z_index = 9
+collision_layer = 2
+collision_mask = 0
+script = ExtResource("1_ls3o4")
+StartFrame = 8
+Duration = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hurtboxes/Hurtbox2" unique_id=1871685747]
+visibility_layer = 17
+position = Vector2(73.22095, 51.125)
+shape = SubResource("RectangleShape2D_u4l2d")
+
+[node name="Hitboxes" type="Node2D" parent="." unique_id=1906220364]
+
+[node name="Hitbox1" type="Area2D" parent="Hitboxes" unique_id=894197373]
+collision_layer = 0
+collision_mask = 2
+script = ExtResource("2_buiwl")
+StartFrame = 7
+Duration = 3
+Height = 2
+PushbackForce = 450.0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hitboxes/Hitbox1" unique_id=1444265542]
+z_index = 10
+position = Vector2(77.1875, 50.90625)
+shape = SubResource("RectangleShape2D_7jj27")
+debug_color = Color(0.99607843, 0, 0, 0.30980393)

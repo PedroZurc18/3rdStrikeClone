@@ -1,0 +1,6 @@
+[gd_scene format=3 uid="uid://cm376dt37pcpf"]
+
+[ext_resource type="Script" uid="uid://y5ym7350sjmv" path="res://src/InputBuffer.cs" id="1_aj7od"]
+
+[node name="InputBuffer" type="Node" unique_id=2128503683]
+script = ExtResource("1_aj7od")

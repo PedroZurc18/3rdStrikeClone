@@ -1,0 +1,107 @@
+[gd_scene format=3 uid="uid://c3vnvfs1soq68"]
+
+[ext_resource type="Script" uid="uid://dgwyacwmgi4r3" path="res://src/SpecialAttack.cs" id="1_wi7jp"]
+[ext_resource type="Script" uid="uid://dyu4wjrnkjq5b" path="res://src/HurtboxData.cs" id="2_0vhpa"]
+[ext_resource type="Script" uid="uid://dupwtu1u4aic8" path="res://src/HitboxData.cs" id="3_xabxc"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_mrxcy"]
+size = Vector2(79, 46.75)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_80o3h"]
+size = Vector2(71, 20)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_5eub3"]
+size = Vector2(83.5, 25)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ts31p"]
+size = Vector2(79, 26)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ocp8m"]
+size = Vector2(79, 26)
+
+[node name="chun_lightning_kicks" type="Node2D" unique_id=2116622011]
+script = ExtResource("1_wi7jp")
+StartupFrames = 11
+ActiveFrames = 21
+RecoveryFrames = 22
+AnimationName = "lightning_kicks"
+Damage = 250
+HitStunFrames = 26
+BlockStunFrames = 15
+HitStopFrames = 5
+IsSpecialCancelable = false
+ForwardSpeed = 650.0
+
+[node name="Hurtboxes" type="Node2D" parent="." unique_id=457711585]
+
+[node name="Hurtbox1" type="Area2D" parent="Hurtboxes" unique_id=392383539]
+visible = false
+position = Vector2(1, 0)
+collision_layer = 2
+collision_mask = 0
+script = ExtResource("2_0vhpa")
+StartFrame = 10
+Duration = 30
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hurtboxes/Hurtbox1" unique_id=766941681]
+position = Vector2(39, -37)
+shape = SubResource("RectangleShape2D_mrxcy")
+
+[node name="Hitboxes" type="Node2D" parent="." unique_id=2073447912]
+z_index = 10
+
+[node name="Hitbox1" type="Area2D" parent="Hitboxes" unique_id=1700417205]
+visible = false
+collision_layer = 0
+collision_mask = 2
+script = ExtResource("3_xabxc")
+StartFrame = 12
+Duration = 2
+PushbackForce = -100.0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hitboxes/Hitbox1" unique_id=2096679560]
+position = Vector2(53, -65)
+shape = SubResource("RectangleShape2D_80o3h")
+debug_color = Color(0.9764706, 0.14901961, 0, 0.41960785)
+
+[node name="Hitbox2" type="Area2D" parent="Hitboxes" unique_id=1785102946]
+visible = false
+collision_layer = 0
+collision_mask = 2
+script = ExtResource("3_xabxc")
+StartFrame = 18
+Duration = 2
+PushbackForce = -100.0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hitboxes/Hitbox2" unique_id=839034676]
+position = Vector2(65, -31)
+shape = SubResource("RectangleShape2D_5eub3")
+debug_color = Color(0.9764706, 0.14901961, 0, 0.41960785)
+
+[node name="Hitbox3" type="Area2D" parent="Hitboxes" unique_id=373115218]
+visible = false
+collision_layer = 0
+collision_mask = 2
+script = ExtResource("3_xabxc")
+StartFrame = 24
+Duration = 2
+PushbackForce = -100.0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hitboxes/Hitbox3" unique_id=190836080]
+position = Vector2(65, -53)
+shape = SubResource("RectangleShape2D_ts31p")
+debug_color = Color(0.9764706, 0.14901961, 0, 0.41960785)
+
+[node name="Hitbox4" type="Area2D" parent="Hitboxes" unique_id=905410880]
+visible = false
+collision_layer = 0
+collision_mask = 2
+script = ExtResource("3_xabxc")
+StartFrame = 31
+Duration = 2
+PushbackForce = 500.0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hitboxes/Hitbox4" unique_id=1152742047]
+position = Vector2(68, -61)
+shape = SubResource("RectangleShape2D_ocp8m")
+debug_color = Color(0.9764706, 0.14901961, 0, 0.41960785)

@@ -1,0 +1,8 @@
+[gd_resource type="Resource" script_class="MoveData" format=3 uid="uid://dc1tnvlb6vjrw"]
+
+[ext_resource type="Script" uid="uid://dbsv06p54a28n" path="res://src/MoveData.cs" id="1_pxve3"]
+
+[resource]
+script = ExtResource("1_pxve3")
+AnimationName = "punch"
+metadata/_custom_type_script = "uid://dbsv06p54a28n"
