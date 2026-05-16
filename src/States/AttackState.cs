@@ -7,8 +7,9 @@ public class AttackState : BaseState
     private PackedScene _movePrefab;
     private NormalAttack _active;
 
-    public AttackState(Fighter fighter, PackedScene movePrefab) : base(fighter) 
-    { 
+    public AttackState(Fighter fighter, PackedScene movePrefab)
+        : base(fighter)
+    {
         _movePrefab = movePrefab;
     }
 
@@ -41,7 +42,7 @@ public class AttackState : BaseState
         }
         _fighter.Velocity = vel;
 
-        _fighter.MoveAndSlide();
+        _fighter.ApplyMovementAndPush();
         
         bool isMoveFinished = _active.ProcessMove();
 
@@ -50,14 +51,15 @@ public class AttackState : BaseState
             _fighter.ChangeState(new IdleState(_fighter));
         }
     }
-    
+
     public override void CheckForCancels()
-     {
-         if (_active.IsSpecialCancelable && _active.HasHit && _active.IsInsideCancelWindow())
-         {
-             if (CheckSpecialAttacks()) return;
-         }
-     }
+    {
+        if (_active.IsSpecialCancelable && _active.HasHit && _active.IsInsideCancelWindow())
+        {
+            if (CheckSpecialAttacks())
+                return;
+        }
+    }
 
     public override void Exit()
     {

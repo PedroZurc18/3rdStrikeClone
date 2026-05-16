@@ -3,17 +3,36 @@
 [ext_resource type="Script" uid="uid://bc82npoc31h88" path="res://src/MainStage.cs" id="1_pegp3"]
 [ext_resource type="PackedScene" uid="uid://clqq2wu4wawda" path="res://scenes/fighter.tscn" id="2_yfcek"]
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_yhmg1"]
-size = Vector2(3794, 59)
-
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_tsdbj"]
 size = Vector2(85, 1301.5)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_yhmg1"]
+size = Vector2(3794, 59)
 
 [node name="MainStage" type="Node2D" unique_id=476309869]
 script = ExtResource("1_pegp3")
 
+[node name="LeftWall" type="StaticBody2D" parent="." unique_id=12149832]
+position = Vector2(-3, 300)
+disable_mode = 1
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="LeftWall" unique_id=2025709283]
+position = Vector2(-41, -265)
+shape = SubResource("RectangleShape2D_tsdbj")
+debug_color = Color(0.81663185, 0.11360646, 0.7934388, 0.41960785)
+
+[node name="RightWall" type="StaticBody2D" parent="." unique_id=1126503156]
+position = Vector2(1154, 313)
+disable_mode = 1
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="RightWall" unique_id=1379587417]
+position = Vector2(41, -275)
+shape = SubResource("RectangleShape2D_tsdbj")
+debug_color = Color(0.8156863, 0.11372549, 0.7921569, 0.41960785)
+
 [node name="Floor" type="StaticBody2D" parent="." unique_id=274350929]
-position = Vector2(515, 653)
+position = Vector2(516, 653)
+disable_mode = 1
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Floor" unique_id=1989861561]
 position = Vector2(101, -0.5)
@@ -24,28 +43,12 @@ debug_color = Color(0.8156863, 0.11372549, 0.7921569, 0.41960785)
 position = Vector2(576, 322)
 position_smoothing_enabled = true
 
-[node name="LeftWall" type="StaticBody2D" parent="Camera2D" unique_id=12149832]
-position = Vector2(-579, -22)
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Camera2D/LeftWall" unique_id=2025709283]
-position = Vector2(-41, -265)
-shape = SubResource("RectangleShape2D_tsdbj")
-debug_color = Color(0.81663185, 0.11360646, 0.7934388, 0.41960785)
-
-[node name="RightWall" type="StaticBody2D" parent="Camera2D" unique_id=1126503156]
-position = Vector2(578, -9)
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Camera2D/RightWall" unique_id=1379587417]
-position = Vector2(41, -275)
-shape = SubResource("RectangleShape2D_tsdbj")
-debug_color = Color(0.8156863, 0.11372549, 0.7921569, 0.41960785)
-
 [node name="Player2" parent="." unique_id=1882554043 node_paths=PackedStringArray("Opponent") instance=ExtResource("2_yfcek")]
 position = Vector2(813, 503)
 scale = Vector2(1.7, 1.7)
 Opponent = NodePath("../Player1")
 
-[node name="InputBuffer" parent="Player2" index="1" unique_id=2128503683]
+[node name="InputBuffer" parent="Player2" index="3" unique_id=2128503683]
 PlayerId = 2
 
 [node name="Player1" parent="." unique_id=961281130 node_paths=PackedStringArray("Opponent") instance=ExtResource("2_yfcek")]

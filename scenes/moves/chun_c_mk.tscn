@@ -14,7 +14,6 @@ size = Vector2(67.558105, 26.25)
 size = Vector2(104.375, 25.8125)
 
 [node name="Chun_cMk" type="Node2D" unique_id=999089122]
-visible = false
 script = ExtResource("1_buiwl")
 StartupFrames = 6
 RecoveryFrames = 19
@@ -54,6 +53,7 @@ position = Vector2(73.22095, 51.125)
 shape = SubResource("RectangleShape2D_u4l2d")
 
 [node name="Hitboxes" type="Node2D" parent="." unique_id=1906220364]
+visible = false
 
 [node name="Hitbox1" type="Area2D" parent="Hitboxes" unique_id=894197373]
 collision_layer = 0

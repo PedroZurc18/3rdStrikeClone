@@ -15,16 +15,12 @@ public class CrouchAttackState : BaseState
 
     public override void Enter()
     {
-        // 1. Spawn the move from the prefab!
         _active = _movePrefab.Instantiate<NormalAttack>();
-        
-        // 2. Add it to the visual folder so it flips left/right automatically
         _fighter.AttackContainer.AddChild(_active);
         
         // 3. Initialize it with frame data
         _active.Initialize(_fighter);
         
-        // Stop sliding
         Vector2 vel = _fighter.Velocity;
         vel.X = 0; 
         _fighter.Velocity = vel;
@@ -40,8 +36,9 @@ public class CrouchAttackState : BaseState
             vel.Y += _fighter.Gravity * (float)delta;
         }
         
-        vel.X = _fighter.FacingDirection * _active.ForwardSpeed;
-        _fighter.Velocity = vel;
+        // vel.X = _fighter.FacingDirection * _active.ForwardSpeed;
+        // _fighter.Velocity = vel;
+        vel.X = 0;
         
         _fighter.ApplyMovementAndPush();
         

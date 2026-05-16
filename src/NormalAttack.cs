@@ -102,14 +102,11 @@ public partial class NormalAttack : Node2D
                 {
 
                     bool shouldBeActive = (frame >= box.StartFrame && frame < (box.StartFrame + box.Duration));
-                    
-                    CollisionShape2D shape = box.GetChild<CollisionShape2D>(0);
-                    
-                    if (shape.Disabled == shouldBeActive) 
-                    {
-                        shape.SetDeferred("disabled", !shouldBeActive);
-                        
-                        
+
+                    foreach (CollisionShape2D shape in child.GetChildren()) {
+                        if (shape.Disabled == shouldBeActive) {
+                            shape.SetDeferred("disabled", !shouldBeActive);
+                        }
                     }
                 }
             }
@@ -139,9 +136,9 @@ public partial class NormalAttack : Node2D
         {
             foreach (Node child in HitboxesFolder.GetChildren()) 
             {
-                if (child is Area2D area)
+                foreach (CollisionShape2D shape in child.GetChildren())
                 {
-                    area.GetChild<CollisionShape2D>(0).SetDeferred("disabled", !active);
+                    shape.SetDeferred("disabled", !active);
                 }
             }
         }

@@ -1,18 +1,27 @@
 namespace rdStrikeClone.States;
+
 using Godot;
 
 public class HitState : BaseState
 {
     private int _stunTimer = 0;
     private int _stunDurationFrames = 10;
-    private float _pushback;
+    private float _pull;
     private NormalAttack.HitHeight _height;
     private NormalAttack.AttackStrength _strength;
 
-    public HitState(Fighter fighter, int stunFrames, float pushback, NormalAttack.AttackStrength strength, NormalAttack.HitHeight height) : base(fighter)
-    { 
+    public HitState(
+        Fighter fighter,
+        int stunFrames,
+        float pushback, // Keep signature for compatibility
+        float pull,
+        NormalAttack.AttackStrength strength,
+        NormalAttack.HitHeight height
+    ) 
+        : base(fighter) 
+    {
         _stunDurationFrames = stunFrames;
-        _pushback = pushback;
+        _pull = pull;
         _height = height;
         _strength = strength;
     }
@@ -27,9 +36,8 @@ public class HitState : BaseState
         _fighter.Anim.Play(animation);
         
         Vector2 vel = _fighter.Velocity;
-        int pushDirection = _fighter.Opponent.GlobalPosition.X > _fighter.GlobalPosition.X ? -1 : 1;
-        
-        vel.X = pushDirection * _pushback; 
+
+        vel.X = - _pull; // Only keep the pull, pushback is handled by Fighter
         _fighter.Velocity = vel;
     }
 

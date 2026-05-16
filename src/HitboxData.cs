@@ -8,6 +8,8 @@ public partial class HitboxData : Area2D
     
     [Export] public NormalAttack.HitHeight Height = NormalAttack.HitHeight.Mid;
     [Export] public float PushbackForce = 300.0f;
+    [Export] public float Pull = 0f;
+    
     
     public bool HasConnected = false;
 }

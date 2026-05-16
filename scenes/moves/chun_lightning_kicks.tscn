@@ -2,22 +2,47 @@
 
 [ext_resource type="Script" uid="uid://dgwyacwmgi4r3" path="res://src/SpecialAttack.cs" id="1_wi7jp"]
 [ext_resource type="Script" uid="uid://dyu4wjrnkjq5b" path="res://src/HurtboxData.cs" id="2_0vhpa"]
+[ext_resource type="PackedScene" uid="uid://clqq2wu4wawda" path="res://scenes/fighter.tscn" id="2_xabxc"]
 [ext_resource type="Script" uid="uid://dupwtu1u4aic8" path="res://src/HitboxData.cs" id="3_xabxc"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_mrxcy"]
 size = Vector2(79, 46.75)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_80o3h"]
-size = Vector2(71, 20)
+size = Vector2(73.5, 27)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_xabxc"]
+size = Vector2(79, 51.875)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_e08h4"]
+size = Vector2(58.9375, 50)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_5eub3"]
 size = Vector2(83.5, 25)
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_kj4rm"]
+size = Vector2(62.310547, 63.625)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_l6xjx"]
+size = Vector2(53.121094, 36.125)
+
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ts31p"]
 size = Vector2(79, 26)
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_dh5wy"]
+size = Vector2(69.625, 65)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_7mdvg"]
+size = Vector2(44.78125, 79.375)
+
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ocp8m"]
 size = Vector2(79, 26)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_kj7c6"]
+size = Vector2(73.21875, 67.6875)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_3ykye"]
+size = Vector2(47.96875, 58.9375)
 
 [node name="chun_lightning_kicks" type="Node2D" unique_id=2116622011]
 script = ExtResource("1_wi7jp")
@@ -25,14 +50,18 @@ StartupFrames = 11
 ActiveFrames = 21
 RecoveryFrames = 22
 AnimationName = "lightning_kicks"
-Damage = 250
+Damage = 50
 HitStunFrames = 26
 BlockStunFrames = 15
 HitStopFrames = 5
 IsSpecialCancelable = false
 ForwardSpeed = 650.0
 
+[node name="Fighter" parent="." unique_id=961281130 instance=ExtResource("2_xabxc")]
+visible = false
+
 [node name="Hurtboxes" type="Node2D" parent="." unique_id=457711585]
+visible = false
 
 [node name="Hurtbox1" type="Area2D" parent="Hurtboxes" unique_id=392383539]
 visible = false
@@ -57,11 +86,22 @@ collision_mask = 2
 script = ExtResource("3_xabxc")
 StartFrame = 12
 Duration = 2
-PushbackForce = -100.0
+PushbackForce = 0.0
+Pull = 100.0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Hitboxes/Hitbox1" unique_id=2096679560]
-position = Vector2(53, -65)
+position = Vector2(54.25, -61.5)
 shape = SubResource("RectangleShape2D_80o3h")
+debug_color = Color(0.9764706, 0.14901961, 0, 0.41960785)
+
+[node name="CollisionShape2D2" type="CollisionShape2D" parent="Hitboxes/Hitbox1" unique_id=871675894]
+position = Vector2(17.5, -23.9375)
+shape = SubResource("RectangleShape2D_xabxc")
+debug_color = Color(0.9764706, 0.14901961, 0, 0.41960785)
+
+[node name="CollisionShape2D3" type="CollisionShape2D" parent="Hitboxes/Hitbox1" unique_id=21464960]
+position = Vector2(7, 22)
+shape = SubResource("RectangleShape2D_e08h4")
 debug_color = Color(0.9764706, 0.14901961, 0, 0.41960785)
 
 [node name="Hitbox2" type="Area2D" parent="Hitboxes" unique_id=1785102946]
@@ -71,11 +111,22 @@ collision_mask = 2
 script = ExtResource("3_xabxc")
 StartFrame = 18
 Duration = 2
-PushbackForce = -100.0
+PushbackForce = 0.0
+Pull = 100.0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Hitboxes/Hitbox2" unique_id=839034676]
-position = Vector2(65, -31)
+position = Vector2(66, -34)
 shape = SubResource("RectangleShape2D_5eub3")
+debug_color = Color(0.9764706, 0.14901961, 0, 0.41960785)
+
+[node name="CollisionShape2D2" type="CollisionShape2D" parent="Hitboxes/Hitbox2" unique_id=113979977]
+position = Vector2(17.155273, -14)
+shape = SubResource("RectangleShape2D_kj4rm")
+debug_color = Color(0.9764706, 0.14901961, 0, 0.41960785)
+
+[node name="CollisionShape2D3" type="CollisionShape2D" parent="Hitboxes/Hitbox2" unique_id=331302232]
+position = Vector2(0, 28)
+shape = SubResource("RectangleShape2D_l6xjx")
 debug_color = Color(0.9764706, 0.14901961, 0, 0.41960785)
 
 [node name="Hitbox3" type="Area2D" parent="Hitboxes" unique_id=373115218]
@@ -85,11 +136,22 @@ collision_mask = 2
 script = ExtResource("3_xabxc")
 StartFrame = 24
 Duration = 2
-PushbackForce = -100.0
+PushbackForce = 0.0
+Pull = 100.0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Hitboxes/Hitbox3" unique_id=190836080]
 position = Vector2(65, -53)
 shape = SubResource("RectangleShape2D_ts31p")
+debug_color = Color(0.9764706, 0.14901961, 0, 0.41960785)
+
+[node name="CollisionShape2D2" type="CollisionShape2D" parent="Hitboxes/Hitbox3" unique_id=758931186]
+position = Vector2(32, -19)
+shape = SubResource("RectangleShape2D_dh5wy")
+debug_color = Color(0.9764706, 0.14901961, 0, 0.41960785)
+
+[node name="CollisionShape2D3" type="CollisionShape2D" parent="Hitboxes/Hitbox3" unique_id=992656383]
+position = Vector2(4, 11)
+shape = SubResource("RectangleShape2D_7mdvg")
 debug_color = Color(0.9764706, 0.14901961, 0, 0.41960785)
 
 [node name="Hitbox4" type="Area2D" parent="Hitboxes" unique_id=905410880]
@@ -104,4 +166,14 @@ PushbackForce = 500.0
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Hitboxes/Hitbox4" unique_id=1152742047]
 position = Vector2(68, -61)
 shape = SubResource("RectangleShape2D_ocp8m")
+debug_color = Color(0.9764706, 0.14901961, 0, 0.41960785)
+
+[node name="CollisionShape2D2" type="CollisionShape2D" parent="Hitboxes/Hitbox4" unique_id=119439232]
+position = Vector2(27.390625, -22.84375)
+shape = SubResource("RectangleShape2D_kj7c6")
+debug_color = Color(0.9764706, 0.14901961, 0, 0.41960785)
+
+[node name="CollisionShape2D3" type="CollisionShape2D" parent="Hitboxes/Hitbox4" unique_id=1538772250]
+position = Vector2(3.015625, 28.53125)
+shape = SubResource("RectangleShape2D_3ykye")
 debug_color = Color(0.9764706, 0.14901961, 0, 0.41960785)
