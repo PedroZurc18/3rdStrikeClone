@@ -32,7 +32,7 @@ public class HitState : BaseState
             
         string height = (_height == NormalAttack.HitHeight.Low) ? "low" : "low";
         string strength = _strength.ToString().ToLower();
-        string animation = $"hit_stand_{strength}_{height}";
+        string animation = $"hit_stand_medium_{height}";
         _fighter.Anim.Play(animation);
         
         Vector2 vel = _fighter.Velocity;

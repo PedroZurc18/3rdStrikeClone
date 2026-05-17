@@ -20,8 +20,9 @@ size = Vector2(56.75, 19.625)
 visible = false
 script = ExtResource("1_oqxfg")
 StartupFrames = 6
-ActiveFrames = 8
 RecoveryFrames = 9
+TotalFrames = 24
+AnimationName = "punch"
 BlockStunFrames = 15
 
 [node name="Hurtboxes" type="Node2D" parent="." unique_id=128696556]

@@ -1,4 +1,5 @@
 namespace rdStrikeClone.States;
+using Godot;
 
 public abstract class BaseState
 {

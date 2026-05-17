@@ -36,7 +36,14 @@ public class AirState : BaseState
 
     public override void PhysicsUpdate(double delta)
     {
-        
+        // Check for air attacks FIRST
+        if (_fighter.Buffer.WasInputPressedWithin(InputBuffer.InputFlag.Kick, 8))
+        {
+            // Make sure you define jHkPrefab in Fighter.cs, just like cMkPrefab!
+            _fighter.ChangeState(new AirAttackState(_fighter, _fighter.jHkPrefab));
+            return;
+        }
+
         Vector2 vel = _fighter.Velocity;
         vel.Y += _fighter.Gravity * (float)delta;
         _fighter.Velocity = vel;

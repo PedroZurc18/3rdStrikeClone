@@ -1,0 +1,57 @@
+[gd_scene format=3 uid="uid://bqvfputwaltq4"]
+
+[ext_resource type="Script" uid="uid://c0dt4u73yg6ob" path="res://src/NormalAttack.cs" id="1_5kul6"]
+[ext_resource type="Script" uid="uid://dupwtu1u4aic8" path="res://src/HitboxData.cs" id="3_n4yy1"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_72cq1"]
+size = Vector2(22.5, 21)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_dbjrg"]
+size = Vector2(22.5, 21)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_d7ciq"]
+size = Vector2(22.5, 21)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_fliov"]
+size = Vector2(31.625, 29.25)
+
+[node name="Chun_j_hk" type="Node2D" unique_id=1765160079]
+script = ExtResource("1_5kul6")
+StartupFrames = 10
+TotalFrames = 31
+AnimationName = "jump_kick"
+Strength = 2
+IsSpecialCancelable = false
+
+[node name="Hurtboxes" type="Node2D" parent="." unique_id=1474827256]
+
+[node name="Hitboxes" type="Node2D" parent="." unique_id=885211656]
+
+[node name="Hitbox1" type="Area2D" parent="Hitboxes" unique_id=2101322495]
+visible = false
+collision_layer = 0
+collision_mask = 2
+script = ExtResource("3_n4yy1")
+StartFrame = 10
+Duration = 3
+Height = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hitboxes/Hitbox1" unique_id=1150994113]
+position = Vector2(74.8125, 65.375)
+shape = SubResource("RectangleShape2D_72cq1")
+debug_color = Color(0.83, 0, 0, 0.41960785)
+
+[node name="CollisionShape2D2" type="CollisionShape2D" parent="Hitboxes/Hitbox1" unique_id=403882051]
+position = Vector2(58.8125, 51.375)
+shape = SubResource("RectangleShape2D_dbjrg")
+debug_color = Color(0.83, 0, 0, 0.41960785)
+
+[node name="CollisionShape2D3" type="CollisionShape2D" parent="Hitboxes/Hitbox1" unique_id=1725624992]
+position = Vector2(42.8125, 35.375)
+shape = SubResource("RectangleShape2D_d7ciq")
+debug_color = Color(0.83, 0, 0, 0.41960785)
+
+[node name="CollisionShape2D4" type="CollisionShape2D" parent="Hitboxes/Hitbox1" unique_id=1629225899]
+position = Vector2(28, 20)
+shape = SubResource("RectangleShape2D_fliov")
+debug_color = Color(0.83, 0, 0, 0.41960785)

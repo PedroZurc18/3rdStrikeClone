@@ -2,7 +2,6 @@
 
 [ext_resource type="Script" uid="uid://dgwyacwmgi4r3" path="res://src/SpecialAttack.cs" id="1_wi7jp"]
 [ext_resource type="Script" uid="uid://dyu4wjrnkjq5b" path="res://src/HurtboxData.cs" id="2_0vhpa"]
-[ext_resource type="PackedScene" uid="uid://clqq2wu4wawda" path="res://scenes/fighter.tscn" id="2_xabxc"]
 [ext_resource type="Script" uid="uid://dupwtu1u4aic8" path="res://src/HitboxData.cs" id="3_xabxc"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_mrxcy"]
@@ -47,8 +46,8 @@ size = Vector2(47.96875, 58.9375)
 [node name="chun_lightning_kicks" type="Node2D" unique_id=2116622011]
 script = ExtResource("1_wi7jp")
 StartupFrames = 11
-ActiveFrames = 21
 RecoveryFrames = 22
+TotalFrames = 54
 AnimationName = "lightning_kicks"
 Damage = 50
 HitStunFrames = 26
@@ -56,9 +55,6 @@ BlockStunFrames = 15
 HitStopFrames = 5
 IsSpecialCancelable = false
 ForwardSpeed = 650.0
-
-[node name="Fighter" parent="." unique_id=961281130 instance=ExtResource("2_xabxc")]
-visible = false
 
 [node name="Hurtboxes" type="Node2D" parent="." unique_id=457711585]
 visible = false

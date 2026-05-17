@@ -17,6 +17,7 @@ size = Vector2(104.375, 25.8125)
 script = ExtResource("1_buiwl")
 StartupFrames = 6
 RecoveryFrames = 19
+TotalFrames = 28
 AnimationName = "kick"
 Damage = 100
 HitStunFrames = 19
@@ -53,7 +54,6 @@ position = Vector2(73.22095, 51.125)
 shape = SubResource("RectangleShape2D_u4l2d")
 
 [node name="Hitboxes" type="Node2D" parent="." unique_id=1906220364]
-visible = false
 
 [node name="Hitbox1" type="Area2D" parent="Hitboxes" unique_id=894197373]
 collision_layer = 0

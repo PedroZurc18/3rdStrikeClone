@@ -5,16 +5,16 @@ public partial class NormalAttack : Node2D
 {
     // 1. The Core Frame Data
     [ExportGroup("Frame Data")]
-    [Export] public int StartupFrames = 4;
-    [Export] public int ActiveFrames = 3;
-    [Export] public int RecoveryFrames = 10;
-    [Export] public string AnimationName = "punch";
+    [Export] public int StartupFrames;
+    [Export] public int RecoveryFrames;
+    [Export] public int TotalFrames;
+    [Export] public string AnimationName;
     
     public enum HitHeight { High, Mid, Low }
     public enum AttackStrength { Light, Medium, Heavy }
     [Export] public AttackStrength Strength = AttackStrength.Medium;
     
-    // 2. The Combat Stats
+    // 2. Combat Stats
     [ExportGroup("Combat Stats")] 
     [Export] public int Damage = 10;
     [Export] public int HitStunFrames = 15;
@@ -34,19 +34,17 @@ public partial class NormalAttack : Node2D
     public Node2D HurtboxesFolder;
 
     private int _currentFrame = 0;
-    private int _totalFrames;
     private Fighter _fighter; 
     
     public bool HasHit = false;
 
     public int GetCurrentFrame() => _currentFrame;
-    public int GetRemainingFrames() => _totalFrames - _currentFrame;
+    public int GetRemainingFrames() => TotalFrames - _currentFrame;
     public bool IsInsideCancelWindow() => _currentFrame >= CancelWindowStart && _currentFrame <= CancelWindowEnd;
 
     public void Initialize(Fighter fighter)
     {
         _fighter = fighter;
-        _totalFrames = StartupFrames + ActiveFrames + RecoveryFrames;
 
         HitboxesFolder = GetNodeOrNull<Node2D>("Hitboxes");
         HurtboxesFolder = GetNodeOrNull<Node2D>("Hurtboxes");
@@ -84,7 +82,7 @@ public partial class NormalAttack : Node2D
         
         UpdateBoxes(_currentFrame);
         
-        if (_currentFrame >= _totalFrames)
+        if (_currentFrame > TotalFrames)
         {
             return true; 
         }

@@ -9,7 +9,7 @@ public partial class Fighter : CharacterBody2D
     public float JumpForce = -2000.0f;
     public float Gravity = 5500.0f;
 
-    private float _maxPushboxForce = 12.0f;
+    private float _maxPushboxForce = 15.0f;
     private float _minPushboxForce = 2.0f;
     private float _pushboxWidth = 80.0f;
 
@@ -45,6 +45,9 @@ public partial class Fighter : CharacterBody2D
     [Export]
     public PackedScene qcfPrefab;
 
+    [Export]
+    public PackedScene jHkPrefab;
+    
     [Signal]
     public delegate void HealthChangedEventHandler(int newHealth);
 
@@ -111,11 +114,6 @@ public partial class Fighter : CharacterBody2D
         {
             DebugLabel.Text = Buffer.GetDebugHistory();
         }
-
-        if (IsOnWall())
-        {
-            // GD.Print("Wall");
-        }
     }
 
     public void ReceiveHit(NormalAttack attack, HitboxData hitbox)
@@ -126,6 +124,14 @@ public partial class Fighter : CharacterBody2D
         int frameAdvantage = stunFrames - attack.GetRemainingFrames();
         
         float actualPushbackForce = hitbox.PushbackForce;
+        
+        // GD.Print($"--- IMPACT ---");
+        // GD.Print($"Stun: {stunFrames}");
+        // GD.Print($"CurrentFrame: {attack.GetCurrentFrame()}"); // Assuming you have this method
+        // GD.Print($"Remaining: {attack.GetRemainingFrames()}");
+        // GD.Print($"Calculated Advantage: {frameAdvantage}");
+        
+        GD.Print("Advantage:" + frameAdvantage);
         
         // Determine the direction the hitFighter *should* be pushed (away from attacker)
         float pushAwayFromAttackerDirection = Mathf.Sign(this.GlobalPosition.X - this.Opponent.GlobalPosition.X);
@@ -164,29 +170,6 @@ public partial class Fighter : CharacterBody2D
             );
             if (actualPushbackForce > 0)
                 this.ApplyUniversalPushback(actualPushbackForce, pushAwayFromAttackerDirection);
-        }
-        if (successfullyBlocked)
-        {
-            ChangeState(
-                new BlockState(this, attack.BlockStunFrames, actualPushbackForce, isCrouching)
-            );
-        }
-        else
-        {
-            Health -= attack.Damage;
-            if (Health < 0)
-                Health = 0;
-            EmitSignal(SignalName.HealthChanged, Health);
-            ChangeState(
-                new HitState(
-                    this,
-                    attack.HitStunFrames,
-                    actualPushbackForce,
-                    hitbox.Pull,
-                    attack.Strength,
-                    hitbox.Height
-                )
-            );
         }
     }
 
@@ -241,19 +224,21 @@ public partial class Fighter : CharacterBody2D
 
     public bool CheckIfBlocked(NormalAttack.HitHeight Height)
     {
-        if (CurrentState == null || !CurrentState.CanBlock)
+        bool isInBlockstun = CurrentState is BlockState;
+        
+        if (!isInBlockstun && (CurrentState == null || !CurrentState.CanBlock))
             return false;
-
-        if (!IsHoldingBack())
+        
+        if (!isInBlockstun && !IsHoldingBack())
             return false;
-
+        
         bool isHoldingDown = Buffer.IsInputActive(InputBuffer.InputFlag.Down);
 
         if (Height == NormalAttack.HitHeight.High && isHoldingDown)
             return false;
 
         if (Height == NormalAttack.HitHeight.Low && !isHoldingDown)
-            return false;
+            return false; 
 
         return true;
     }
@@ -289,27 +274,22 @@ public partial class Fighter : CharacterBody2D
             MoveAndSlide();
             return;
         }
-
-        // 1. THE SNAPSHOT: Use <= to ensure flawless logic even on exact overlaps
+        
         bool wasOnLeft = GlobalPosition.X <= Opponent.GlobalPosition.X;
-
-        // 2. Normal Engine Movement
+        
         MoveAndSlide();
 
         // 3. THE GROUNDED CROSSOVER LOCK
         if (IsOnFloor() && Opponent.IsOnFloor())
         {
             bool isNowOnLeft = GlobalPosition.X <= Opponent.GlobalPosition.X;
-
-            // Did the high-speed special move teleport us entirely past them?
+            
             if (wasOnLeft != isNowOnLeft)
             {
-                // Snap exactly to their center line! (Distance becomes 0)
                 Vector2 fixedPos = GlobalPosition;
                 fixedPos.X = Opponent.GlobalPosition.X;
                 GlobalPosition = fixedPos;
-
-                // Kill the special move's drilling velocity
+                
                 Vector2 vel = Velocity;
                 vel.X = 0;
                 Velocity = vel;
@@ -323,17 +303,12 @@ public partial class Fighter : CharacterBody2D
             {
                 float distance = Mathf.Abs(GlobalPosition.X - Opponent.GlobalPosition.X);
                 float pushDirection = 0;
-
-                // TIER 1: The Hard Core Limit (Prevents visually staying on top of each other)
+                
                 if (IsOnFloor() && Opponent.IsOnFloor() && distance < CoreOverlapLimit)
                 {
-                    // Calculate the EXACT number of pixels needed to instantly separate them
                     float separation = CoreOverlapLimit - distance;
-
-                    // We use the 'wasOnLeft' snapshot so they eject to the correct sides!
                     pushDirection = wasOnLeft ? -separation : separation;
                 }
-                // TIER 2: Normal Proportional Pushback (Gentle sliding)
                 else
                 {
                     float overlapRatio = 1.0f - (distance / _pushboxWidth);
@@ -349,10 +324,9 @@ public partial class Fighter : CharacterBody2D
                     else if (GlobalPosition.X > Opponent.GlobalPosition.X)
                         pushDirection = currentForce;
                     else
-                        pushDirection = wasOnLeft ? -currentForce : currentForce; // Failsafe
+                        pushDirection = wasOnLeft ? -currentForce : currentForce;
                 }
-
-                // Apply the force using MoveAndCollide so we NEVER push someone through a corner wall!
+                
                 MoveAndCollide(new Vector2(pushDirection, 0));
             }
         }
