@@ -181,7 +181,7 @@ public partial class Fighter : CharacterBody2D
                         attack.HitStunFrames,
                         appliedAirPushX,
                         attack.AirLaunchY,
-                        false 
+                        hitbox.Juggle
                     )
                 );
             }

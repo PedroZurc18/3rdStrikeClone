@@ -6,20 +6,20 @@ public class AirHitState : BaseState
 {
     // Constants for air hit parameters
     public const float AIR_HIT_DECELERATION = 0f;
-    public const int HARD_KNOCKDOWN_DURATION_FRAMES = 45; // From user request
+    public const int HARD_KNOCKDOWN_DURATION_FRAMES = 60; // From user request
     
     private float _initialVelX;
     private float _initialVelY;
-    private bool _isHardKnockdown;
+    private bool _isJuggle;
     
-    public override bool IsInvincible => !_isHardKnockdown;
+    public override bool IsInvincible => !_isJuggle;
 
-    public AirHitState(Fighter fighter, int stunFrames, float initialVelX, float initialVelY, bool isHardKnockdown)
+    public AirHitState(Fighter fighter, int stunFrames, float initialVelX, float initialVelY, bool isJuggle)
         : base(fighter)
     {
         _initialVelX = initialVelX;
         _initialVelY = initialVelY;
-        _isHardKnockdown = isHardKnockdown;
+        _isJuggle = isJuggle;
     }
 
     public override void Enter()
@@ -29,7 +29,7 @@ public class AirHitState : BaseState
         vel.Y = _initialVelY;
         _fighter.Velocity = vel;
 
-        _fighter.Anim.Play(_isHardKnockdown ? "juggle_air" : "hit_air"); // Placeholder animations
+        _fighter.Anim.Play(_isJuggle ? "juggle_air" : "hit_air");
     }
 
     public override void PhysicsUpdate(double delta)
@@ -54,7 +54,7 @@ public class AirHitState : BaseState
         // 4. THE ONLY WAY OUT: Touching the floor!
         if (_fighter.IsOnFloor() && vel.Y > 0) 
         {
-            if (_isHardKnockdown)
+            if (_isJuggle)
             {
                 _fighter.ChangeState(new HardKnockdownState(_fighter, HARD_KNOCKDOWN_DURATION_FRAMES));
             }
@@ -68,8 +68,6 @@ public class AirHitState : BaseState
 
     public override void Exit()
     {
-        // Ensure horizontal velocity is handled by the next state, if transitioning out before landing
-        // If landing, the landing state will handle it.
-        // If transitioning to AirState, AirState will apply gravity/input movement.
+
     }
 }

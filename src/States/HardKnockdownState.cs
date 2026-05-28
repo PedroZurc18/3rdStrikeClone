@@ -5,46 +5,51 @@ using Godot;
 public class HardKnockdownState : BaseState
 {
     private int _timer;
+    private float _slideFriction = 150.0f; // Adjust this to make them slide further or stop shorter
+    
+    // They must be completely immune to attacks while sliding on the floor!
+    public override bool IsInvincible => true; 
 
-    public HardKnockdownState(Fighter fighter, int durationFrames)
-        : base(fighter)
+    public HardKnockdownState(Fighter fighter, int durationFrames) : base(fighter)
     {
         _timer = durationFrames;
     }
 
     public override void Enter()
     {
-        _fighter.Anim.Play("hard_knockdown_grounded"); // Placeholder animation
-        // Ensure horizontal velocity is zeroed upon entering knockdown
-        _fighter.Velocity = new Vector2(0, _fighter.Velocity.Y);
+        _fighter.Anim.Play("hard_knockdown");
+        
+        Vector2 vel = _fighter.Velocity;
+        
+        float pushDirection = Mathf.Sign(_fighter.GlobalPosition.X - _fighter.Opponent.GlobalPosition.X);
+        vel.X = pushDirection * 100.0f; // The burst of slide speed
+        
+        vel.Y = 0; // Snap cleanly to the floor
+        _fighter.Velocity = vel;
     }
 
     public override void PhysicsUpdate(double delta)
     {
-        // Apply gravity if somehow not on floor (e.g., knocked off edge)
-        if (!_fighter.IsOnFloor())
+        Vector2 vel = _fighter.Velocity;
+
+        // 2. The Smooth Brake
+        // This naturally slows their X velocity down to 0 over the first few frames of the state
+        vel.X = Mathf.MoveToward(vel.X, 0, _slideFriction * (float)delta);
+        
+        // Re-apply gravity just in case they slide off an edge (if your stages have them!)
+        if (!_fighter.IsOnFloor()) 
         {
-            Vector2 vel = _fighter.Velocity;
             vel.Y += _fighter.Gravity * (float)delta;
-            _fighter.Velocity = vel;
         }
-        // Move with any existing velocity (mainly vertical due to gravity if off floor)
+
+        _fighter.Velocity = vel;
         _fighter.ApplyMovementAndPush();
 
+        // 3. The Knockdown Timer
         _timer--;
-
         if (_timer <= 0)
         {
-            _fighter.Anim.Play("get_up"); // Play get up animation
-            _fighter.ChangeState(new IdleState(_fighter)); // Transition to Idle after get up anim
+            _fighter.ChangeState(new GetUpState(_fighter));
         }
-    }
-
-    public override void Exit()
-    {
-        // Ensure horizontal velocity is zeroed out
-        Vector2 vel = _fighter.Velocity;
-        vel.X = 0;
-        _fighter.Velocity = vel;
     }
 }
