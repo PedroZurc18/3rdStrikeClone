@@ -13,9 +13,6 @@ size = Vector2(40.5, 44)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_4jaj7"]
 size = Vector2(59.375, 19.625)
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_lugh7"]
-size = Vector2(56.75, 19.625)
-
 [node name="Chun_sMp" type="Node2D" unique_id=1973368272]
 visible = false
 script = ExtResource("1_oqxfg")
@@ -24,6 +21,7 @@ RecoveryFrames = 9
 TotalFrames = 24
 AnimationName = "punch"
 BlockStunFrames = 15
+AirPushX = 500.0
 
 [node name="Hurtboxes" type="Node2D" parent="." unique_id=128696556]
 z_index = 9
@@ -62,17 +60,4 @@ Duration = 2
 z_index = 10
 position = Vector2(112.3125, -37)
 shape = SubResource("RectangleShape2D_4jaj7")
-debug_color = Color(0.99607843, 0, 0, 0.30980393)
-
-[node name="Hitbox2" type="Area2D" parent="Hitboxes" unique_id=706388057]
-collision_layer = 0
-collision_mask = 2
-script = ExtResource("3_4jaj7")
-StartFrame = 8
-Duration = 6
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Hitboxes/Hitbox2" unique_id=23630762]
-z_index = 10
-position = Vector2(96, -33)
-shape = SubResource("RectangleShape2D_lugh7")
 debug_color = Color(0.99607843, 0, 0, 0.30980393)

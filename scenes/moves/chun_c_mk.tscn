@@ -24,11 +24,13 @@ HitStunFrames = 19
 BlockStunFrames = 15
 HitStopFrames = 11
 CancelWindowEnd = 12
+AirLaunchY = -1500.0
 
 [node name="Hurtboxes" type="Node2D" parent="." unique_id=1075417066]
 visible = false
 
 [node name="Hurtbox1" type="Area2D" parent="Hurtboxes" unique_id=1643176484]
+visible = false
 z_index = 9
 collision_layer = 2
 collision_mask = 0
@@ -41,6 +43,7 @@ position = Vector2(89.61047, 54)
 shape = SubResource("RectangleShape2D_s6m3s")
 
 [node name="Hurtbox2" type="Area2D" parent="Hurtboxes" unique_id=691940123]
+visible = false
 z_index = 9
 collision_layer = 2
 collision_mask = 0
@@ -54,6 +57,7 @@ position = Vector2(73.22095, 51.125)
 shape = SubResource("RectangleShape2D_u4l2d")
 
 [node name="Hitboxes" type="Node2D" parent="." unique_id=1906220364]
+visible = false
 
 [node name="Hitbox1" type="Area2D" parent="Hitboxes" unique_id=894197373]
 collision_layer = 0

@@ -12,4 +12,6 @@ public partial class HitboxData : Area2D
     
     
     public bool HasConnected = false;
+
+    [Export] public bool Juggle = false;
 }

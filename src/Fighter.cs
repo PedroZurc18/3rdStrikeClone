@@ -17,7 +17,10 @@ public partial class Fighter : CharacterBody2D
     private bool _isPushed = false;
     private float _pushSpeed = 0.0f;
     private const float PushDecel = 1500.0f;
-
+    
+    // [Export] public float UniversalAirLaunchY = -1200.0f; 
+    // [Export] public float UniversalAirPushX = 200.0f;
+    
     [Export]
     public float CoreOverlapLimit = 25.0f;
 
@@ -114,6 +117,12 @@ public partial class Fighter : CharacterBody2D
         {
             DebugLabel.Text = Buffer.GetDebugHistory();
         }
+
+        // if (Name == "Player2")
+        // {
+        //     GD.Print(CurrentState);
+        // }
+        
     }
 
     public void ReceiveHit(NormalAttack attack, HitboxData hitbox)
@@ -131,7 +140,7 @@ public partial class Fighter : CharacterBody2D
         // GD.Print($"Remaining: {attack.GetRemainingFrames()}");
         // GD.Print($"Calculated Advantage: {frameAdvantage}");
         
-        GD.Print("Advantage:" + frameAdvantage);
+        // GD.Print("Advantage:" + frameAdvantage);
         
         // Determine the direction the hitFighter *should* be pushed (away from attacker)
         float pushAwayFromAttackerDirection = Mathf.Sign(this.GlobalPosition.X - this.Opponent.GlobalPosition.X);
@@ -147,29 +156,52 @@ public partial class Fighter : CharacterBody2D
         if (successfullyBlocked)
         {
             ChangeState(
-                new BlockState(this, attack.BlockStunFrames, actualPushbackForce, isCrouching)
+                new BlockState(this, attack.BlockStunFrames, actualPushbackForce, isCrouching, hitbox.Height)
             );
             if (actualPushbackForce > 0)
                 this.ApplyUniversalPushback(actualPushbackForce, pushAwayFromAttackerDirection);
         }
         else
         {
+            // 1. Apply Damage
             Health -= attack.Damage;
-            if (Health < 0)
-                Health = 0;
+            if (Health < 0) Health = 0;
             EmitSignal(SignalName.HealthChanged, Health);
-            ChangeState(
-                new HitState(
-                    this,
-                    attack.HitStunFrames,
-                    actualPushbackForce,
-                    hitbox.Pull,
-                    attack.Strength,
-                    hitbox.Height
-                )
-            );
-            if (actualPushbackForce > 0)
-                this.ApplyUniversalPushback(actualPushbackForce, pushAwayFromAttackerDirection);
+
+            // 2. CHECK IF AIRBORNE
+            if (!IsOnFloor())
+            {
+                // Calculate the horizontal blast direction using your static X value
+                float appliedAirPushX = attack.AirPushX * pushAwayFromAttackerDirection;
+                
+                // Pass the static X and Y directly into your AirHitState!
+                ChangeState(
+                    new AirHitState(
+                        this,
+                        attack.HitStunFrames,
+                        appliedAirPushX,
+                        attack.AirLaunchY,
+                        false 
+                    )
+                );
+            }
+            else
+            {
+                // 3. Normal Grounded Hit
+                ChangeState(
+                    new HitState(
+                        this,
+                        attack.HitStunFrames,
+                        actualPushbackForce,
+                        hitbox.Pull,
+                        attack.Strength,
+                        hitbox.Height
+                    )
+                );
+                
+                if (actualPushbackForce > 0)
+                    this.ApplyUniversalPushback(actualPushbackForce, pushAwayFromAttackerDirection);
+            }
         }
     }
 
@@ -198,6 +230,12 @@ public partial class Fighter : CharacterBody2D
 
         if (hitFighter != null && hitFighter == Opponent)
         {
+            // INVINCIBLE
+            if (hitFighter.CurrentState != null && hitFighter.CurrentState.IsInvincible)
+            {
+                return; 
+            }
+
             NormalAttack normalAttackStats = attackingHitbox.Parent;
 
             if (normalAttackStats != null)
@@ -296,20 +334,39 @@ public partial class Fighter : CharacterBody2D
             }
         }
 
-        // 4. THE 2-TIER PUSHBOX SYSTEM
+        // 4. THE 2-TIER PUSHBOX SYSTEM (Modified)
         if (Pushbox != null && Opponent.Pushbox != null)
         {
             if (Pushbox.GetOverlappingAreas().Contains(Opponent.Pushbox))
             {
                 float distance = Mathf.Abs(GlobalPosition.X - Opponent.GlobalPosition.X);
                 float pushDirection = 0;
-                
-                if (IsOnFloor() && Opponent.IsOnFloor() && distance < CoreOverlapLimit)
+
+                // NEW: Corner Pushback Priority (for one or both players, regardless of IsOnFloor())
+                // This logic ensures a player at the wall cannot be pushed further in,
+                // and instead pushes the encroaching opponent.
+                bool thisIsOnWall = IsOnWall();
+                bool opponentIsOnWall = Opponent.IsOnWall();
+
+                // If this fighter is at a wall and opponent is trying to push them into it
+                if (thisIsOnWall && Mathf.Sign(GlobalPosition.X - Opponent.GlobalPosition.X) == Mathf.Sign(GetWallNormal().X))
+                {
+                    // This fighter is cornered. Push the opponent away.
+                    pushDirection = GetWallNormal().X * _maxPushboxForce; // Push away from wall
+                }
+                // Else if opponent is at a wall and this fighter is trying to push them into it
+                else if (opponentIsOnWall && Mathf.Sign(Opponent.GlobalPosition.X - GlobalPosition.X) == Mathf.Sign(Opponent.GetWallNormal().X))
+                {
+                    // Opponent is cornered. This fighter needs to be pushed back.
+                    pushDirection = -Opponent.GetWallNormal().X * _maxPushboxForce; // Push this fighter away from opponent's wall
+                }
+                // ORIGINAL TIER 1 and TIER 2 logic (modified to apply more universally)
+                else if (distance < CoreOverlapLimit) // TIER 1: The Hard Core Limit (prevents visual overlap)
                 {
                     float separation = CoreOverlapLimit - distance;
                     pushDirection = wasOnLeft ? -separation : separation;
                 }
-                else
+                else // TIER 2: Normal Proportional Pushback (gentle sliding)
                 {
                     float overlapRatio = 1.0f - (distance / _pushboxWidth);
                     overlapRatio = Mathf.Clamp(overlapRatio, 0.0f, 1.0f);
@@ -324,9 +381,10 @@ public partial class Fighter : CharacterBody2D
                     else if (GlobalPosition.X > Opponent.GlobalPosition.X)
                         pushDirection = currentForce;
                     else
-                        pushDirection = wasOnLeft ? -currentForce : currentForce;
+                        pushDirection = wasOnLeft ? -currentForce : currentForce; // Failsafe
                 }
-                
+
+                // Apply the force using MoveAndCollide so we NEVER push someone through a corner wall!
                 MoveAndCollide(new Vector2(pushDirection, 0));
             }
         }

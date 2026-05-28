@@ -6,6 +6,7 @@ public abstract class BaseState
     protected Fighter _fighter;
     
     public virtual bool CanBlock => false;
+    public virtual bool IsInvincible => false;
 
     public BaseState(Fighter fighter)
     {

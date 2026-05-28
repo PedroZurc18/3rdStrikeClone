@@ -42,7 +42,7 @@ public class AirAttackState : BaseState
         if (_fighter.IsOnFloor())
         {
             // The millisecond their feet touch the ground, the attack state is destroyed.
-            _fighter.ChangeState(new IdleState(_fighter));
+            _fighter.ChangeState(new IdleState(_fighter, true));
             return;
         }
 

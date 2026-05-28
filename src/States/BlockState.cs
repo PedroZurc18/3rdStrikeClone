@@ -9,7 +9,7 @@ public class BlockState : BaseState
     private bool _isCrouching;
     public override bool CanBlock => true;
 
-    public BlockState(Fighter fighter, int blockStun, float pushback, bool isCrouching)
+    public BlockState(Fighter fighter, int blockStun, float pushback, bool isCrouching, NormalAttack.HitHeight blockedHitHeight)
         : base(fighter)
     {
         _blockStunTimer = blockStun;

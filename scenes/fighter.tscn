@@ -20,11 +20,12 @@
 [ext_resource type="Texture2D" uid="uid://b4ebr33tfqx7c" path="res://Assets/Chun_jumpB.png" id="12_6d7ge"]
 [ext_resource type="Texture2D" uid="uid://crhvfuq1yf7o0" path="res://Assets/Chun_jumpF.png" id="12_amrqo"]
 [ext_resource type="Texture2D" uid="uid://ciuatr3l22w4n" path="res://Assets/Chun_jump.png" id="14_6rnmm"]
+[ext_resource type="Texture2D" uid="uid://c8hb6hfs0d6ov" path="res://Assets/Chun_roll.png" id="14_bysjc"]
 [ext_resource type="Texture2D" uid="uid://1ggsdghr1l4t" path="res://Assets/Chun_land.png" id="16_sxd4w"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_eelhu"]
 radius = 23.979603
-height = 100.00005
+height = 102.85719
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_sxd4w"]
 radius = 26.31889
@@ -737,6 +738,70 @@ tracks/10/keys = {
 "transitions": PackedFloat32Array(1, 1, 1, 1, 1),
 "update": 0,
 "values": [11, 12, 13, 14, 15]
+}
+
+[sub_resource type="Animation" id="Animation_xbu8a"]
+resource_name = "hit_air"
+step = 0.016666668
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Visuals/Sprite2D:texture")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.06666667, 0.11666667, 0.4, 0.45),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"update": 1,
+"values": [ExtResource("4_1bj3w"), ExtResource("4_1bj3w"), ExtResource("14_bysjc"), ExtResource("14_bysjc"), ExtResource("12_6d7ge")]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Visuals/Sprite2D:hframes")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.06666667, 0.11666667, 0.4, 0.45),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"update": 1,
+"values": [64, 64, 44, 44, 31]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("Visuals/Sprite2D:vframes")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 0.06666667, 0.11666667, 0.4, 0.45),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"update": 1,
+"values": [1, 1, 1, 1, 1]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("Visuals/Sprite2D:position")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0, 0.06666667, 0.11666667, 0.16666669, 0.19999999, 0.23333335, 0.29999998, 0.33333334, 0.36666664, 0.4, 0.45, 0.48333332, 0.51666665),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [Vector2(-17.000002, -4.0000005), Vector2(-7.000001, 1), Vector2(6.000001, -45.000004), Vector2(19.000002, -45.000004), Vector2(22.000004, -45.000004), Vector2(28.000004, -45.000004), Vector2(26.000002, -44.000004), Vector2(31.000008, -36.000004), Vector2(40.000004, -36.000004), Vector2(50.000008, -33.000004), Vector2(42.000004, -33.000008), Vector2(29.000002, -28.000004), Vector2(44.000004, -29.000004)]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("Visuals/Sprite2D:frame")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0, 0.06666667, 0.11666667, 0.15, 0.18333334, 0.21666667, 0.25, 0.28333333, 0.31666666, 0.35, 0.38333333, 0.41666666, 0.45, 0.48333332, 0.51666665),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [12, 13, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 20, 21, 22]
 }
 
 [sub_resource type="Animation" id="Animation_6rnmm"]
@@ -2099,6 +2164,7 @@ _data = {
 &"crouch_idle": SubResource("Animation_o4lsg"),
 &"crouch_in": SubResource("Animation_siwl3"),
 &"crouch_out": SubResource("Animation_sfxrq"),
+&"hit_air": SubResource("Animation_xbu8a"),
 &"hit_stand_medium_low": SubResource("Animation_6rnmm"),
 &"hurt": SubResource("Animation_3wvek"),
 &"idle": SubResource("Animation_rsphg"),
@@ -2117,6 +2183,7 @@ _data = {
 [node name="Fighter" type="CharacterBody2D" unique_id=961281130]
 collision_layer = 0
 script = ExtResource("1_umvcx")
+UniversalAirPushX = 500.0
 sMpPrefab = ExtResource("2_siwl3")
 cMkPrefab = ExtResource("3_siwl3")
 qcfPrefab = ExtResource("4_yjmyb")
@@ -2129,6 +2196,7 @@ shape = SubResource("CapsuleShape2D_eelhu")
 debug_color = Color(0.08654649, 0.5772644, 0.803412, 0.41960785)
 
 [node name="Pushbox" type="Area2D" parent="." unique_id=175198501]
+visible = false
 light_mask = 8
 visibility_layer = 8
 position = Vector2(-5.9604645e-08, 16.999996)
@@ -2137,7 +2205,6 @@ collision_layer = 4
 collision_mask = 4
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Pushbox" unique_id=1047621642]
-visible = false
 position = Vector2(0, 3.5762787e-06)
 scale = Vector2(0.9118927, 0.8306859)
 shape = SubResource("CapsuleShape2D_sxd4w")
@@ -2160,7 +2227,7 @@ scale = Vector2(0.99999994, 0.99999994)
 [node name="Sprite2D" type="Sprite2D" parent="Visuals" unique_id=2085124916]
 texture_filter = 1
 texture_repeat = 1
-scale = Vector2(1.3999999, 1.3999999)
+scale = Vector2(1.4, 1.4)
 texture = ExtResource("8_bysjc")
 hframes = 14
 

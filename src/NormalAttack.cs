@@ -25,7 +25,11 @@ public partial class NormalAttack : Node2D
     [Export] public bool IsSpecialCancelable = true;
     [Export] public int CancelWindowStart = 0;
     [Export] public int CancelWindowEnd = 99;
-
+    
+    [ExportGroup("Air Hit Data")]
+    [Export] public float AirLaunchY = -1200.0f; 
+    [Export] public float AirPushX = 200.0f;
+    
     [ExportGroup("Movement")]
     [Export] public float ForwardSpeed = 0.0f;
 
