@@ -31,7 +31,10 @@ public partial class NormalAttack : Node2D
     [Export] public float AirPushX = 200.0f;
     
     [ExportGroup("Movement")]
-    [Export] public float ForwardSpeed = 0.0f;
+    [Export] public float XAxisSpeed = 0.0f;
+    [Export] public float YAxisSpeed = 0; 
+    [Export] public int YAxisFrame = 0;
+    [Export] public float AirDrag = 0.0f;
 
     // 3. The Physical Nodes
     public Node2D HitboxesFolder;

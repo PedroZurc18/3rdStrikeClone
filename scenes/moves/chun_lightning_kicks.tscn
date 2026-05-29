@@ -54,13 +54,11 @@ HitStunFrames = 26
 BlockStunFrames = 15
 HitStopFrames = 5
 IsSpecialCancelable = false
-ForwardSpeed = 650.0
+XAxisSpeed = 800.0
 
 [node name="Hurtboxes" type="Node2D" parent="." unique_id=457711585]
-visible = false
 
 [node name="Hurtbox1" type="Area2D" parent="Hurtboxes" unique_id=392383539]
-visible = false
 position = Vector2(1, 0)
 collision_layer = 2
 collision_mask = 0
@@ -76,7 +74,6 @@ shape = SubResource("RectangleShape2D_mrxcy")
 z_index = 10
 
 [node name="Hitbox1" type="Area2D" parent="Hitboxes" unique_id=1700417205]
-visible = false
 collision_layer = 0
 collision_mask = 2
 script = ExtResource("3_xabxc")
@@ -100,7 +97,6 @@ shape = SubResource("RectangleShape2D_e08h4")
 debug_color = Color(0.9764706, 0.14901961, 0, 0.41960785)
 
 [node name="Hitbox2" type="Area2D" parent="Hitboxes" unique_id=1785102946]
-visible = false
 collision_layer = 0
 collision_mask = 2
 script = ExtResource("3_xabxc")
@@ -124,7 +120,6 @@ shape = SubResource("RectangleShape2D_l6xjx")
 debug_color = Color(0.9764706, 0.14901961, 0, 0.41960785)
 
 [node name="Hitbox3" type="Area2D" parent="Hitboxes" unique_id=373115218]
-visible = false
 collision_layer = 0
 collision_mask = 2
 script = ExtResource("3_xabxc")
@@ -148,7 +143,6 @@ shape = SubResource("RectangleShape2D_7mdvg")
 debug_color = Color(0.9764706, 0.14901961, 0, 0.41960785)
 
 [node name="Hitbox4" type="Area2D" parent="Hitboxes" unique_id=905410880]
-visible = false
 collision_layer = 0
 collision_mask = 2
 script = ExtResource("3_xabxc")

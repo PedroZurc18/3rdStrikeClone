@@ -1,0 +1,18 @@
+[gd_scene format=3 uid="uid://buprn8sauwyqh"]
+
+[ext_resource type="Script" uid="uid://dgwyacwmgi4r3" path="res://src/SpecialAttack.cs" id="1_jy5x3"]
+
+[node name="Chun_AA" type="Node2D" unique_id=1875301366]
+script = ExtResource("1_jy5x3")
+InvincibilityFrames = 4
+TotalFrames = 55
+AnimationName = "anti_air"
+IsSpecialCancelable = false
+XAxisSpeed = 600.0
+YAxisSpeed = -2150.0
+YAxisFrame = 5
+AirDrag = 1000.0
+
+[node name="Hurtboxes" type="Node2D" parent="." unique_id=1269667198]
+
+[node name="Hitboxes" type="Node2D" parent="." unique_id=1372637487]

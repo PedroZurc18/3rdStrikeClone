@@ -34,7 +34,7 @@ public class AttackState : BaseState
 
         if (_active.GetCurrentFrame() <= 11)
         {
-            vel.X = _fighter.FacingDirection * _active.ForwardSpeed;
+            vel.X = _fighter.FacingDirection * _active.XAxisSpeed;
         }
         else
         {

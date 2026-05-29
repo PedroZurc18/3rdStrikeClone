@@ -52,6 +52,9 @@ public partial class Fighter : CharacterBody2D
     [Export]
     public PackedScene jHkPrefab;
     
+    [Export]
+    public PackedScene aaPrefab;
+    
     [Signal]
     public delegate void HealthChangedEventHandler(int newHealth);
 

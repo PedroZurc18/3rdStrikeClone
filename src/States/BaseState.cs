@@ -22,6 +22,17 @@ public abstract class BaseState
     protected bool CheckSpecialAttacks()
     {
         int[] qcf = { 2, 3, 6 };
+        int[] dp = { 6, 2, 3 };
+        
+        if (_fighter.Buffer.CheckMotion(dp, InputBuffer.InputFlag.Kick, _fighter.FacingDirection, 18))
+        {
+            if (_fighter.aaPrefab != null)
+            {
+                _fighter.ChangeState(new SpecialAttackState(_fighter, _fighter.aaPrefab));
+                return true;
+            }
+        }
+        
         if (_fighter.Buffer.CheckMotion(qcf, InputBuffer.InputFlag.Kick, _fighter.FacingDirection, 30))
         {
             if (_fighter.qcfPrefab != null)
@@ -30,7 +41,6 @@ public abstract class BaseState
                 return true;
             }
         }
-        
         return false;
     }
 
