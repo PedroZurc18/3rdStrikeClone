@@ -26,12 +26,8 @@
 [ext_resource type="Texture2D" uid="uid://1ggsdghr1l4t" path="res://Assets/Chun_land.png" id="16_sxd4w"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_eelhu"]
-radius = 23.979603
+radius = 24.285727
 height = 102.85719
-
-[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_sxd4w"]
-radius = 26.31889
-height = 132.42068
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_1bj3w"]
 size = Vector2(34.1063, 25.043085)
@@ -2380,33 +2376,24 @@ _data = {
 &"walk_forward": SubResource("Animation_eelhu")
 }
 
-[node name="Fighter" type="CharacterBody2D" unique_id=961281130]
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_sxd4w"]
+radius = 30.705368
+height = 132.42068
+
+[node name="Fighter" type="CharacterBody2D" unique_id=961281130 node_paths=PackedStringArray("PillboxShape")]
 collision_layer = 0
 script = ExtResource("1_umvcx")
+PillboxShape = NodePath("Pillbox")
 sMpPrefab = ExtResource("2_siwl3")
 cMkPrefab = ExtResource("3_siwl3")
 qcfPrefab = ExtResource("4_yjmyb")
 jHkPrefab = ExtResource("5_32pqh")
 
 [node name="Pillbox" type="CollisionShape2D" parent="." unique_id=1918110751]
-visible = false
+position = Vector2(3, 0)
 scale = Vector2(1.3999993, 1.3999993)
 shape = SubResource("CapsuleShape2D_eelhu")
 debug_color = Color(0.08654649, 0.5772644, 0.803412, 0.41960785)
-
-[node name="Pushbox" type="Area2D" parent="." unique_id=175198501]
-visible = false
-light_mask = 8
-visibility_layer = 8
-position = Vector2(-5.9604645e-08, 16.999996)
-scale = Vector2(0.9999999, 0.9999999)
-collision_layer = 4
-collision_mask = 4
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Pushbox" unique_id=1047621642]
-position = Vector2(0, 3.5762787e-06)
-scale = Vector2(0.9118927, 0.8306859)
-shape = SubResource("CapsuleShape2D_sxd4w")
 
 [node name="InputBuffer" parent="." unique_id=2128503683 instance=ExtResource("3_qq641")]
 
@@ -2465,3 +2452,17 @@ texture_repeat = 1
 scale = Vector2(1.4, 1.4)
 texture = ExtResource("2_38ety")
 hframes = 20
+
+[node name="Pushbox" type="Area2D" parent="." unique_id=175198501]
+light_mask = 8
+visibility_layer = 8
+position = Vector2(-5.9604645e-08, 16.999996)
+scale = Vector2(0.9999999, 0.9999999)
+collision_layer = 4
+collision_mask = 4
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Pushbox" unique_id=1047621642]
+position = Vector2(3.5762787e-07, 3.8146973e-06)
+scale = Vector2(0.9118927, 0.8306859)
+shape = SubResource("CapsuleShape2D_sxd4w")
+debug_color = Color(0.29865983, 0.627056, 0.13280949, 0.41960785)

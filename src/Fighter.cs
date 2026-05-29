@@ -21,7 +21,6 @@ public partial class Fighter : CharacterBody2D
     // [Export] public float UniversalAirLaunchY = -1200.0f; 
     // [Export] public float UniversalAirPushX = 200.0f;
     
-    [Export]
     public float CoreOverlapLimit = 25.0f;
 
     public BaseState CurrentState;
@@ -34,6 +33,8 @@ public partial class Fighter : CharacterBody2D
     public Label DebugLabel;
     public Node2D AttackContainer;
     public Area2D Pushbox;
+    [Export] public CollisionShape2D PillboxShape;
+    private float _pillboxOffset = 3.0f;
 
     [Export]
     public Fighter Opponent;
@@ -294,11 +295,20 @@ public partial class Fighter : CharacterBody2D
         {
             FacingDirection = -1;
             Visuals.Scale = new Vector2(-1, 1);
+            UpdatePillboxbox();
         }
         else if (Opponent.GlobalPosition.X > GlobalPosition.X && FacingDirection == -1)
         {
             FacingDirection = 1;
             Visuals.Scale = new Vector2(1, 1);
+            UpdatePillboxbox();
+        }
+    }
+    private void UpdatePillboxbox()
+    {
+        if (PillboxShape != null)
+        {
+            PillboxShape.Position = new Vector2(_pillboxOffset * FacingDirection, PillboxShape.Position.Y);
         }
     }
 

@@ -82,8 +82,7 @@ collision_mask = 2
 script = ExtResource("3_xabxc")
 StartFrame = 12
 Duration = 2
-PushbackForce = 0.0
-Pull = 100.0
+PushbackForce = 100.0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Hitboxes/Hitbox1" unique_id=2096679560]
 position = Vector2(54.25, -61.5)
@@ -107,8 +106,7 @@ collision_mask = 2
 script = ExtResource("3_xabxc")
 StartFrame = 18
 Duration = 2
-PushbackForce = 0.0
-Pull = 100.0
+PushbackForce = 100.0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Hitboxes/Hitbox2" unique_id=839034676]
 position = Vector2(66, -34)
@@ -132,8 +130,7 @@ collision_mask = 2
 script = ExtResource("3_xabxc")
 StartFrame = 24
 Duration = 2
-PushbackForce = 0.0
-Pull = 100.0
+PushbackForce = 100.0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Hitboxes/Hitbox3" unique_id=190836080]
 position = Vector2(65, -53)
