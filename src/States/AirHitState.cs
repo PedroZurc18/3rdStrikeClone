@@ -6,7 +6,7 @@ public class AirHitState : BaseState
 {
     // Constants for air hit parameters
     public const float AIR_HIT_DECELERATION = 0f;
-    public const int HARD_KNOCKDOWN_DURATION_FRAMES = 60; // From user request
+    public const int HARD_KNOCKDOWN_DURATION_FRAMES = 60;
     
     private float _initialVelX;
     private float _initialVelY;
@@ -28,6 +28,8 @@ public class AirHitState : BaseState
         vel.X = _initialVelX;
         vel.Y = _initialVelY;
         _fighter.Velocity = vel;
+        
+        _fighter.Anim.Stop();
 
         _fighter.Anim.Play(_isJuggle ? "juggle_air" : "hit_air");
     }

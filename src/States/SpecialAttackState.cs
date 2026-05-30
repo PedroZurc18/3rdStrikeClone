@@ -10,6 +10,7 @@ public class SpecialAttackState : BaseState
     // Trackers for our flying moves (like the DP)
     private bool _isAirborneMove = false;
     private bool _hasLaunched = false;
+    private float _currentActiveSpeed = 0.0f;
 
     // Optional: Make the startup invincible ONLY if it's a launching move (like a DP)
     public override bool IsInvincible => _isAirborneMove && !_hasLaunched;
@@ -28,6 +29,8 @@ public class SpecialAttackState : BaseState
         // 1. Ask the prefab what kind of move it is!
         _isAirborneMove = _active.YAxisFrame> 0;
         _hasLaunched = false;
+        
+        _currentActiveSpeed = _active.XAxisSpeed;
 
         // Lock them to the ground during frame 1
         Vector2 vel = _fighter.Velocity;
@@ -39,32 +42,53 @@ public class SpecialAttackState : BaseState
     {
         Vector2 vel = _fighter.Velocity;
         int currentFrame = _active.GetCurrentFrame();
-
+        
+        bool speedJustChanged = false;
+        if (_active.XSpeedProfile != null && _active.XSpeedProfile.Count > 0)
+        {
+            foreach (var keyframe in _active.XSpeedProfile)
+            {
+                if (keyframe.Frame == currentFrame)
+                {
+                    _currentActiveSpeed = keyframe.Speed;
+                    speedJustChanged = true;
+                    break;
+                }
+            }
+        }
         // 2. THE LAUNCH CHECK (For DPs)
         if (_isAirborneMove && currentFrame == _active.YAxisFrame)
         {
             _hasLaunched = true;
             vel.Y = _active.YAxisSpeed; 
-            vel.X = _fighter.FacingDirection * _active.XAxisSpeed; 
+            // FIXED: Now uses the dynamic speed!
+            vel.X = _fighter.FacingDirection * _currentActiveSpeed; 
         }
-        // 3. GROUNDED MOVEMENT (For QCF / Fireballs)
-        else if (!_isAirborneMove && currentFrame <= 11) // Use whatever frame limit you prefer
+        
+        // 3. APPLY HORIZONTAL MOVEMENT
+        if (!_isAirborneMove) 
         {
-            vel.X = _fighter.FacingDirection * _active.XAxisSpeed;
+            // GROUNDED: We removed the hardcoded "currentFrame <= 11". 
+            // Now, you use your Godot Inspector keyframes to stop the character! (e.g., Frame 12, Speed 0)
+            vel.X = _fighter.FacingDirection * _currentActiveSpeed;
+        }
+        else if (_hasLaunched && speedJustChanged)
+        {
+            // AIRBORNE IMPULSE: If they are flying, and a keyframe triggers, instantly force the new speed!
+            vel.X = _fighter.FacingDirection * _currentActiveSpeed;
         }
         else if (!_hasLaunched)
         {
+            // Startup frames before leaving the ground
             vel.X = 0;
         }
 
-        // 4. APPLY GRAVITY (Only if we are actually flying)
+        // 4. APPLY GRAVITY & DRAG (FIXED: Only applies if actually flying!)
         if (_hasLaunched)
         {
             vel.Y += _fighter.Gravity * (float)delta;
+            vel.X = Mathf.MoveToward(vel.X, 0, _active.AirDrag * (float)delta);
         }
-        float activeDrag = _active.AirDrag;
-        
-        vel.X = Mathf.MoveToward(vel.X, 0, activeDrag * (float)delta);
         
         _fighter.Velocity = vel;
         _fighter.ApplyMovementAndPush();
@@ -74,24 +98,23 @@ public class SpecialAttackState : BaseState
 
         if (isMoveFinished)
         {
-            // If it's a grounded special, go straight back to Idle!
             if (!_isAirborneMove)
             {
                 _fighter.ChangeState(new IdleState(_fighter));
                 return;
             }
-            // If it's a flying special, freeze the last frame until we hit the floor
             else if (!_fighter.Anim.IsPlaying())
             {
                 _fighter.Anim.Pause();
             }
         }
 
-        // 6. THE LANDING (Only for flying specials)
+        // 6. THE LANDING 
         if (_isAirborneMove && _hasLaunched && vel.Y > 0 && _fighter.IsOnFloor())
         {
             _fighter.ChangeState(new IdleState(_fighter, true)); 
         }
+    
     }
 
     public override void Exit()

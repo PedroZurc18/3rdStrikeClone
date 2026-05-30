@@ -3,6 +3,8 @@
 [ext_resource type="Script" uid="uid://c0dt4u73yg6ob" path="res://src/NormalAttack.cs" id="1_5kul6"]
 [ext_resource type="Script" uid="uid://dupwtu1u4aic8" path="res://src/HitboxData.cs" id="3_n4yy1"]
 
+[sub_resource type="CSharpScript" id="CSharpScript_vb14y"]
+
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_72cq1"]
 size = Vector2(22.5, 21)
 
@@ -22,6 +24,7 @@ TotalFrames = 31
 AnimationName = "jump_kick"
 Strength = 2
 IsSpecialCancelable = false
+XSpeedProfile = Array[SubResource("CSharpScript_vb14y")]([null])
 
 [node name="Hurtboxes" type="Node2D" parent="." unique_id=1474827256]
 

@@ -170,18 +170,22 @@ public partial class Fighter : CharacterBody2D
             if (Health < 0) Health = 0;
             EmitSignal(SignalName.HealthChanged, Health);
 
-            // Check Airborne
-            if (!IsOnFloor())
+            // Air hit or Launch
+            if (!IsOnFloor() || hitbox.Juggle)
             {
                 // X-axis push
-                float appliedAirPushX = attack.AirPushX * pushAwayFromAttackerDirection;
+                float targetPushX = hitbox.Juggle ? hitbox.LaunchPushX : attack.AirPushX;
+                float targetLaunchY = hitbox.Juggle ? hitbox.LaunchForceY : attack.AirLaunchY;
+
+                // X-axis push multiplied by the direction
+                float appliedAirPushX = targetPushX * pushAwayFromAttackerDirection;
                 
                 ChangeState(
                     new AirHitState(
                         this,
                         attack.HitStunFrames,
                         appliedAirPushX,
-                        attack.AirLaunchY,
+                        targetLaunchY,
                         hitbox.Juggle
                     )
                 );

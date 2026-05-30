@@ -14,4 +14,6 @@ public partial class HitboxData : Area2D
     public bool HasConnected = false;
 
     [Export] public bool Juggle = false;
+    [Export] public float LaunchForceY = 0;
+    [Export] public float LaunchPushX = 0;
 }
