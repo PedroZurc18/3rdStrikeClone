@@ -31,11 +31,7 @@ public class AttackState : BaseState
         {
             vel.Y += _fighter.Gravity * (float)delta;
         }
-
-        if (_active.GetCurrentFrame() <= 11)
-        {
-            vel.X = _fighter.FacingDirection * _active.XAxisSpeed;
-        }
+        
         else
         {
             vel.X = 0;

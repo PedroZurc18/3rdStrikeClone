@@ -7,13 +7,19 @@
 [sub_resource type="Resource" id="Resource_hs011"]
 script = ExtResource("2_hs011")
 Frame = 1
-Speed = 8000.0
+Speed = 2000.0
 metadata/_custom_type_script = "uid://cchjrs726aeo1"
 
 [sub_resource type="Resource" id="Resource_pywyf"]
 script = ExtResource("2_hs011")
 Frame = 5
-Speed = 400.0
+Speed = 200.0
+metadata/_custom_type_script = "uid://cchjrs726aeo1"
+
+[sub_resource type="Resource" id="Resource_6mtbo"]
+script = ExtResource("2_hs011")
+Frame = 1
+Speed = -2000.0
 metadata/_custom_type_script = "uid://cchjrs726aeo1"
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_6mtbo"]
@@ -43,10 +49,9 @@ HitStopFrames = 6
 IsSpecialCancelable = false
 AirLaunchY = 0.0
 AirPushX = 0.0
-YAxisSpeed = -2150.0
-YAxisFrame = 4
-AirDrag = 1000.0
 XSpeedProfile = Array[ExtResource("2_hs011")]([SubResource("Resource_hs011"), SubResource("Resource_pywyf")])
+YSpeedProfile = Array[ExtResource("2_hs011")]([SubResource("Resource_6mtbo")])
+AirDrag = 300.0
 
 [node name="Hurtboxes" type="Node2D" parent="." unique_id=1269667198]
 
@@ -60,9 +65,9 @@ script = ExtResource("2_ahvxa")
 StartFrame = 4
 Duration = 12
 Height = 0
-Pull = 200.0
 Juggle = true
 LaunchForceY = -2100.0
+LaunchPushX = 500.0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Hitboxes/Hitbox1" unique_id=900035945]
 position = Vector2(51, 3)
@@ -87,10 +92,9 @@ script = ExtResource("2_ahvxa")
 StartFrame = 22
 Duration = 6
 Height = 0
-Pull = 100.0
 Juggle = true
 LaunchForceY = -1000.0
-LaunchPushX = 300.0
+LaunchPushX = 500.0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Hitboxes/Hitbox2" unique_id=1053526162]
 position = Vector2(29, -31)

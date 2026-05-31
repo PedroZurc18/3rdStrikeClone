@@ -7,12 +7,10 @@ public class SpecialAttackState : BaseState
     private PackedScene _movePrefab;
     private NormalAttack _active;
     
-    // Trackers for our flying moves (like the DP)
     private bool _isAirborneMove = false;
     private bool _hasLaunched = false;
-    private float _currentActiveSpeed = 0.0f;
+    private float _currentActiveXSpeed = 0.0f;
 
-    // Optional: Make the startup invincible ONLY if it's a launching move (like a DP)
     public override bool IsInvincible => _isAirborneMove && !_hasLaunched;
 
     public SpecialAttackState(Fighter fighter, PackedScene movePrefab) : base(fighter)
@@ -26,13 +24,9 @@ public class SpecialAttackState : BaseState
         _fighter.AttackContainer.AddChild(_active);
         _active.Initialize(_fighter);
         
-        // 1. Ask the prefab what kind of move it is!
-        _isAirborneMove = _active.YAxisFrame> 0;
+        _isAirborneMove = _active.YSpeedProfile != null && _active.YSpeedProfile.Count > 0;
         _hasLaunched = false;
-        
-        _currentActiveSpeed = _active.XAxisSpeed;
 
-        // Lock them to the ground during frame 1
         Vector2 vel = _fighter.Velocity;
         vel.X = 0; 
         _fighter.Velocity = vel;
@@ -43,39 +37,48 @@ public class SpecialAttackState : BaseState
         Vector2 vel = _fighter.Velocity;
         int currentFrame = _active.GetCurrentFrame();
         
-        bool speedJustChanged = false;
+        // X PROFILE
+        bool xSpeedJustChanged = false;
         if (_active.XSpeedProfile != null && _active.XSpeedProfile.Count > 0)
         {
             foreach (var keyframe in _active.XSpeedProfile)
             {
                 if (keyframe.Frame == currentFrame)
                 {
-                    _currentActiveSpeed = keyframe.Speed;
-                    speedJustChanged = true;
+                    _currentActiveXSpeed = keyframe.Speed;
+                    xSpeedJustChanged = true;
                     break;
                 }
             }
         }
-        // 2. THE LAUNCH CHECK (For DPs)
-        if (_isAirborneMove && currentFrame == _active.YAxisFrame)
+
+        // Y PROFILE
+        bool ySpeedJustChanged = false;
+        if (_active.YSpeedProfile != null && _active.YSpeedProfile.Count > 0)
         {
-            _hasLaunched = true;
-            vel.Y = _active.YAxisSpeed; 
-            // FIXED: Now uses the dynamic speed!
-            vel.X = _fighter.FacingDirection * _currentActiveSpeed; 
+            foreach (var keyframe in _active.YSpeedProfile)
+            {
+                if (keyframe.Frame == currentFrame)
+                {
+                    vel.Y = keyframe.Speed; 
+                    ySpeedJustChanged = true;
+                    
+                    if (!_hasLaunched) _hasLaunched = true; 
+                    break;
+                }
+            }
         }
         
-        // 3. APPLY HORIZONTAL MOVEMENT
+        // 4. APPLY X MOVEMENT
         if (!_isAirborneMove) 
         {
-            // GROUNDED: We removed the hardcoded "currentFrame <= 11". 
-            // Now, you use your Godot Inspector keyframes to stop the character! (e.g., Frame 12, Speed 0)
-            vel.X = _fighter.FacingDirection * _currentActiveSpeed;
+            // Grounded Special (Fireball, etc.)
+            vel.X = _fighter.FacingDirection * _currentActiveXSpeed;
         }
-        else if (_hasLaunched && speedJustChanged)
+        else if (_hasLaunched && xSpeedJustChanged)
         {
-            // AIRBORNE IMPULSE: If they are flying, and a keyframe triggers, instantly force the new speed!
-            vel.X = _fighter.FacingDirection * _currentActiveSpeed;
+            // Airborne Impulse (Air Dash, Divekick forward momentum)
+            vel.X = _fighter.FacingDirection * _currentActiveXSpeed;
         }
         else if (!_hasLaunched)
         {
@@ -83,17 +86,21 @@ public class SpecialAttackState : BaseState
             vel.X = 0;
         }
 
-        // 4. APPLY GRAVITY & DRAG (FIXED: Only applies if actually flying!)
+        // 5. APPLY GRAVITY & DRAG
         if (_hasLaunched)
         {
-            vel.Y += _fighter.Gravity * (float)delta;
+            if (!ySpeedJustChanged)
+            {
+                vel.Y += _fighter.Gravity * (float)delta;
+            }
+            
             vel.X = Mathf.MoveToward(vel.X, 0, _active.AirDrag * (float)delta);
         }
         
         _fighter.Velocity = vel;
         _fighter.ApplyMovementAndPush();
         
-        // 5. PROCESS THE ANIMATION
+        // 6. PROCESS THE ANIMATION
         bool isMoveFinished = _active.ProcessMove();
 
         if (isMoveFinished)
@@ -109,12 +116,11 @@ public class SpecialAttackState : BaseState
             }
         }
 
-        // 6. THE LANDING 
+        // 7. THE LANDING 
         if (_isAirborneMove && _hasLaunched && vel.Y > 0 && _fighter.IsOnFloor())
         {
             _fighter.ChangeState(new IdleState(_fighter, true)); 
         }
-    
     }
 
     public override void Exit()
