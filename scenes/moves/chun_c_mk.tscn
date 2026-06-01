@@ -3,6 +3,10 @@
 [ext_resource type="Script" uid="uid://c0dt4u73yg6ob" path="res://src/NormalAttack.cs" id="1_buiwl"]
 [ext_resource type="Script" uid="uid://dyu4wjrnkjq5b" path="res://src/HurtboxData.cs" id="1_ls3o4"]
 [ext_resource type="Script" uid="uid://dupwtu1u4aic8" path="res://src/HitboxData.cs" id="2_buiwl"]
+[ext_resource type="AudioStream" uid="uid://wqebabefclq7" path="res://Assets/sfx/whiff_medium.wav" id="2_s6m3s"]
+[ext_resource type="AudioStream" uid="uid://ivksaa0ucl0g" path="res://Assets/sfx/hit_05.wav" id="3_272lk"]
+[ext_resource type="AudioStream" uid="uid://jljc1k24eqc3" path="res://Assets/sfx/block.wav" id="4_ub86a"]
+[ext_resource type="AudioStream" uid="uid://cnbnijx8kr6ak" path="res://Assets/sfx/ChunLi/cMk.wav" id="5_272lk"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_s6m3s"]
 size = Vector2(96.77905, 20.5)
@@ -24,7 +28,12 @@ HitStunFrames = 19
 BlockStunFrames = 15
 HitStopFrames = 11
 CancelWindowEnd = 12
-AirLaunchY = -1500.0
+WhiffSound = ExtResource("2_s6m3s")
+WhiffVolumeDb = -12.0
+WhiffFrame = 4
+HitSound = ExtResource("3_272lk")
+BlockSound = ExtResource("4_ub86a")
+VoiceSound = ExtResource("5_272lk")
 
 [node name="Hurtboxes" type="Node2D" parent="." unique_id=1075417066]
 visible = false

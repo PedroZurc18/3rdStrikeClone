@@ -3,6 +3,10 @@
 [ext_resource type="Script" uid="uid://dgwyacwmgi4r3" path="res://src/SpecialAttack.cs" id="1_jy5x3"]
 [ext_resource type="Script" uid="uid://dupwtu1u4aic8" path="res://src/HitboxData.cs" id="2_ahvxa"]
 [ext_resource type="Script" uid="uid://cchjrs726aeo1" path="res://src/SpeedKeyframe.cs" id="2_hs011"]
+[ext_resource type="AudioStream" uid="uid://b8qwjl4kne5uf" path="res://Assets/sfx/whiff_heavy.wav" id="3_rjtdm"]
+[ext_resource type="AudioStream" uid="uid://jdbx15tlvjan" path="res://Assets/sfx/hit_08.wav" id="4_qonua"]
+[ext_resource type="AudioStream" uid="uid://jljc1k24eqc3" path="res://Assets/sfx/block.wav" id="5_njdcc"]
+[ext_resource type="AudioStream" uid="uid://dm3bmnqqt55k7" path="res://Assets/sfx/ChunLi/lightningKicks.wav" id="6_q3d33"]
 
 [sub_resource type="Resource" id="Resource_hs011"]
 script = ExtResource("2_hs011")
@@ -22,22 +26,40 @@ Frame = 1
 Speed = -2000.0
 metadata/_custom_type_script = "uid://cchjrs726aeo1"
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_6mtbo"]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_qonua"]
 size = Vector2(62.125, 84.75)
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_j60gw"]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_njdcc"]
 size = Vector2(71.03125, 42)
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_thsjm"]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_q3d33"]
 size = Vector2(66.25781, 46)
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_rjtdm"]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_eyp83"]
 size = Vector2(80.53125, 113.1875)
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_qonua"]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_0u0ih"]
 size = Vector2(89, 39.07422)
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_njdcc"]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_1lwfw"]
+size = Vector2(88.63281, 32.148438)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_56yuf"]
+size = Vector2(80.53125, 113.1875)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_thsjm"]
+size = Vector2(89, 39.07422)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_gklj6"]
+size = Vector2(88.63281, 32.148438)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_jx1pt"]
+size = Vector2(80.53125, 113.1875)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_t7bjn"]
+size = Vector2(89, 39.07422)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_efyst"]
 size = Vector2(88.63281, 32.148438)
 
 [node name="Chun_AA" type="Node2D" unique_id=1875301366]
@@ -52,61 +74,124 @@ AirPushX = 0.0
 XSpeedProfile = Array[ExtResource("2_hs011")]([SubResource("Resource_hs011"), SubResource("Resource_pywyf")])
 YSpeedProfile = Array[ExtResource("2_hs011")]([SubResource("Resource_6mtbo")])
 AirDrag = 300.0
+WhiffSound = ExtResource("3_rjtdm")
+WhiffVolumeDb = -12.0
+WhiffFrame = 4
+HitSound = ExtResource("4_qonua")
+BlockSound = ExtResource("5_njdcc")
+VoiceSound = ExtResource("6_q3d33")
 
 [node name="Hurtboxes" type="Node2D" parent="." unique_id=1269667198]
 
 [node name="Hitboxes" type="Node2D" parent="." unique_id=1372637487]
+visible = false
 
 [node name="Hitbox1" type="Area2D" parent="Hitboxes" unique_id=1194249231]
 visible = false
+light_mask = 0
+visibility_layer = 2
 collision_layer = 0
 collision_mask = 2
 script = ExtResource("2_ahvxa")
 StartFrame = 4
-Duration = 12
-Height = 0
+Duration = 6
 Juggle = true
-LaunchForceY = -2100.0
-LaunchPushX = 500.0
+LaunchForceY = -2000.0
+Scoop = 110.0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Hitboxes/Hitbox1" unique_id=900035945]
 position = Vector2(51, 3)
-shape = SubResource("RectangleShape2D_6mtbo")
+shape = SubResource("RectangleShape2D_qonua")
 debug_color = Color(0.83, 0, 0, 0.41960785)
 
 [node name="CollisionShape2D2" type="CollisionShape2D" parent="Hitboxes/Hitbox1" unique_id=1533599139]
 position = Vector2(33, -52)
-shape = SubResource("RectangleShape2D_j60gw")
+shape = SubResource("RectangleShape2D_njdcc")
 debug_color = Color(0.83, 0, 0, 0.41960785)
 
 [node name="CollisionShape2D3" type="CollisionShape2D" parent="Hitboxes/Hitbox1" unique_id=1162713085]
 position = Vector2(-10.128906, -76)
-shape = SubResource("RectangleShape2D_thsjm")
+shape = SubResource("RectangleShape2D_q3d33")
 debug_color = Color(0.83, 0, 0, 0.41960785)
 
 [node name="Hitbox2" type="Area2D" parent="Hitboxes" unique_id=1015671850]
 visible = false
+light_mask = 0
+visibility_layer = 2
 collision_layer = 0
 collision_mask = 2
 script = ExtResource("2_ahvxa")
-StartFrame = 22
-Duration = 6
-Height = 0
+StartFrame = 10
+Duration = 9
 Juggle = true
-LaunchForceY = -1000.0
-LaunchPushX = 500.0
+LaunchForceY = -1500.0
+Scoop = 110.0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Hitboxes/Hitbox2" unique_id=1053526162]
 position = Vector2(29, -31)
-shape = SubResource("RectangleShape2D_rjtdm")
+shape = SubResource("RectangleShape2D_eyp83")
 debug_color = Color(0.83, 0, 0, 0.41960785)
 
 [node name="CollisionShape2D2" type="CollisionShape2D" parent="Hitboxes/Hitbox2" unique_id=1128502511]
-position = Vector2(12, -92)
-shape = SubResource("RectangleShape2D_qonua")
+position = Vector2(8, -103)
+shape = SubResource("RectangleShape2D_0u0ih")
 debug_color = Color(0.83, 0, 0, 0.41960785)
 
 [node name="CollisionShape2D3" type="CollisionShape2D" parent="Hitboxes/Hitbox2" unique_id=1567280779]
 position = Vector2(-1, 35)
-shape = SubResource("RectangleShape2D_njdcc")
+shape = SubResource("RectangleShape2D_1lwfw")
+debug_color = Color(0.83, 0, 0, 0.41960785)
+
+[node name="Hitbox3" type="Area2D" parent="Hitboxes" unique_id=1879449712]
+visible = false
+light_mask = 0
+visibility_layer = 2
+collision_layer = 0
+collision_mask = 2
+script = ExtResource("2_ahvxa")
+StartFrame = 22
+Duration = 3
+Juggle = true
+LaunchForceY = -1500.0
+Scoop = 110.0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hitboxes/Hitbox3" unique_id=1610591229]
+position = Vector2(29, -31)
+shape = SubResource("RectangleShape2D_56yuf")
+debug_color = Color(0.83, 0, 0, 0.41960785)
+
+[node name="CollisionShape2D2" type="CollisionShape2D" parent="Hitboxes/Hitbox3" unique_id=1864346905]
+position = Vector2(8, -103)
+shape = SubResource("RectangleShape2D_thsjm")
+debug_color = Color(0.83, 0, 0, 0.41960785)
+
+[node name="CollisionShape2D3" type="CollisionShape2D" parent="Hitboxes/Hitbox3" unique_id=470830538]
+position = Vector2(-1, 35)
+shape = SubResource("RectangleShape2D_gklj6")
+debug_color = Color(0.83, 0, 0, 0.41960785)
+
+[node name="Hitbox4" type="Area2D" parent="Hitboxes" unique_id=857712673]
+visible = false
+collision_layer = 0
+collision_mask = 2
+script = ExtResource("2_ahvxa")
+StartFrame = 25
+Duration = 6
+Juggle = true
+LaunchForceY = -800.0
+LaunchPushX = 500.0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hitboxes/Hitbox4" unique_id=776597039]
+position = Vector2(29, -31)
+shape = SubResource("RectangleShape2D_jx1pt")
+debug_color = Color(0.83, 0, 0, 0.41960785)
+
+[node name="CollisionShape2D2" type="CollisionShape2D" parent="Hitboxes/Hitbox4" unique_id=1755909938]
+position = Vector2(8, -103)
+shape = SubResource("RectangleShape2D_t7bjn")
+debug_color = Color(0.83, 0, 0, 0.41960785)
+
+[node name="CollisionShape2D3" type="CollisionShape2D" parent="Hitboxes/Hitbox4" unique_id=260703418]
+position = Vector2(-1, 35)
+shape = SubResource("RectangleShape2D_efyst")
 debug_color = Color(0.83, 0, 0, 0.41960785)

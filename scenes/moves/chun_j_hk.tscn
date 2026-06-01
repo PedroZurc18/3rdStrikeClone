@@ -1,9 +1,12 @@
 [gd_scene format=3 uid="uid://bqvfputwaltq4"]
 
 [ext_resource type="Script" uid="uid://c0dt4u73yg6ob" path="res://src/NormalAttack.cs" id="1_5kul6"]
+[ext_resource type="Script" uid="uid://cchjrs726aeo1" path="res://src/SpeedKeyframe.cs" id="2_dbjrg"]
+[ext_resource type="AudioStream" uid="uid://b8qwjl4kne5uf" path="res://Assets/sfx/whiff_heavy.wav" id="3_d7ciq"]
 [ext_resource type="Script" uid="uid://dupwtu1u4aic8" path="res://src/HitboxData.cs" id="3_n4yy1"]
-
-[sub_resource type="CSharpScript" id="CSharpScript_vb14y"]
+[ext_resource type="AudioStream" uid="uid://d8gxx65ksw1l" path="res://Assets/sfx/hit_07.wav" id="4_fliov"]
+[ext_resource type="AudioStream" uid="uid://jljc1k24eqc3" path="res://Assets/sfx/block.wav" id="5_40uap"]
+[ext_resource type="AudioStream" uid="uid://cnbnijx8kr6ak" path="res://Assets/sfx/ChunLi/cMk.wav" id="6_ii83d"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_72cq1"]
 size = Vector2(22.5, 21)
@@ -24,7 +27,13 @@ TotalFrames = 31
 AnimationName = "jump_kick"
 Strength = 2
 IsSpecialCancelable = false
-XSpeedProfile = Array[SubResource("CSharpScript_vb14y")]([null])
+XSpeedProfile = Array[ExtResource("2_dbjrg")]([null])
+WhiffSound = ExtResource("3_d7ciq")
+WhiffVolumeDb = -12.0
+WhiffFrame = 4
+HitSound = ExtResource("4_fliov")
+BlockSound = ExtResource("5_40uap")
+VoiceSound = ExtResource("6_ii83d")
 
 [node name="Hurtboxes" type="Node2D" parent="." unique_id=1474827256]
 

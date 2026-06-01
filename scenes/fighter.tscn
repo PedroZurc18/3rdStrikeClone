@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" uid="uid://cdwsoprufrwe3" path="res://src/Fighter.cs" id="1_umvcx"]
 [ext_resource type="Texture2D" uid="uid://db7vpd6wyajt6" path="res://Assets/Chun_idle.png" id="2_38ety"]
+[ext_resource type="AudioStream" uid="uid://3bor6dyc4krn" path="res://Assets/sfx/Parry.wav" id="2_ked8f"]
 [ext_resource type="PackedScene" uid="uid://xixgoyel8uax" path="res://scenes/moves/chun_s_mp.tscn" id="2_siwl3"]
 [ext_resource type="PackedScene" uid="uid://cm376dt37pcpf" path="res://scenes/input_buffer.tscn" id="3_qq641"]
 [ext_resource type="PackedScene" uid="uid://b470ouwqo5w7p" path="res://scenes/moves/chun_c_mk.tscn" id="3_siwl3"]
@@ -109,7 +110,7 @@ tracks/4/keys = {
 
 [sub_resource type="Animation" id="Animation_bwbxn"]
 resource_name = "anti_air"
-length = 1.0000017
+length = 0.9000017
 step = 0.016666668
 markers = [{
 "color": Color(1, 0, 0, 1),
@@ -117,16 +118,32 @@ markers = [{
 "time": 0.06666667
 }, {
 "color": Color(1, 0, 0, 1),
-"name": &">1",
-"time": 0.25
-}, {
-"color": Color(1, 0, 0, 1),
-"name": &"2<",
+"name": &"3<",
 "time": 0.36666667
 }, {
 "color": Color(1, 0, 0, 1),
+"name": &"4<",
+"time": 0.41666666
+}, {
+"color": Color(1, 0, 0, 1),
 "name": &">2",
-"time": 0.45
+"time": 0.3
+}, {
+"color": Color(1, 0, 0, 1),
+"name": &">3",
+"time": 0.4
+}, {
+"color": Color(1, 0, 0, 1),
+"name": &">4",
+"time": 0.5
+}, {
+"color": Color(1, 0, 0, 1),
+"name": &">1",
+"time": 0.15
+}, {
+"color": Color(1, 0, 0, 1),
+"name": &"2<",
+"time": 0.16666667
 }]
 tracks/0/type = "value"
 tracks/0/imported = false
@@ -2385,6 +2402,7 @@ _data = {
 collision_layer = 0
 script = ExtResource("1_umvcx")
 PillboxShape = NodePath("Pillbox")
+ParrySound = ExtResource("2_ked8f")
 sMpPrefab = ExtResource("2_siwl3")
 cMkPrefab = ExtResource("3_siwl3")
 qcfPrefab = ExtResource("4_yjmyb")
@@ -2434,19 +2452,18 @@ collision_layer = 2
 collision_mask = 0
 
 [node name="Head" type="CollisionShape2D" parent="Visuals/Hurtbox" unique_id=597669526]
-position = Vector2(-5.999999, -48.999996)
+position = Vector2(-13.999998, -60.999992)
 scale = Vector2(1.0000002, 1.0000002)
 shape = SubResource("RectangleShape2D_1bj3w")
 debug_color = Color(0.24313726, 0.5568628, 0.09411765, 0.41960785)
 
 [node name="Torso" type="CollisionShape2D" parent="Visuals/Hurtbox" unique_id=726784051]
-position = Vector2(-24.999996, -20.999996)
+position = Vector2(-12.999998, -27.999996)
 shape = SubResource("RectangleShape2D_3wvek")
 debug_color = Color(0.24313726, 0.5568628, 0.09411765, 0.41960785)
 
 [node name="Legs" type="CollisionShape2D" parent="Visuals/Hurtbox" unique_id=1731037680]
-position = Vector2(-19.411764, 38.235294)
-scale = Vector2(0.955, 0.98)
+position = Vector2(-1.360293, 33.35293)
 shape = SubResource("RectangleShape2D_06ufj")
 debug_color = Color(0.24313726, 0.5568628, 0.09411765, 0.41960785)
 
@@ -2456,6 +2473,12 @@ debug_color = Color(0.24313726, 0.5568628, 0.09411765, 0.41960785)
 callback_mode_process = 0
 libraries/ = SubResource("AnimationLibrary_1bj3w")
 autoplay = &"idle"
+
+[node name="SfxPlayer" type="AudioStreamPlayer2D" parent="." unique_id=1692312716]
+
+[node name="HitPlayer" type="AudioStreamPlayer2D" parent="." unique_id=311349731]
+
+[node name="VoicePlayer" type="AudioStreamPlayer2D" parent="." unique_id=1953791716]
 
 [node name="UI" type="CanvasLayer" parent="." unique_id=1012230234]
 

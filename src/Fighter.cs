@@ -18,9 +18,6 @@ public partial class Fighter : CharacterBody2D
     private float _pushSpeed;
     private const float PushDecel = 1500.0f;
     
-    // [Export] public float UniversalAirLaunchY = -1200.0f; 
-    // [Export] public float UniversalAirPushX = 200.0f;
-    
     public float CoreOverlapLimit = 25.0f;
 
     public BaseState CurrentState;
@@ -30,30 +27,33 @@ public partial class Fighter : CharacterBody2D
     public InputBuffer Buffer;
     public Node2D Visuals;
     public AnimationPlayer Anim;
+    public AudioStreamPlayer2D SfxPlayer;
+    public AudioStreamPlayer2D HitPlayer;
+    public AudioStreamPlayer2D VoicePlayer;
     public Label DebugLabel;
     public Node2D AttackContainer;
     public Area2D Pushbox;
     [Export] public CollisionShape2D PillboxShape;
     private float _pillboxOffset = 3.0f;
 
+    [ExportGroup("Parry System")] 
+    [Export] public int ParryWindowFrames = 10;
+    [Export] private AudioStream ParrySound;
+    
+    private int _parryTimer = 0;
+    private NormalAttack.HitHeight _parryTypeReady = NormalAttack.HitHeight.Mid; 
+    private bool _wasForwardPressed = false;
+    private bool _wasDownPressed = false;
+    
     [Export]
     public Fighter Opponent;
 
     [ExportGroup("Move List")]
-    [Export]
-    public PackedScene sMpPrefab;
-
-    [Export]
-    public PackedScene cMkPrefab;
-
-    [Export]
-    public PackedScene qcfPrefab;
-
-    [Export]
-    public PackedScene jHkPrefab;
-    
-    [Export]
-    public PackedScene aaPrefab;
+    [Export] public PackedScene sMpPrefab;
+    [Export] public PackedScene cMkPrefab;
+    [Export] public PackedScene qcfPrefab;
+    [Export] public PackedScene jHkPrefab;
+    [Export] public PackedScene aaPrefab;
     
     [Signal]
     public delegate void HealthChangedEventHandler(int newHealth);
@@ -65,6 +65,9 @@ public partial class Fighter : CharacterBody2D
         Visuals = GetNode<Node2D>("Visuals");
         Pushbox = GetNodeOrNull<Area2D>("Pushbox");
         AttackContainer = GetNode<Node2D>("Visuals/AttackContainer");
+        SfxPlayer = GetNode<AudioStreamPlayer2D>("SfxPlayer");
+        HitPlayer = GetNode<AudioStreamPlayer2D>("HitPlayer");
+        VoicePlayer = GetNode<AudioStreamPlayer2D>("VoicePlayer");
 
         ChangeState(new IdleState(this));
 
@@ -86,7 +89,9 @@ public partial class Fighter : CharacterBody2D
     }
 
     public override void _PhysicsProcess(double delta)
-    {   
+    {
+        UpdateParryTimers();
+        
         // Hitstop
         if (_hitStopTimer > 0)
         {
@@ -130,23 +135,54 @@ public partial class Fighter : CharacterBody2D
     }
 
     public void ReceiveHit(NormalAttack attack, HitboxData hitbox)
-    {
+    {   
+        bool successfullyParried = CheckIfParried(hitbox.Height);
+
+        if (successfullyParried)
+        {
+            _parryTimer = 0; // Consume the parry so it doesn't double-trigger
+            
+            if (ParrySound != null) { HitPlayer.Stream = ParrySound; HitPlayer.Play(); }
+
+            // Flash the character blue or white to signify the parry!
+            Visuals.Modulate = new Color(0.5f, 0.8f, 1.0f);
+            GetTree().CreateTimer(0.15f).Timeout += () => Visuals.Modulate = Colors.White;
+            
+            ChangeState(new IdleState(this));
+            
+            return; 
+        }
+
         bool successfullyBlocked = CheckIfBlocked(hitbox.Height);
         bool isCrouching = Buffer.IsInputActive(InputBuffer.InputFlag.Down);
         float actualPushbackForce = hitbox.PushbackForce;
         
-        // int stunFrames = successfullyBlocked ? attack.BlockStunFrames : attack.HitStunFrames;
-        // int frameAdvantage = stunFrames - attack.GetRemainingFrames();
-        // GD.Print($"--- IMPACT ---");
-        // GD.Print($"Stun: {stunFrames}");
-        // GD.Print($"CurrentFrame: {attack.GetCurrentFrame()}"); // Assuming you have this method
-        // GD.Print($"Remaining: {attack.GetRemainingFrames()}");
-        // GD.Print($"Calculated Advantage: {frameAdvantage}");
-        // GD.Print("Advantage:" + frameAdvantage);
+        float pushAwayFromAttackerDirection;
         
-        // Pushback Direction
-        float pushAwayFromAttackerDirection = Mathf.Sign(this.GlobalPosition.X - this.Opponent.GlobalPosition.X);
+        if (!IsOnFloor() && Mathf.Abs(Velocity.X) > 0.01f)
+        {
+            pushAwayFromAttackerDirection = -Mathf.Sign(Velocity.X);
+        }
+        else
+        {
+            pushAwayFromAttackerDirection = Mathf.Sign(this.GlobalPosition.X - this.Opponent.GlobalPosition.X);
+            
+            if (pushAwayFromAttackerDirection == 0)
+            {
+                pushAwayFromAttackerDirection = -this.Opponent.FacingDirection;
+            }
+        }
+        
         var collision = this.TestMove(this.GlobalTransform, new Vector2(pushAwayFromAttackerDirection * 5.0f, 0));
+        
+        if (hitbox.Scoop != 0 && !successfullyBlocked)
+        {
+            float idealXPosition = this.Opponent.GlobalPosition.X + (this.Opponent.FacingDirection * hitbox.Scoop);
+            
+            Vector2 snappedPosition = this.GlobalPosition;
+            snappedPosition.X = idealXPosition;
+            this.GlobalPosition = snappedPosition;
+        }
         
         if (collision) // Wall
         {
@@ -157,6 +193,12 @@ public partial class Fighter : CharacterBody2D
         // Block
         if (successfullyBlocked)
         {
+            if (attack.BlockSound != null)
+            {
+                this.HitPlayer.Stream = attack.BlockSound;
+                this.HitPlayer.VolumeDb = attack.BlockVolumeDb;
+                this.HitPlayer.Play();
+            }
             ChangeState(
                 new BlockState(this, attack.BlockStunFrames, actualPushbackForce, isCrouching, hitbox.Height)
             );
@@ -165,6 +207,12 @@ public partial class Fighter : CharacterBody2D
         }
         else
         {
+            if (attack.HitSound != null)
+            {
+                this.HitPlayer.Stream = attack.HitSound;
+                this.HitPlayer.VolumeDb = attack.HitVolumeDb;
+                this.HitPlayer.Play();
+            }
             // Damage
             Health -= attack.Damage;
             if (Health < 0) Health = 0;
@@ -203,7 +251,6 @@ public partial class Fighter : CharacterBody2D
                         hitbox.Height
                     )
                 );
-                
                 if (actualPushbackForce > 0)
                     this.ApplyUniversalPushback(actualPushbackForce, pushAwayFromAttackerDirection);
             }
@@ -247,7 +294,9 @@ public partial class Fighter : CharacterBody2D
             {
                 normalAttackStats.HasHit = true;
                 attackingHitbox.HasConnected = true;
-
+                
+                this.SfxPlayer.Stop();
+                
                 hitFighter.ReceiveHit(normalAttackStats, attackingHitbox);
 
                 this.ApplyHitStop(normalAttackStats.HitStopFrames);
@@ -261,6 +310,15 @@ public partial class Fighter : CharacterBody2D
         if (FacingDirection == 1 && Buffer.IsInputActive(InputBuffer.InputFlag.Left))
             return true;
         if (FacingDirection == -1 && Buffer.IsInputActive(InputBuffer.InputFlag.Right))
+            return true;
+        return false;
+    }
+    
+    public bool IsHoldingForward()
+    {
+        if (FacingDirection == 1 && Buffer.IsInputActive(InputBuffer.InputFlag.Right))
+            return true;
+        if (FacingDirection == -1 && Buffer.IsInputActive(InputBuffer.InputFlag.Left))
             return true;
         return false;
     }
@@ -284,6 +342,52 @@ public partial class Fighter : CharacterBody2D
             return false; 
 
         return true;
+    }
+    
+    public bool CheckIfParried(NormalAttack.HitHeight attackHeight)
+    {
+        if (_parryTimer > 0)
+        {
+            if (_parryTypeReady == NormalAttack.HitHeight.High && 
+                (attackHeight == NormalAttack.HitHeight.High || attackHeight == NormalAttack.HitHeight.Mid))
+            {
+                return true;
+            }
+            
+            if (_parryTypeReady == NormalAttack.HitHeight.Low && attackHeight == NormalAttack.HitHeight.Low)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    private void UpdateParryTimers()
+    {
+        if (CurrentState == null || !CurrentState.CanBlock) return;
+
+        bool isForwardActive = IsHoldingForward();
+        bool isDownActive = Buffer.IsInputActive(InputBuffer.InputFlag.Down);
+        
+        if (isForwardActive && !_wasForwardPressed)
+        {
+            _parryTimer = ParryWindowFrames;
+            _parryTypeReady = NormalAttack.HitHeight.High; 
+        }
+        
+        if (isDownActive && !_wasDownPressed)
+        {
+            _parryTimer = ParryWindowFrames;
+            _parryTypeReady = NormalAttack.HitHeight.Low; 
+        }
+        
+        if (_parryTimer > 0) 
+        {
+            _parryTimer--;
+        }
+        
+        _wasForwardPressed = isForwardActive;
+        _wasDownPressed = isDownActive;
     }
 
     public void TurnToFaceOpponent()
@@ -311,6 +415,7 @@ public partial class Fighter : CharacterBody2D
             UpdatePillboxbox();
         }
     }
+    
     private void UpdatePillboxbox()
     {
         if (PillboxShape != null)

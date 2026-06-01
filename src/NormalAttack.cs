@@ -33,8 +33,21 @@ public partial class NormalAttack : Node2D
     [ExportGroup("Movement")]
     [Export] public Godot.Collections.Array<SpeedKeyframe> XSpeedProfile = new();
     [Export] public Godot.Collections.Array<SpeedKeyframe> YSpeedProfile = new();
-
     [Export] public float AirDrag = 0.0f;
+    
+    [ExportGroup("Audio")]
+    [Export] public AudioStream WhiffSound;
+    [Export] public float WhiffVolumeDb = 0.0f;
+    [Export] public int WhiffFrame = 0;
+    
+    [Export] public AudioStream HitSound;
+    [Export] public float HitVolumeDb = 0.0f;
+    
+    [Export] public AudioStream BlockSound;
+    [Export] public float BlockVolumeDb = 0.0f;
+    
+    [Export] public AudioStream VoiceSound;
+    [Export] public float VoiceVolumeDb = 0.0f;
     
     // 3. The Physical Nodes
     public Node2D HitboxesFolder;
@@ -88,6 +101,20 @@ public partial class NormalAttack : Node2D
         _currentFrame++;
         
         UpdateBoxes(_currentFrame);
+        
+        if (VoiceSound != null && _currentFrame == 1)
+        {
+            _fighter.VoicePlayer.Stream = VoiceSound;
+            _fighter.VoicePlayer.VolumeDb = VoiceVolumeDb;
+            _fighter.VoicePlayer.Play();
+        }
+        
+        if (_currentFrame == WhiffFrame && WhiffSound != null)
+        {
+            _fighter.SfxPlayer.Stream = WhiffSound;
+            _fighter.SfxPlayer.VolumeDb = WhiffVolumeDb;
+            _fighter.SfxPlayer.Play();
+        }
         
         if (_currentFrame > TotalFrames)
         {

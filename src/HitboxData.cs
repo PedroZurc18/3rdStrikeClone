@@ -10,10 +10,11 @@ public partial class HitboxData : Area2D
     [Export] public float PushbackForce = 300.0f;
     [Export] public float Pull = 0f;
     
-    
     public bool HasConnected = false;
 
     [Export] public bool Juggle = false;
     [Export] public float LaunchForceY = 0;
     [Export] public float LaunchPushX = 0;
+    
+    [Export] public float Scoop = 0;
 }
