@@ -84,7 +84,6 @@ VoiceSound = ExtResource("6_q3d33")
 [node name="Hurtboxes" type="Node2D" parent="." unique_id=1269667198]
 
 [node name="Hitboxes" type="Node2D" parent="." unique_id=1372637487]
-visible = false
 
 [node name="Hitbox1" type="Area2D" parent="Hitboxes" unique_id=1194249231]
 visible = false

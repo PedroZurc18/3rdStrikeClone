@@ -36,7 +36,6 @@ BlockSound = ExtResource("4_ub86a")
 VoiceSound = ExtResource("5_272lk")
 
 [node name="Hurtboxes" type="Node2D" parent="." unique_id=1075417066]
-visible = false
 
 [node name="Hurtbox1" type="Area2D" parent="Hurtboxes" unique_id=1643176484]
 visible = false
@@ -66,9 +65,9 @@ position = Vector2(73.22095, 51.125)
 shape = SubResource("RectangleShape2D_u4l2d")
 
 [node name="Hitboxes" type="Node2D" parent="." unique_id=1906220364]
-visible = false
 
 [node name="Hitbox1" type="Area2D" parent="Hitboxes" unique_id=894197373]
+visible = false
 collision_layer = 0
 collision_mask = 2
 script = ExtResource("2_buiwl")

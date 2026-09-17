@@ -37,13 +37,19 @@ public partial class Fighter : CharacterBody2D
     private float _pillboxOffset = 3.0f;
 
     [ExportGroup("Parry System")] 
-    [Export] public int ParryWindowFrames = 10;
     [Export] private AudioStream ParrySound;
+    [Export] public int GroundTapParryWindow = 10;
+    [Export] public int GroundHoldParryWindow = 6;
+    [Export] public int AirParryWindow = 7;
+    [Export] public int AntiAirParryWindow = 5;
+    [Export] public int ParryCooldown = 23;
     
     private int _parryTimer = 0;
-    private NormalAttack.HitHeight _parryTypeReady = NormalAttack.HitHeight.Mid; 
+    private int _maxParryTimer = 0;
+    private int _parryCooldownTimer = 0;
     private bool _wasForwardPressed = false;
     private bool _wasDownPressed = false;
+    private NormalAttack.HitHeight _parryTypeReady = NormalAttack.HitHeight.Mid; 
     
     [Export]
     public Fighter Opponent;
@@ -97,11 +103,13 @@ public partial class Fighter : CharacterBody2D
         {
             _hitStopTimer--;
 
-            CurrentState?.CheckForCancels();
-
             if (_hitStopTimer == 0)
             {
-                Anim.Play();
+                if (!Anim.IsPlaying())
+                {
+                    Anim.Play();
+                }
+                
             }
             return;
         }
@@ -126,31 +134,24 @@ public partial class Fighter : CharacterBody2D
         {
             DebugLabel.Text = Buffer.GetDebugHistory();
         }
-
-        // if (Name == "Player2")
-        // {
-        //     GD.Print(CurrentState);
-        // }
-        
     }
 
-    public void ReceiveHit(NormalAttack attack, HitboxData hitbox)
+    public bool ReceiveHit(NormalAttack attack, HitboxData hitbox)
     {   
         bool successfullyParried = CheckIfParried(hitbox.Height);
 
         if (successfullyParried)
         {
-            _parryTimer = 0; // Consume the parry so it doesn't double-trigger
+            _parryTimer = 0; 
+            _parryCooldownTimer = 0; // Reset cooldown
             
             if (ParrySound != null) { HitPlayer.Stream = ParrySound; HitPlayer.Play(); }
-
-            // Flash the character blue or white to signify the parry!
             Visuals.Modulate = new Color(0.5f, 0.8f, 1.0f);
             GetTree().CreateTimer(0.15f).Timeout += () => Visuals.Modulate = Colors.White;
+
+            ChangeState(new ParryState(this, hitbox.Height, !IsOnFloor()));
             
-            ChangeState(new IdleState(this));
-            
-            return; 
+            return true; 
         }
 
         bool successfullyBlocked = CheckIfBlocked(hitbox.Height);
@@ -255,17 +256,21 @@ public partial class Fighter : CharacterBody2D
                     this.ApplyUniversalPushback(actualPushbackForce, pushAwayFromAttackerDirection);
             }
         }
+        return false;
     }
 
-    public void ApplyHitStop(int frames)
+    public void ApplyHitStop(int frames, bool pauseAnimation = true)
     {
         _hitStopTimer = frames;
         
-        Anim.Seek(Anim.CurrentAnimationPosition, true);
-
-        if (Anim.IsPlaying())
+        if (pauseAnimation)
         {
-            Anim.Pause();
+            Anim.Seek(Anim.CurrentAnimationPosition, true);
+
+            if (Anim.IsPlaying())
+            {
+                Anim.Pause();
+            }
         }
     }
 
@@ -297,10 +302,18 @@ public partial class Fighter : CharacterBody2D
                 
                 this.SfxPlayer.Stop();
                 
-                hitFighter.ReceiveHit(normalAttackStats, attackingHitbox);
-
-                this.ApplyHitStop(normalAttackStats.HitStopFrames);
-                hitFighter.ApplyHitStop(normalAttackStats.HitStopFrames);
+                bool wasParried = hitFighter.ReceiveHit(normalAttackStats, attackingHitbox);
+                
+                if (wasParried)
+                {
+                    this.ApplyHitStop(16, true);
+                    hitFighter.ApplyHitStop(16, false);
+                }
+                else
+                {
+                    this.ApplyHitStop(normalAttackStats.HitStopFrames);
+                    hitFighter.ApplyHitStop(normalAttackStats.HitStopFrames); 
+                }
             }
         }
     }
@@ -348,12 +361,22 @@ public partial class Fighter : CharacterBody2D
     {
         if (_parryTimer > 0)
         {
+            int framesActive = _maxParryTimer - _parryTimer;
+
+            // Anti-air check
+            if (!Opponent.IsOnFloor() && framesActive >= AntiAirParryWindow)
+            {
+                return false;
+            }
+
+            // High/Mid Check
             if (_parryTypeReady == NormalAttack.HitHeight.High && 
                 (attackHeight == NormalAttack.HitHeight.High || attackHeight == NormalAttack.HitHeight.Mid))
             {
                 return true;
             }
             
+            // Low Check
             if (_parryTypeReady == NormalAttack.HitHeight.Low && attackHeight == NormalAttack.HitHeight.Low)
             {
                 return true;
@@ -364,30 +387,95 @@ public partial class Fighter : CharacterBody2D
     
     private void UpdateParryTimers()
     {
-        if (CurrentState == null || !CurrentState.CanBlock) return;
+        // Tick parry timers
+        if (_parryTimer > 0) _parryTimer--;
+        if (_parryCooldownTimer > 0) _parryCooldownTimer--;
 
-        bool isForwardActive = IsHoldingForward();
-        bool isDownActive = Buffer.IsInputActive(InputBuffer.InputFlag.Down);
+        bool isForwardActive = IsPureForward();
+        bool isDownActive = IsPureDown();
         
+        if (_parryCooldownTimer > 0)
+        {
+            if ((isForwardActive && !_wasForwardPressed) || (isDownActive && !_wasDownPressed))
+            {
+                _parryTimer = 0;
+                _parryCooldownTimer = ParryCooldown;
+            }
+            _wasForwardPressed = isForwardActive;
+            _wasDownPressed = isDownActive;
+            return;
+        }
+        
+        // Parry hold penalty
+        if (IsOnFloor() && _parryTimer > 0)
+        {
+            int framesActive = _maxParryTimer - _parryTimer;
+            if (framesActive >= GroundHoldParryWindow)
+            {
+                if ((_parryTypeReady == NormalAttack.HitHeight.High && isForwardActive) ||
+                    (_parryTypeReady == NormalAttack.HitHeight.Low && isDownActive))
+                {
+                    _parryTimer = 0;
+                }
+            }
+        }
+        
+        bool isBusy = CurrentState is HitState || CurrentState is AirHitState || 
+                      CurrentState is AttackState || CurrentState is SpecialAttackState || CurrentState is BlockState;
+                      
+        if (isBusy || _parryCooldownTimer > 0) 
+        {
+            _wasForwardPressed = isForwardActive;
+            _wasDownPressed = isDownActive;
+            return;
+        }
+        
+        bool triggeredParry = false;
+
+        // Forward Tap
         if (isForwardActive && !_wasForwardPressed)
         {
-            _parryTimer = ParryWindowFrames;
+            _parryTimer = IsOnFloor() ? GroundTapParryWindow : AirParryWindow;
+            _maxParryTimer = _parryTimer;
             _parryTypeReady = NormalAttack.HitHeight.High; 
+            triggeredParry = true;
         }
-        
-        if (isDownActive && !_wasDownPressed)
+        // Down Tap
+        else if (isDownActive && !_wasDownPressed && IsOnFloor())
         {
-            _parryTimer = ParryWindowFrames;
+            _parryTimer = GroundTapParryWindow;
+            _maxParryTimer = _parryTimer;
             _parryTypeReady = NormalAttack.HitHeight.Low; 
+            triggeredParry = true;
         }
-        
-        if (_parryTimer > 0) 
+
+        // Cooldown penalty on attempt
+        if (triggeredParry)
         {
-            _parryTimer--;
+            _parryCooldownTimer = ParryCooldown; 
         }
-        
+
         _wasForwardPressed = isForwardActive;
         _wasDownPressed = isDownActive;
+    }
+    
+    public bool IsPureForward()  // Parry checks
+    {
+        bool forward = (FacingDirection == 1 && Buffer.IsInputActive(InputBuffer.InputFlag.Right)) ||
+                       (FacingDirection == -1 && Buffer.IsInputActive(InputBuffer.InputFlag.Left));
+        bool up = Buffer.IsInputActive(InputBuffer.InputFlag.Up);
+        bool down = Buffer.IsInputActive(InputBuffer.InputFlag.Down);
+        
+        return forward && !up && !down;
+    }
+
+    public bool IsPureDown()
+    {
+        bool down = Buffer.IsInputActive(InputBuffer.InputFlag.Down);
+        bool left = Buffer.IsInputActive(InputBuffer.InputFlag.Left);
+        bool right = Buffer.IsInputActive(InputBuffer.InputFlag.Right);
+        
+        return down && !left && !right;
     }
 
     public void TurnToFaceOpponent()

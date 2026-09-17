@@ -48,7 +48,6 @@ public abstract class BaseState
     {
         if (_fighter.Buffer.WasInputPressedWithin(InputBuffer.InputFlag.Punch, 8))
         {
-            // Pass the prefab instead of the data card
             _fighter.ChangeState(new AttackState(_fighter, _fighter.sMpPrefab));
             return true;
         }
@@ -60,7 +59,6 @@ public abstract class BaseState
     {
         if (_fighter.Buffer.WasInputPressedWithin(InputBuffer.InputFlag.Kick, 8))
         {
-            // Pass the prefab to the CrouchAttackState
             _fighter.ChangeState(new CrouchAttackState(_fighter, _fighter.cMkPrefab));
             return true;
         }
