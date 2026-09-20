@@ -11,7 +11,7 @@
 
 [sub_resource type="Resource" id="Resource_e08h4"]
 script = ExtResource("2_xabxc")
-Speed = 1000.0
+Speed = 700.0
 metadata/_custom_type_script = "uid://cchjrs726aeo1"
 
 [sub_resource type="Resource" id="Resource_mrxcy"]
@@ -92,6 +92,7 @@ Duration = 30
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Hurtboxes/Hurtbox1" unique_id=766941681]
 position = Vector2(39, -37)
 shape = SubResource("RectangleShape2D_mrxcy")
+disabled = true
 
 [node name="Hitboxes" type="Node2D" parent="." unique_id=2073447912]
 z_index = 10
@@ -108,16 +109,19 @@ PushbackForce = 100.0
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Hitboxes/Hitbox1" unique_id=2096679560]
 position = Vector2(54.25, -61.5)
 shape = SubResource("RectangleShape2D_80o3h")
+disabled = true
 debug_color = Color(0.9764706, 0.14901961, 0, 0.41960785)
 
 [node name="CollisionShape2D2" type="CollisionShape2D" parent="Hitboxes/Hitbox1" unique_id=871675894]
 position = Vector2(17.5, -23.9375)
 shape = SubResource("RectangleShape2D_xabxc")
+disabled = true
 debug_color = Color(0.9764706, 0.14901961, 0, 0.41960785)
 
 [node name="CollisionShape2D3" type="CollisionShape2D" parent="Hitboxes/Hitbox1" unique_id=21464960]
 position = Vector2(7, 22)
 shape = SubResource("RectangleShape2D_e08h4")
+disabled = true
 debug_color = Color(0.9764706, 0.14901961, 0, 0.41960785)
 
 [node name="Hitbox2" type="Area2D" parent="Hitboxes" unique_id=1785102946]
@@ -132,16 +136,19 @@ PushbackForce = 100.0
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Hitboxes/Hitbox2" unique_id=839034676]
 position = Vector2(66, -34)
 shape = SubResource("RectangleShape2D_5eub3")
+disabled = true
 debug_color = Color(0.9764706, 0.14901961, 0, 0.41960785)
 
 [node name="CollisionShape2D2" type="CollisionShape2D" parent="Hitboxes/Hitbox2" unique_id=113979977]
 position = Vector2(17.155273, -14)
 shape = SubResource("RectangleShape2D_kj4rm")
+disabled = true
 debug_color = Color(0.9764706, 0.14901961, 0, 0.41960785)
 
 [node name="CollisionShape2D3" type="CollisionShape2D" parent="Hitboxes/Hitbox2" unique_id=331302232]
 position = Vector2(0, 28)
 shape = SubResource("RectangleShape2D_l6xjx")
+disabled = true
 debug_color = Color(0.9764706, 0.14901961, 0, 0.41960785)
 
 [node name="Hitbox3" type="Area2D" parent="Hitboxes" unique_id=373115218]
@@ -156,16 +163,19 @@ PushbackForce = 100.0
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Hitboxes/Hitbox3" unique_id=190836080]
 position = Vector2(65, -53)
 shape = SubResource("RectangleShape2D_ts31p")
+disabled = true
 debug_color = Color(0.9764706, 0.14901961, 0, 0.41960785)
 
 [node name="CollisionShape2D2" type="CollisionShape2D" parent="Hitboxes/Hitbox3" unique_id=758931186]
 position = Vector2(32, -19)
 shape = SubResource("RectangleShape2D_dh5wy")
+disabled = true
 debug_color = Color(0.9764706, 0.14901961, 0, 0.41960785)
 
 [node name="CollisionShape2D3" type="CollisionShape2D" parent="Hitboxes/Hitbox3" unique_id=992656383]
 position = Vector2(4, 11)
 shape = SubResource("RectangleShape2D_7mdvg")
+disabled = true
 debug_color = Color(0.9764706, 0.14901961, 0, 0.41960785)
 
 [node name="Hitbox4" type="Area2D" parent="Hitboxes" unique_id=905410880]
@@ -180,14 +190,17 @@ PushbackForce = 500.0
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Hitboxes/Hitbox4" unique_id=1152742047]
 position = Vector2(68, -61)
 shape = SubResource("RectangleShape2D_ocp8m")
+disabled = true
 debug_color = Color(0.9764706, 0.14901961, 0, 0.41960785)
 
 [node name="CollisionShape2D2" type="CollisionShape2D" parent="Hitboxes/Hitbox4" unique_id=119439232]
 position = Vector2(27.390625, -22.84375)
 shape = SubResource("RectangleShape2D_kj7c6")
+disabled = true
 debug_color = Color(0.9764706, 0.14901961, 0, 0.41960785)
 
 [node name="CollisionShape2D3" type="CollisionShape2D" parent="Hitboxes/Hitbox4" unique_id=1538772250]
 position = Vector2(3.015625, 28.53125)
 shape = SubResource("RectangleShape2D_3ykye")
+disabled = true
 debug_color = Color(0.9764706, 0.14901961, 0, 0.41960785)

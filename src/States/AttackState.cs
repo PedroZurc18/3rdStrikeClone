@@ -4,19 +4,16 @@ using Godot;
 
 public class AttackState : BaseState
 {
-    private PackedScene _movePrefab;
-    private NormalAttack _active;
+    protected NormalAttack _active;
 
-    public AttackState(Fighter fighter, PackedScene movePrefab)
-        : base(fighter)
+    public AttackState(Fighter fighter, NormalAttack triggeredMove) : base(fighter)
     {
-        _movePrefab = movePrefab;
+        _active = triggeredMove;
     }
 
     public override void Enter()
     {
-        _active = _movePrefab.Instantiate<NormalAttack>();
-        _fighter.AttackContainer.AddChild(_active);
+        // Simply wake up the pre-existing node attached to the MoveManager
         _active.Initialize(_fighter);
         
         Vector2 vel = _fighter.Velocity;
@@ -26,25 +23,32 @@ public class AttackState : BaseState
 
     public override void PhysicsUpdate(double delta)
     {
-        Vector2 vel = _fighter.Velocity;
-        if (!_fighter.IsOnFloor())
-        {
-            vel.Y += _fighter.Gravity * (float)delta;
-        }
+        bool isMoveFinished = _active.ProcessMove();
+        bool isAirborneState = false; 
         
-        else
-        {
-            vel.X = 0;
-        }
-        _fighter.Velocity = vel;
-
+        _fighter.Velocity = _active.ProcessPhysics(_fighter.Velocity, _fighter.FacingDirection, delta, _fighter.Gravity, isAirborneState);
+        
+        bool isFalling = _fighter.Velocity.Y > 0; 
+        
         _fighter.ApplyMovementAndPush();
         
-        bool isMoveFinished = _active.ProcessMove();
+        if (_active.HasYProfile && _active.HasLaunched)
+        {
+            if (isMoveFinished && _fighter.Anim.IsPlaying())
+            {
+                _fighter.Anim.Pause();
+            }
+            
+            if (isFalling && _fighter.IsOnFloor())
+            {
+                _fighter.ChangeState(new IdleState(_fighter, true));
+            }
+            return; 
+        }
 
         if (isMoveFinished)
         {
-            _fighter.ChangeState(new IdleState(_fighter));
+            _fighter.ChangeState(new IdleState(_fighter)); 
         }
     }
 
@@ -52,8 +56,13 @@ public class AttackState : BaseState
     {
         if (_active.IsSpecialCancelable && _active.HasHit && _active.IsInsideCancelWindow())
         {
-            if (CheckSpecialAttacks())
+            NormalAttack triggeredMove = _fighter.Moves.EvaluateAvailableMoves(_fighter.Buffer, false);
+            
+            if (triggeredMove is SpecialAttack)
+            {
+                _fighter.ChangeState(new SpecialAttackState(_fighter, triggeredMove));
                 return;
+            }
         }
     }
 
@@ -61,7 +70,7 @@ public class AttackState : BaseState
     {
         if (_active != null)
         {
-            _active.QueueFree();
+            _active.SetBoxesActive(false);
         }
     }
 }

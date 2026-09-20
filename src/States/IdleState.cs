@@ -1,4 +1,5 @@
 namespace rdStrikeClone.States;
+
 using Godot;
 
 public class IdleState : BaseState
@@ -17,6 +18,26 @@ public class IdleState : BaseState
 
     public override void PhysicsUpdate(double delta)
     {
+        if (_fighter.Buffer.IsInputActive(InputBuffer.InputFlag.Up))
+        {
+            _fighter.ChangeState(new AirState(_fighter));
+            return;
+        }
+        
+        NormalAttack triggeredMove = _fighter.Moves.EvaluateAvailableMoves(_fighter.Buffer, false);
+        
+        if (triggeredMove != null)
+        {
+            _fighter.ChangeState(new AttackState(_fighter, triggeredMove));
+            return; 
+        }
+        
+        if (_fighter.Buffer.IsInputActive(InputBuffer.InputFlag.Down))
+        {
+            _fighter.ChangeState(new CrouchState(_fighter));
+            return;
+        }
+        
         if (_isLanding && _fighter.Buffer.IsNeutral())
         {
             _fighter.Anim.Play("land");
@@ -34,22 +55,7 @@ public class IdleState : BaseState
             _isLanding = false;
         }
         
-        if (_fighter.Buffer.IsInputActive(InputBuffer.InputFlag.Up))
-        {
-            _fighter.ChangeState(new AirState(_fighter));
-            return;
-        }
-        
-        if (CheckSpecialAttacks()) return;
-        
-        if (CheckStandingAttacks()) return; 
-        
-        if (_fighter.Buffer.IsInputActive(InputBuffer.InputFlag.Down))
-        {
-            _fighter.ChangeState(new CrouchState(_fighter));
-            return;
-        }
-        
+        // 5. WALK AND TURN LOGIC
         _fighter.TurnToFaceOpponent();
         
         Vector2 currentVelocity = _fighter.Velocity;
@@ -73,7 +79,6 @@ public class IdleState : BaseState
         
         currentVelocity.X = direction * _fighter.WalkSpeed;
         
-        // 3. Apply gravity
         if (!_fighter.IsOnFloor())
         {
             currentVelocity.Y += _fighter.Gravity * (float)delta;
@@ -81,6 +86,5 @@ public class IdleState : BaseState
         
         _fighter.Velocity = currentVelocity;
         _fighter.ApplyMovementAndPush();
-        // _fighter.MoveAndSlide();
     }
 }

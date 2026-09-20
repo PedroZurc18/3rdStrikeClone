@@ -4,21 +4,15 @@ using Godot;
 
 public class CrouchAttackState : BaseState
 {
-    private PackedScene _movePrefab;
     private NormalAttack _active;
 
-    // REQUIRES the PackedScene to spawn
-    public CrouchAttackState(Fighter fighter, PackedScene movePrefab) : base(fighter) 
+    public CrouchAttackState(Fighter fighter, NormalAttack triggeredMove) : base(fighter) 
     { 
-        _movePrefab = movePrefab;
+        _active = triggeredMove;
     }
 
     public override void Enter()
     {
-        _active = _movePrefab.Instantiate<NormalAttack>();
-        _fighter.AttackContainer.AddChild(_active);
-        
-        // 3. Initialize it with frame data
         _active.Initialize(_fighter);
         
         Vector2 vel = _fighter.Velocity;
@@ -36,8 +30,6 @@ public class CrouchAttackState : BaseState
             vel.Y += _fighter.Gravity * (float)delta;
         }
         
-        // vel.X = _fighter.FacingDirection * _active.ForwardSpeed;
-        // _fighter.Velocity = vel;
         vel.X = 0;
         
         _fighter.ApplyMovementAndPush();
@@ -54,16 +46,21 @@ public class CrouchAttackState : BaseState
     {
         if (_active.IsSpecialCancelable && _active.HasHit && _active.IsInsideCancelWindow())
         {
-            if (CheckSpecialAttacks()) return;
+            NormalAttack triggeredMove = _fighter.Moves.EvaluateAvailableMoves(_fighter.Buffer, false);
+            
+            if (triggeredMove is SpecialAttack)
+            {
+                _fighter.ChangeState(new SpecialAttackState(_fighter, triggeredMove));
+                return;
+            }
         }
     }
 
     public override void Exit()
     {
-        // 5. DESTROY the move and its hitboxes when leaving the state!
         if (_active != null)
         {
-            _active.QueueFree();
+            _active.SetBoxesActive(false);
         }
     }
 }

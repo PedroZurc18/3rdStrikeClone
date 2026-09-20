@@ -12,9 +12,14 @@ public partial class NormalAttack : Node2D
     
     public enum HitHeight { High, Mid, Low }
     public enum AttackStrength { Light, Medium, Heavy }
+    public enum CommandDirection { Neutral, Forward, Back, Down, Up }
     [Export] public AttackStrength Strength = AttackStrength.Medium;
     
-    // 2. Combat Stats
+    [ExportGroup("Command Execution")]
+    [Export] public InputBuffer.InputFlag RequiredButton; 
+    [Export] public CommandDirection RequiredDirection = CommandDirection.Neutral;
+    [Export] public bool IsAirborneMove = false;
+    
     [ExportGroup("Combat Stats")] 
     [Export] public int Damage = 10;
     [Export] public int HitStunFrames = 15;
@@ -53,36 +58,40 @@ public partial class NormalAttack : Node2D
     public Node2D HitboxesFolder;
     public Node2D HurtboxesFolder;
 
-    private int _currentFrame = 0;
-    private Fighter _fighter; 
+    public bool HasYProfile => YSpeedProfile != null && YSpeedProfile.Count > 0;
+    public bool HasXProfile => XSpeedProfile != null && XSpeedProfile.Count > 0;
+    public bool HasLaunched { get; private set; } = false;
+    public float CurrentXSpeed { get; private set; } = 0f;
+    
+    protected int _currentFrame = 0;
+    protected Fighter _fighter; 
     
     public bool HasHit = false;
-
+    
+    
     public int GetCurrentFrame() => _currentFrame;
     public int GetRemainingFrames() => TotalFrames - _currentFrame;
     public bool IsInsideCancelWindow() => _currentFrame >= CancelWindowStart && _currentFrame <= CancelWindowEnd;
 
-    public void Initialize(Fighter fighter)
+    public override void _Ready()
     {
-        _fighter = fighter;
-
+        // 1. Setup the folders and signals exactly ONCE when the game loads
         HitboxesFolder = GetNodeOrNull<Node2D>("Hitboxes");
         HurtboxesFolder = GetNodeOrNull<Node2D>("Hurtboxes");
-        
+
         if (HitboxesFolder != null)
         {
             foreach (Node child in HitboxesFolder.GetChildren()) 
             {
                 if (child is HitboxData box)
                 {
-                    // 1. Tell the box who its boss is
                     box.Parent = this; 
 
-                    // 2. Wire Godot's collision signal dynamically!
+                    // Wire the signal here!
                     box.AreaEntered += (area) => 
                     {
-                        // 3. Only allow the signal to go through if THIS hitbox hasn't hit yet
-                        if (!box.HasConnected) 
+                        // Ensure _fighter exists and the box hasn't already connected this swing
+                        if (_fighter != null && !box.HasConnected) 
                         {
                             _fighter.OnHitboxConnected(area, box);
                         }
@@ -90,13 +99,37 @@ public partial class NormalAttack : Node2D
                 }
             }
         }
+    }
+
+    public virtual void Initialize(Fighter fighter)
+    {
+        _fighter = fighter;
+        _currentFrame = 0;
+        
+        // 2. RESET ALL YOUR FLAGS HERE!
+        HasHit = false;                  // Fixes the spam/cancel bug!
+        
+        // 3. Reset the hitboxes so they are allowed to deal damage again
+        if (HitboxesFolder != null)
+        {
+            foreach (Node child in HitboxesFolder.GetChildren()) 
+            {
+                if (child is HitboxData box)
+                {
+                    box.HasConnected = false; 
+                }
+            }
+        }
 
         SetBoxesActive(false); 
         _fighter.Anim.Stop();
         _fighter.Anim.Play(AnimationName);
+        
+        CurrentXSpeed = 0f;
+        HasLaunched = false;
     }
     
-    public bool ProcessMove()
+    public virtual bool ProcessMove()
     {
         _currentFrame++;
         
@@ -122,6 +155,70 @@ public partial class NormalAttack : Node2D
         }
 
         return false; 
+    }
+    
+    public Vector2 ProcessPhysics(Vector2 currentVelocity, int facingDirection, double delta, float gravity, bool isStateAirborne)
+    {
+        Vector2 vel = currentVelocity;
+        
+        bool xSpeedJustChanged = false;
+        if (HasXProfile)
+        {
+            foreach (var keyframe in XSpeedProfile)
+            {
+                if (keyframe.Frame == _currentFrame)
+                {
+                    CurrentXSpeed = keyframe.Speed;
+                    xSpeedJustChanged = true;
+                    break;
+                }
+            }
+        }
+
+        bool ySpeedJustChanged = false;
+        if (HasYProfile) 
+        {
+            if (!HasLaunched) 
+            {
+                // Pre-launch startup frames: Allow the character to slide forward!
+                if (HasXProfile) vel.X = facingDirection * CurrentXSpeed;
+                else vel.X = 0;
+            }
+            else 
+            {
+                // Airborne frames: Apply the impulse, gravity, and drag
+                if (xSpeedJustChanged) 
+                {
+                    vel.X = facingDirection * CurrentXSpeed; 
+                }
+                
+                if (!ySpeedJustChanged) 
+                {
+                    vel.Y += gravity * (float)delta;
+                }
+                
+                vel.X = Mathf.MoveToward(vel.X, 0, AirDrag * (float)delta);
+            }
+        }
+        else 
+        {
+            // Standard Grounded/Air Moves (No Y-Profile)
+            if (HasXProfile) 
+            {
+                vel.X = facingDirection * CurrentXSpeed; 
+            }
+            else if (!isStateAirborne) 
+            {
+                vel.X = 0; 
+            }
+
+            if (isStateAirborne) 
+            {
+                vel.Y += gravity * (float)delta;
+            }
+        }
+
+        return vel;
     }
     
     private void UpdateBoxes(int frame)
@@ -162,7 +259,7 @@ public partial class NormalAttack : Node2D
         }
     }
 
-    private void SetBoxesActive(bool active)
+    public void SetBoxesActive(bool active)
     {
         if (HitboxesFolder != null)
         {

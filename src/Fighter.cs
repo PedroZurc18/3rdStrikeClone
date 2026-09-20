@@ -1,4 +1,5 @@
 using Godot;
+using rdStrikeClone;
 using rdStrikeClone.States;
 
 public partial class Fighter : CharacterBody2D
@@ -36,6 +37,8 @@ public partial class Fighter : CharacterBody2D
     [Export] public CollisionShape2D PillboxShape;
     private float _pillboxOffset = 3.0f;
 
+    [Export] public Fighter Opponent;
+    
     [ExportGroup("Parry System")] 
     [Export] private AudioStream ParrySound;
     [Export] public int GroundTapParryWindow = 10;
@@ -49,17 +52,10 @@ public partial class Fighter : CharacterBody2D
     private int _parryCooldownTimer = 0;
     private bool _wasForwardPressed = false;
     private bool _wasDownPressed = false;
-    private NormalAttack.HitHeight _parryTypeReady = NormalAttack.HitHeight.Mid; 
-    
-    [Export]
-    public Fighter Opponent;
+    private NormalAttack.HitHeight _parryTypeReady = NormalAttack.HitHeight.Mid;
 
-    [ExportGroup("Move List")]
-    [Export] public PackedScene sMpPrefab;
-    [Export] public PackedScene cMkPrefab;
-    [Export] public PackedScene qcfPrefab;
-    [Export] public PackedScene jHkPrefab;
-    [Export] public PackedScene aaPrefab;
+    public MoveManager Moves { get; private set; }
+    
     
     [Signal]
     public delegate void HealthChangedEventHandler(int newHealth);
@@ -74,7 +70,8 @@ public partial class Fighter : CharacterBody2D
         SfxPlayer = GetNode<AudioStreamPlayer2D>("SfxPlayer");
         HitPlayer = GetNode<AudioStreamPlayer2D>("HitPlayer");
         VoicePlayer = GetNode<AudioStreamPlayer2D>("VoicePlayer");
-
+        Moves = GetNode<MoveManager>("MoveManager");
+        
         ChangeState(new IdleState(this));
 
         DebugLabel = GetNode<Label>("UI/BufferRing");
@@ -494,12 +491,20 @@ public partial class Fighter : CharacterBody2D
         {
             FacingDirection = -1;
             Visuals.Scale = new Vector2(-1, 1);
+        
+            // Flip all attack hitboxes to the left
+            if (Moves != null) Moves.Scale = new Vector2(-1, 1); 
+        
             UpdatePillboxbox();
         }
         else if (Opponent.GlobalPosition.X > GlobalPosition.X && FacingDirection == -1)
         {
             FacingDirection = 1;
             Visuals.Scale = new Vector2(1, 1);
+        
+            // Flip all attack hitboxes to the right
+            if (Moves != null) Moves.Scale = new Vector2(1, 1); 
+        
             UpdatePillboxbox();
         }
     }

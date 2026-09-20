@@ -15,7 +15,10 @@ size = Vector2(40.5, 44)
 size = Vector2(40.5, 44)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_4jaj7"]
-size = Vector2(59.375, 19.625)
+size = Vector2(69, 28.8125)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_e5ga4"]
+size = Vector2(52.921875, 15.703125)
 
 [node name="Chun_sMp" type="Node2D" unique_id=1973368272]
 script = ExtResource("1_oqxfg")
@@ -33,21 +36,20 @@ BlockSound = ExtResource("4_e5ga4")
 VoiceSound = ExtResource("5_hm1k6")
 
 [node name="Hurtboxes" type="Node2D" parent="." unique_id=128696556]
+visible = false
 z_index = 9
 
 [node name="Hurtbox1" type="Area2D" parent="Hurtboxes" unique_id=1076079010]
-visible = false
 collision_layer = 2
 collision_mask = 0
 script = ExtResource("4_ninly")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Hurtboxes/Hurtbox1" unique_id=1732631673]
 visibility_layer = 17
-position = Vector2(104.5, -46.054688)
+position = Vector2(115, -46)
 shape = SubResource("RectangleShape2D_b8uwk")
 
 [node name="Hurtbox2" type="Area2D" parent="Hurtboxes" unique_id=78503451]
-visible = false
 collision_layer = 2
 collision_mask = 0
 script = ExtResource("4_ninly")
@@ -70,6 +72,12 @@ Duration = 2
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Hitboxes/Hitbox1" unique_id=722608647]
 z_index = 10
-position = Vector2(112.3125, -37)
+position = Vector2(107.5, -32.40625)
 shape = SubResource("RectangleShape2D_4jaj7")
+debug_color = Color(0.99607843, 0, 0, 0.30980393)
+
+[node name="CollisionShape2D2" type="CollisionShape2D" parent="Hitboxes/Hitbox1" unique_id=1066282123]
+z_index = 10
+position = Vector2(85, -10)
+shape = SubResource("RectangleShape2D_e5ga4")
 debug_color = Color(0.99607843, 0, 0, 0.30980393)

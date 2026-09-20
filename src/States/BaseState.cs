@@ -18,54 +18,6 @@ public abstract class BaseState
     
     public virtual void Exit() { } 
     
-    
-    protected bool CheckSpecialAttacks()
-    {
-        int[] qcf = { 2, 3, 6 };
-        int[] dp = { 6, 2, 3 };
-        
-        if (_fighter.Buffer.CheckMotion(dp, InputBuffer.InputFlag.Kick, _fighter.FacingDirection, 18))
-        {
-            if (_fighter.aaPrefab != null)
-            {
-                _fighter.ChangeState(new SpecialAttackState(_fighter, _fighter.aaPrefab));
-                return true;
-            }
-        }
-        
-        if (_fighter.Buffer.CheckMotion(qcf, InputBuffer.InputFlag.Kick, _fighter.FacingDirection, 30))
-        {
-            if (_fighter.qcfPrefab != null)
-            {
-                _fighter.ChangeState(new SpecialAttackState(_fighter, _fighter.qcfPrefab));
-                return true;
-            }
-        }
-        return false;
-    }
-
-    protected bool CheckStandingAttacks()
-    {
-        if (_fighter.Buffer.WasInputPressedWithin(InputBuffer.InputFlag.Punch, 8))
-        {
-            _fighter.ChangeState(new AttackState(_fighter, _fighter.sMpPrefab));
-            return true;
-        }
-        
-        return false; 
-    }
-    
-    protected bool CheckCrouchingAttacks()
-    {
-        if (_fighter.Buffer.WasInputPressedWithin(InputBuffer.InputFlag.Kick, 8))
-        {
-            _fighter.ChangeState(new CrouchAttackState(_fighter, _fighter.cMkPrefab));
-            return true;
-        }
-        
-        return false;
-    }
-    
     public virtual void CheckForCancels()
      {
          

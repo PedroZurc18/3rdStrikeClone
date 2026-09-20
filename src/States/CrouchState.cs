@@ -17,7 +17,6 @@ public class CrouchState : BaseState
         if (_crouchIn)
         {
             _fighter.Anim.Play("crouch_in");
-        
             _fighter.Anim.Queue("crouch_idle");
         }
         else
@@ -34,8 +33,22 @@ public class CrouchState : BaseState
     {
         _fighter.TurnToFaceOpponent();
         
-        if (CheckSpecialAttacks()) return;
-        if (CheckCrouchingAttacks()) return;
+        NormalAttack triggeredMove = _fighter.Moves.EvaluateAvailableMoves(_fighter.Buffer, false);
+    
+        if (triggeredMove != null)
+        {
+            if (triggeredMove is SpecialAttack)
+            {
+                // Specials triggered while crouching MUST go to the universal AttackState
+                _fighter.ChangeState(new AttackState(_fighter, triggeredMove));
+            }
+            else
+            {
+                // Standard crouching jabs go to CrouchAttackState
+                _fighter.ChangeState(new CrouchAttackState(_fighter, triggeredMove));
+            }
+            return; 
+        }
         
         if (!_fighter.Buffer.IsInputActive(InputBuffer.InputFlag.Down))
         {

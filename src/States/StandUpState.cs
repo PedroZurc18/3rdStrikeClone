@@ -13,14 +13,12 @@ public class StandUpState : BaseState
 
     public override void PhysicsUpdate(double delta)
     {
-        // 1. Cancel instantly back into a crouch
         if (_fighter.Buffer.IsInputActive(InputBuffer.InputFlag.Down))
         {
             _fighter.ChangeState(new CrouchState(_fighter));
             return;
         }
 
-        // 2. Cancel instantly into walking
         if (_fighter.Buffer.IsInputActive(InputBuffer.InputFlag.Left) || 
             _fighter.Buffer.IsInputActive(InputBuffer.InputFlag.Right))
         {
@@ -28,8 +26,12 @@ public class StandUpState : BaseState
             return;
         }
 
-        // 3. One line checks EVERY standing attack!
-        if (CheckStandingAttacks()) return;
+        NormalAttack triggeredMove = _fighter.Moves.EvaluateAvailableMoves(_fighter.Buffer, false);
+        if (triggeredMove != null)
+        {
+            _fighter.ChangeState(new AttackState(_fighter, triggeredMove));
+            return;
+        }
         
         if (!_fighter.IsOnFloor())
         {

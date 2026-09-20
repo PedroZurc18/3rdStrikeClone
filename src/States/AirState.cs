@@ -5,9 +5,8 @@ using Godot;
 public class AirState : BaseState
 {
     private bool _isJumping;
-
-    // NEW: We added a toggle! It defaults to true so your IdleState doesn't break.
-    public AirState(Fighter fighter, bool isJumping = true) : base(fighter) 
+    
+    public AirState(Fighter fighter, bool isJumping = true) : base(fighter)
     {
         _isJumping = isJumping;
     }
@@ -18,7 +17,6 @@ public class AirState : BaseState
         
         if (_isJumping)
         {
-            // Apply the upward burst and directional momentum!
             vel.Y = _fighter.JumpForce;
             
             if (_fighter.Buffer.IsInputActive(InputBuffer.InputFlag.Right))
@@ -39,9 +37,7 @@ public class AirState : BaseState
         }
         else
         {
-            // NEW: We are just falling (e.g., recovering from an air hit)
-            // DO NOT apply jump force! Let them keep their current velocity.
-            _fighter.Anim.Play("jump_neutral"); // Or "fall" if you have a falling animation
+            _fighter.Anim.Play("jump_neutral"); 
         }
         
         _fighter.Velocity = vel;
@@ -49,9 +45,11 @@ public class AirState : BaseState
 
     public override void PhysicsUpdate(double delta)
     {
-        if (_fighter.Buffer.WasInputPressedWithin(InputBuffer.InputFlag.Kick, 8))
+        NormalAttack triggeredMove = _fighter.Moves.EvaluateAvailableMoves(_fighter.Buffer, true);
+        
+        if (triggeredMove != null)
         {
-            _fighter.ChangeState(new AirAttackState(_fighter, _fighter.jHkPrefab));
+            _fighter.ChangeState(new AirAttackState(_fighter, triggeredMove));
             return;
         }
 

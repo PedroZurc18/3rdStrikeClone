@@ -47,10 +47,6 @@ public partial class InputBuffer : Node
 
         if (currentInput != _previousInputState)
         {
-            if (PlayerId == 1)
-            {
-                // GD.Print(currentInput);
-            }
             _previousInputState = currentInput;
         }
     }
@@ -182,37 +178,42 @@ public partial class InputBuffer : Node
     }
 
     public bool CheckMotion(
-        int[] expectedMotion,
-        InputFlag requiredButton,
-        int facingDirection,
-        int frameWindow = 8
+        int[][] expectedMotions, 
+        InputFlag requiredButton, 
+        int facingDirection, 
+        int frameWindow = 30
     )
     {
-        frameWindow = Math.Min(frameWindow, BufferSize - 1);
+            frameWindow = Math.Min(frameWindow, BufferSize - 1);
 
-        if (!WasInputPressedWithin(requiredButton, 3))
-            return false;
+            // BUMPED TO 8 FRAMES: Gives you a realistic window to time your cancels!
+            if (!WasInputPressedWithin(requiredButton, 8))
+                return false;
 
-        int motionIndex = expectedMotion.Length - 1;
-
-        for (int i = 0; i <= frameWindow; i++)
-        {
-            int index = (_headIndex - i + BufferSize) % BufferSize;
-            InputFrame frame = _buffer[index];
-
-            int frameDir = GetNumpadDirection(frame.State, facingDirection);
-
-            if (frameDir == expectedMotion[motionIndex])
+            // Check every valid shortcut path
+            foreach (var motion in expectedMotions)
             {
-                motionIndex--;
-                if (motionIndex < 0)
+                int motionIndex = motion.Length - 1;
+
+                for (int i = 0; i <= frameWindow; i++)
                 {
-                    return true;
+                    int index = (_headIndex - i + BufferSize) % BufferSize;
+                    InputFrame frame = _buffer[index];
+
+                    int frameDir = GetNumpadDirection(frame.State, facingDirection);
+
+                    if (frameDir == motion[motionIndex])
+                    {
+                        motionIndex--;
+                        if (motionIndex < 0)
+                        {
+                            return true; // We found a valid sequence!
+                        }
+                    }
                 }
             }
+            return false;
         }
-        return false;
-    }
 
     public string GetDebugHistory()
     {

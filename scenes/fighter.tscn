@@ -3,18 +3,13 @@
 [ext_resource type="Script" uid="uid://cdwsoprufrwe3" path="res://src/Fighter.cs" id="1_umvcx"]
 [ext_resource type="Texture2D" uid="uid://db7vpd6wyajt6" path="res://Assets/Chun_idle.png" id="2_38ety"]
 [ext_resource type="AudioStream" uid="uid://3bor6dyc4krn" path="res://Assets/sfx/Parry.wav" id="2_ked8f"]
-[ext_resource type="PackedScene" uid="uid://xixgoyel8uax" path="res://scenes/moves/chun_s_mp.tscn" id="2_siwl3"]
 [ext_resource type="PackedScene" uid="uid://cm376dt37pcpf" path="res://scenes/input_buffer.tscn" id="3_qq641"]
-[ext_resource type="PackedScene" uid="uid://b470ouwqo5w7p" path="res://scenes/moves/chun_c_mk.tscn" id="3_siwl3"]
 [ext_resource type="Texture2D" uid="uid://cxww2qligfyb0" path="res://Assets/Chun_hurt.png" id="4_1bj3w"]
 [ext_resource type="Texture2D" uid="uid://dtg6rgqbo2jy0" path="res://Assets/Chun_crouch_idle.png" id="4_3wvek"]
 [ext_resource type="Texture2D" uid="uid://bqmr3oacroagi" path="res://Assets/Chun_sMp.png" id="4_tlqsq"]
-[ext_resource type="PackedScene" uid="uid://c3vnvfs1soq68" path="res://scenes/moves/chun_lightning_kicks.tscn" id="4_yjmyb"]
 [ext_resource type="Texture2D" uid="uid://tmkibbb7f5va" path="res://Assets/Chun_walkb.png" id="5_1bj3w"]
 [ext_resource type="Texture2D" uid="uid://bx0mtjp5sndvu" path="res://Assets/Chun_crouch.png" id="5_06ufj"]
-[ext_resource type="PackedScene" uid="uid://bqvfputwaltq4" path="res://scenes/moves/chun_j_hk.tscn" id="5_32pqh"]
 [ext_resource type="Texture2D" uid="uid://budy3dodlw0ud" path="res://Assets/Chun_walkf.png" id="5_eelhu"]
-[ext_resource type="PackedScene" uid="uid://buprn8sauwyqh" path="res://scenes/moves/chun_aa.tscn" id="6_1ixxc"]
 [ext_resource type="Texture2D" uid="uid://c8johh87syrbi" path="res://Assets/Chun_BlockL.png" id="6_6jg8q"]
 [ext_resource type="Texture2D" uid="uid://c6dsa7w8lsbq0" path="res://Assets/Chun_BlockM.png" id="6_sfxrq"]
 [ext_resource type="Texture2D" uid="uid://dn5pu72l6fl2s" path="res://Assets/Chun_jHk.png" id="8_bysjc"]
@@ -27,9 +22,10 @@
 [ext_resource type="Texture2D" uid="uid://ciuatr3l22w4n" path="res://Assets/Chun_jump.png" id="14_6rnmm"]
 [ext_resource type="Texture2D" uid="uid://c8hb6hfs0d6ov" path="res://Assets/Chun_roll.png" id="14_bysjc"]
 [ext_resource type="Texture2D" uid="uid://1ggsdghr1l4t" path="res://Assets/Chun_land.png" id="16_sxd4w"]
-[ext_resource type="Texture2D" uid="uid://d3o5ojfu0ar6v" path="res://Assets/Chun_cParry.png" id="17_54n24"]
-[ext_resource type="Texture2D" uid="uid://bda860blrkbx0" path="res://Assets/Chun_jMk.png" id="24_gwjn0"]
-[ext_resource type="Texture2D" uid="uid://jmwfok4yys40" path="res://Assets/Chun_sParry.png" id="28_0pe4i"]
+[ext_resource type="Texture2D" uid="uid://xdq3fok355cc" path="res://Assets/Chun_cParry.png" id="17_54n24"]
+[ext_resource type="Texture2D" uid="uid://br80x4tfviypv" path="res://Assets/Chun_jMk.png" id="24_gwjn0"]
+[ext_resource type="Texture2D" uid="uid://cetm0p31xr2vi" path="res://Assets/Chun_sParry.png" id="28_0pe4i"]
+[ext_resource type="Script" uid="uid://cauvt0o6gk4xu" path="res://src/MoveManager.cs" id="30_0pe4i"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_eelhu"]
 radius = 24.285727
@@ -3113,7 +3109,7 @@ tracks/0/loop_wrap = true
 tracks/0/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
-"update": 0,
+"update": 1,
 "values": [ExtResource("4_tlqsq")]
 }
 tracks/1/type = "value"
@@ -3125,7 +3121,7 @@ tracks/1/loop_wrap = true
 tracks/1/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
-"update": 0,
+"update": 1,
 "values": [11]
 }
 tracks/2/type = "value"
@@ -3137,7 +3133,7 @@ tracks/2/loop_wrap = true
 tracks/2/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
-"update": 0,
+"update": 1,
 "values": [1]
 }
 tracks/3/type = "value"
@@ -3149,7 +3145,7 @@ tracks/3/loop_wrap = true
 tracks/3/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
-"update": 0,
+"update": 1,
 "values": [Vector2(40.00001, 0)]
 }
 tracks/4/type = "value"
@@ -3233,7 +3229,7 @@ tracks/10/loop_wrap = true
 tracks/10/keys = {
 "times": PackedFloat32Array(0, 0.016666668, 0.033333335, 0.05, 0.06666667, 0.083333336, 0.10000001, 0.116666675, 0.13333334, 0.15, 0.16666667, 0.18333334, 0.20000002, 0.21666668, 0.23333335, 0.25, 0.26666668, 0.28333336, 0.3, 0.3166667, 0.33333334, 0.35000002, 0.36666667, 0.38333333),
 "transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1),
-"update": 0,
+"update": 1,
 "values": [0, 0, 0, 1, 1, 1, 2, 2, 3, 3, 3, 4, 4, 4, 5, 5, 6, 6, 7, 7, 8, 8, 9, 10]
 }
 
@@ -3612,11 +3608,6 @@ collision_layer = 0
 script = ExtResource("1_umvcx")
 PillboxShape = NodePath("Pillbox")
 ParrySound = ExtResource("2_ked8f")
-sMpPrefab = ExtResource("2_siwl3")
-cMkPrefab = ExtResource("3_siwl3")
-qcfPrefab = ExtResource("4_yjmyb")
-jHkPrefab = ExtResource("5_32pqh")
-aaPrefab = ExtResource("6_1ixxc")
 
 [node name="Pillbox" type="CollisionShape2D" parent="." unique_id=1918110751]
 visible = false
@@ -3715,3 +3706,11 @@ position = Vector2(-36.47041, 29.147173)
 scale = Vector2(1.4, 1.4)
 texture = ExtResource("4_3wvek")
 hframes = 16
+
+[node name="MoveManager" type="Node2D" parent="." unique_id=1554879810]
+scale = Vector2(0.99999994, 0.99999994)
+script = ExtResource("30_0pe4i")
+
+[node name="SpecialAttacks" type="Node2D" parent="MoveManager" unique_id=1310149782]
+
+[node name="NormalAttacks" type="Node2D" parent="MoveManager" unique_id=803056639]

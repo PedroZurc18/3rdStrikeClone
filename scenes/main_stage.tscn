@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://bm41v5cnikoqp"]
 
 [ext_resource type="Script" uid="uid://bc82npoc31h88" path="res://src/MainStage.cs" id="1_pegp3"]
-[ext_resource type="PackedScene" uid="uid://clqq2wu4wawda" path="res://scenes/fighter.tscn" id="2_yfcek"]
+[ext_resource type="PackedScene" uid="uid://chvgahqq1d4e1" path="res://scenes/characters/ChunLi.tscn" id="3_kaalw"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_tsdbj"]
 size = Vector2(85, 1301.5)
@@ -43,18 +43,18 @@ debug_color = Color(0.8156863, 0.11372549, 0.7921569, 0.41960785)
 position = Vector2(576, 322)
 position_smoothing_enabled = true
 
-[node name="Player2" parent="." unique_id=1882554043 node_paths=PackedStringArray("Opponent") instance=ExtResource("2_yfcek")]
-position = Vector2(813, 503)
+[node name="Player1" parent="." unique_id=961281130 node_paths=PackedStringArray("Opponent") instance=ExtResource("3_kaalw")]
+position = Vector2(333, 501.99997)
+scale = Vector2(1.7, 1.7)
+Opponent = NodePath("../Player2")
+
+[node name="Player2" parent="." unique_id=155574547 node_paths=PackedStringArray("Opponent") instance=ExtResource("3_kaalw")]
+position = Vector2(798.99994, 506)
 scale = Vector2(1.7, 1.7)
 Opponent = NodePath("../Player1")
 
 [node name="InputBuffer" parent="Player2" index="2" unique_id=2128503683]
 PlayerId = 2
-
-[node name="Player1" parent="." unique_id=961281130 node_paths=PackedStringArray("Opponent") instance=ExtResource("2_yfcek")]
-position = Vector2(313, 502.99994)
-scale = Vector2(1.7, 1.7)
-Opponent = NodePath("../Player2")
 
 [node name="HUD" type="CanvasLayer" parent="." unique_id=306791544]
 
@@ -81,5 +81,7 @@ rounded = true
 fill_mode = 1
 show_percentage = false
 
-[editable path="Player2"]
 [editable path="Player1"]
+[editable path="Player1/MoveManager/NormalAttacks/Chun_cMk"]
+[editable path="Player2"]
+[editable path="Player2/MoveManager/NormalAttacks/Chun_cMk"]

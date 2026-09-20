@@ -51,8 +51,18 @@ public class ParryState : BaseState
 
     public override void CheckForCancels()
     {
-        if (CheckSpecialAttacks() || CheckStandingAttacks() || CheckCrouchingAttacks())
+        NormalAttack triggeredMove = _fighter.Moves.EvaluateAvailableMoves(_fighter.Buffer, _isAirborne);
+        
+        if (triggeredMove != null)
         {
+            if (_isAirborne)
+            {
+                _fighter.ChangeState(new AirAttackState(_fighter, triggeredMove));
+            }
+            else
+            {
+                _fighter.ChangeState(new AttackState(_fighter, triggeredMove));
+            }
             return;
         }
     }

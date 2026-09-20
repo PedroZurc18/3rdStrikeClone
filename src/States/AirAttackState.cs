@@ -4,78 +4,53 @@ using Godot;
 
 public class AirAttackState : BaseState
 {
-    private PackedScene _movePrefab;
     private NormalAttack _active;
     private bool _isMoveFinished = false;
 
-    // We pass the prefab in just like the grounded AttackState
-    public AirAttackState(Fighter fighter, PackedScene movePrefab)
-        : base(fighter)
+    public AirAttackState(Fighter fighter, NormalAttack triggeredMove) : base(fighter)
     {
-        _movePrefab = movePrefab;
+        _active = triggeredMove;
     }
 
     public override void Enter()
     {
-        // Spawn the attack prefab
-        _active = _movePrefab.Instantiate<NormalAttack>();
-        _fighter.AttackContainer.AddChild(_active);
         _active.Initialize(_fighter);
         _isMoveFinished = false;
-        
-        // Notice we do NOT set vel.X = 0 here! 
-        // We let them keep their jumping momentum.
     }
 
     public override void PhysicsUpdate(double delta)
     {
-        Vector2 vel = _fighter.Velocity;
+        // 1. Pass 'false' for grounded states. Pass 'true' if doing this in AirAttackState!
+        bool isAirborneState = true; 
 
-        // 1. Always apply gravity so they keep falling
-        vel.Y += _fighter.Gravity * (float)delta;
-        _fighter.Velocity = vel;
-
-        // 2. Move the character
+        // 2. The magic line: The attack handles ALL of its own movement logic now
+        _fighter.Velocity = _active.ProcessPhysics(_fighter.Velocity, _fighter.FacingDirection, delta, _fighter.Gravity, isAirborneState);
+        
         _fighter.ApplyMovementAndPush();
+        
+        // 3. Process the frame data and hitboxes
+        bool isMoveFinished = _active.ProcessMove();
 
-        // 3. THE LANDING INTERRUPT
-        if (_fighter.IsOnFloor())
+        // 4. Check for landing if the move was a launcher (like a DP)
+        if (_active.HasYProfile && _active.HasLaunched && _fighter.Velocity.Y > 0 && _fighter.IsOnFloor())
         {
-            // The millisecond their feet touch the ground, the attack state is destroyed.
             _fighter.ChangeState(new IdleState(_fighter, true));
             return;
         }
 
-        // 4. Process the attack frame data
-        if (!_isMoveFinished)
+        // 5. Standard finish
+        if (isMoveFinished)
         {
-            // UpdateBoxes is handled internally by your awesome NormalAttack class
-            _isMoveFinished = _active.ProcessMove();
-            
-            // Note: If _isMoveFinished becomes true, we do NOT change state.
-            // In traditional fighting games, if a jump kick finishes early, 
-            // the character holds the final frame of the kick all the way to the ground!
+            // If it's a crouching attack, change to CrouchState. Otherwise, IdleState.
+            _fighter.ChangeState(new IdleState(_fighter)); 
         }
     }
-
-    public override void CheckForCancels()
-    {
-        // Allow for special cancels in the air (e.g., Air Fireball or Divekick)
-        if (_active != null && _active.IsSpecialCancelable && _active.HasHit && _active.IsInsideCancelWindow())
-        {
-            if (CheckSpecialAttacks())
-                return;
-        }
-    }
-
+    
     public override void Exit()
     {
-        // 5. THE CLEANUP
-        // Whether they landed or got hit out of the air, deleting the prefab 
-        // guarantees no phantom hitboxes are left behind.
         if (_active != null)
         {
-            _active.QueueFree();
+            _active.SetBoxesActive(false);
         }
     }
 }

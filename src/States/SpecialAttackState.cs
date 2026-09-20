@@ -4,7 +4,6 @@ using Godot;
 
 public class SpecialAttackState : BaseState
 {
-    private PackedScene _movePrefab;
     private NormalAttack _active;
     
     private bool _isAirborneMove = false;
@@ -13,17 +12,17 @@ public class SpecialAttackState : BaseState
 
     public override bool IsInvincible => _isAirborneMove && !_hasLaunched;
 
-    public SpecialAttackState(Fighter fighter, PackedScene movePrefab) : base(fighter)
+    public SpecialAttackState(Fighter fighter, NormalAttack triggeredMove) : base(fighter)
     {
-        _movePrefab = movePrefab;
+        _active = triggeredMove;
     }
 
     public override void Enter()
     {
-        _active = _movePrefab.Instantiate<NormalAttack>();
-        _fighter.AttackContainer.AddChild(_active);
+        // 1. Wake up the pre-existing node from the MoveManager
         _active.Initialize(_fighter);
         
+        // 2. Setup the profile variables
         _isAirborneMove = _active.YSpeedProfile != null && _active.YSpeedProfile.Count > 0;
         _hasLaunched = false;
 
@@ -34,92 +33,29 @@ public class SpecialAttackState : BaseState
 
     public override void PhysicsUpdate(double delta)
     {
-        Vector2 vel = _fighter.Velocity;
-        int currentFrame = _active.GetCurrentFrame();
-        
-        // X PROFILE
-        bool xSpeedJustChanged = false;
-        if (_active.XSpeedProfile != null && _active.XSpeedProfile.Count > 0)
-        {
-            foreach (var keyframe in _active.XSpeedProfile)
-            {
-                if (keyframe.Frame == currentFrame)
-                {
-                    _currentActiveXSpeed = keyframe.Speed;
-                    xSpeedJustChanged = true;
-                    break;
-                }
-            }
-        }
+        // 1. Pass 'false' for grounded states. Pass 'true' if doing this in AirAttackState!
+        bool isAirborneState = false; 
 
-        // Y PROFILE
-        bool ySpeedJustChanged = false;
-        if (_active.YSpeedProfile != null && _active.YSpeedProfile.Count > 0)
-        {
-            foreach (var keyframe in _active.YSpeedProfile)
-            {
-                if (keyframe.Frame == currentFrame)
-                {
-                    vel.Y = keyframe.Speed; 
-                    ySpeedJustChanged = true;
-                    
-                    if (!_hasLaunched) _hasLaunched = true; 
-                    break;
-                }
-            }
-        }
+        // 2. The magic line: The attack handles ALL of its own movement logic now
+        _fighter.Velocity = _active.ProcessPhysics(_fighter.Velocity, _fighter.FacingDirection, delta, _fighter.Gravity, isAirborneState);
         
-        // 4. APPLY X MOVEMENT
-        if (!_isAirborneMove) 
-        {
-            // Grounded Special (Fireball, etc.)
-            vel.X = _fighter.FacingDirection * _currentActiveXSpeed;
-        }
-        else if (_hasLaunched && xSpeedJustChanged)
-        {
-            // Airborne Impulse (Air Dash, Divekick forward momentum)
-            vel.X = _fighter.FacingDirection * _currentActiveXSpeed;
-        }
-        else if (!_hasLaunched)
-        {
-            // Startup frames before leaving the ground
-            vel.X = 0;
-        }
-
-        // 5. APPLY GRAVITY & DRAG
-        if (_hasLaunched)
-        {
-            if (!ySpeedJustChanged)
-            {
-                vel.Y += _fighter.Gravity * (float)delta;
-            }
-            
-            vel.X = Mathf.MoveToward(vel.X, 0, _active.AirDrag * (float)delta);
-        }
-        
-        _fighter.Velocity = vel;
         _fighter.ApplyMovementAndPush();
         
-        // 6. PROCESS THE ANIMATION
+        // 3. Process the frame data and hitboxes
         bool isMoveFinished = _active.ProcessMove();
 
-        if (isMoveFinished)
+        // 4. Check for landing if the move was a launcher (like a DP)
+        if (_active.HasYProfile && _active.HasLaunched && _fighter.Velocity.Y > 0 && _fighter.IsOnFloor())
         {
-            if (!_isAirborneMove)
-            {
-                _fighter.ChangeState(new IdleState(_fighter));
-                return;
-            }
-            else if (!_fighter.Anim.IsPlaying())
-            {
-                _fighter.Anim.Pause();
-            }
+            _fighter.ChangeState(new IdleState(_fighter, true));
+            return;
         }
 
-        // 7. THE LANDING 
-        if (_isAirborneMove && _hasLaunched && vel.Y > 0 && _fighter.IsOnFloor())
+        // 5. Standard finish
+        if (isMoveFinished)
         {
-            _fighter.ChangeState(new IdleState(_fighter, true)); 
+            // If it's a crouching attack, change to CrouchState. Otherwise, IdleState.
+            _fighter.ChangeState(new IdleState(_fighter)); 
         }
     }
 
@@ -127,7 +63,7 @@ public class SpecialAttackState : BaseState
     {
         if (_active != null)
         {
-            _active.QueueFree();
+            _active.SetBoxesActive(false);
         }
     }
 }
