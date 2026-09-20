@@ -75,7 +75,6 @@ public partial class NormalAttack : Node2D
 
     public override void _Ready()
     {
-        // 1. Setup the folders and signals exactly ONCE when the game loads
         HitboxesFolder = GetNodeOrNull<Node2D>("Hitboxes");
         HurtboxesFolder = GetNodeOrNull<Node2D>("Hurtboxes");
 
@@ -86,11 +85,9 @@ public partial class NormalAttack : Node2D
                 if (child is HitboxData box)
                 {
                     box.Parent = this; 
-
-                    // Wire the signal here!
+                    
                     box.AreaEntered += (area) => 
                     {
-                        // Ensure _fighter exists and the box hasn't already connected this swing
                         if (_fighter != null && !box.HasConnected) 
                         {
                             _fighter.OnHitboxConnected(area, box);
@@ -105,11 +102,8 @@ public partial class NormalAttack : Node2D
     {
         _fighter = fighter;
         _currentFrame = 0;
+        HasHit = false;                 
         
-        // 2. RESET ALL YOUR FLAGS HERE!
-        HasHit = false;                  // Fixes the spam/cancel bug!
-        
-        // 3. Reset the hitboxes so they are allowed to deal damage again
         if (HitboxesFolder != null)
         {
             foreach (Node child in HitboxesFolder.GetChildren()) 
@@ -174,19 +168,31 @@ public partial class NormalAttack : Node2D
                 }
             }
         }
-
+        
         bool ySpeedJustChanged = false;
+        if (HasYProfile)
+        {
+            foreach (var keyframe in YSpeedProfile)
+            {
+                if (keyframe.Frame == _currentFrame)
+                {
+                    vel.Y = keyframe.Speed;
+                    ySpeedJustChanged = true;
+                    HasLaunched = true; 
+                    break;
+                }
+            }
+        }
+        
         if (HasYProfile) 
         {
             if (!HasLaunched) 
             {
-                // Pre-launch startup frames: Allow the character to slide forward!
                 if (HasXProfile) vel.X = facingDirection * CurrentXSpeed;
                 else vel.X = 0;
             }
             else 
             {
-                // Airborne frames: Apply the impulse, gravity, and drag
                 if (xSpeedJustChanged) 
                 {
                     vel.X = facingDirection * CurrentXSpeed; 
@@ -202,7 +208,6 @@ public partial class NormalAttack : Node2D
         }
         else 
         {
-            // Standard Grounded/Air Moves (No Y-Profile)
             if (HasXProfile) 
             {
                 vel.X = facingDirection * CurrentXSpeed; 

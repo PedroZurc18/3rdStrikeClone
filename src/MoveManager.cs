@@ -36,13 +36,11 @@ public partial class MoveManager : Node2D
     {
         foreach (Node child in parent.GetChildren())
         {
-            // If it's an attack, add it to our list
             if (child is NormalAttack attackNode)
             {
                 _cachedMoves.Add(attackNode);
             }
             
-            // If this node has children (like your SpecialAttacks folder), dig inside it!
             if (child.GetChildCount() > 0)
             {
                 CacheMovesRecursively(child);
@@ -64,7 +62,7 @@ public partial class MoveManager : Node2D
                     requiredSequence, 
                     specialNode.RequiredButton, 
                     _fighter.FacingDirection, 
-                    30
+                    20
                 );
 
                 if (motionCompleted)

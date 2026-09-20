@@ -11,6 +11,7 @@
 
 [sub_resource type="Resource" id="Resource_e08h4"]
 script = ExtResource("2_xabxc")
+Frame = 1
 Speed = 700.0
 metadata/_custom_type_script = "uid://cchjrs726aeo1"
 

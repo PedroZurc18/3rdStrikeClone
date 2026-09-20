@@ -1,27 +1,33 @@
+namespace rdStrikeClone;
+
 using Godot;
-using rdStrikeClone;
 
 public partial class ProjectileAttack : SpecialAttack
 {
-    [ExportGroup("Projectile Data")]
-    [Export] public PackedScene ProjectilePrefab;
-    [Export] public int SpawnFrame = 12;
+    [Export] public PackedScene FireballPrefab;
+    [Export] public int FireFrame = 14;
     
+    [Export] public Marker2D SpawnPoint; 
+
     public override bool ProcessMove()
     {
-        bool isMoveFinished = base.ProcessMove();
-
-        if (_currentFrame == SpawnFrame)
+        bool isFinished = base.ProcessMove(); 
+        
+        if (GetCurrentFrame() == FireFrame && FireballPrefab != null)
         {
-            if (ProjectilePrefab != null)
-            {
-                Fireball newFireball = ProjectilePrefab.Instantiate<Fireball>();
-                   
-                _fighter.GetTree().Root.AddChild(newFireball);
-                
-                newFireball.Initialize(_fighter, _fighter.FacingDirection, GlobalPosition, this);
-            }
+            Fireball fireball = FireballPrefab.Instantiate<Fireball>();
+            
+            GetNode("/root/MainStage").AddChild(fireball);
+            
+            if (SpawnPoint != null)
+                fireball.GlobalPosition = SpawnPoint.GlobalPosition;
+            else
+                fireball.GlobalPosition = this.GlobalPosition; 
+
+            // Tell it which way to fly
+            fireball.Fire(_fighter.FacingDirection);
         }
-        return isMoveFinished;
+
+        return isFinished;
     }
 }

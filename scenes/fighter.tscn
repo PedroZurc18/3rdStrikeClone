@@ -10,6 +10,7 @@
 [ext_resource type="Texture2D" uid="uid://tmkibbb7f5va" path="res://Assets/Chun_walkb.png" id="5_1bj3w"]
 [ext_resource type="Texture2D" uid="uid://bx0mtjp5sndvu" path="res://Assets/Chun_crouch.png" id="5_06ufj"]
 [ext_resource type="Texture2D" uid="uid://budy3dodlw0ud" path="res://Assets/Chun_walkf.png" id="5_eelhu"]
+[ext_resource type="Texture2D" uid="uid://tn4bupo34cpu" path="res://Assets/Chun_Fireball.png" id="5_ked8f"]
 [ext_resource type="Texture2D" uid="uid://c8johh87syrbi" path="res://Assets/Chun_BlockL.png" id="6_6jg8q"]
 [ext_resource type="Texture2D" uid="uid://c6dsa7w8lsbq0" path="res://Assets/Chun_BlockM.png" id="6_sfxrq"]
 [ext_resource type="Texture2D" uid="uid://dn5pu72l6fl2s" path="res://Assets/Chun_jHk.png" id="8_bysjc"]
@@ -43,6 +44,71 @@ size = Vector2(72.08771, 44.55088)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_06ufj"]
 size = Vector2(100.8689, 59.928635)
+
+[sub_resource type="Animation" id="Animation_h41fo"]
+resource_name = "Kikoken"
+length = 0.96666664
+step = 0.016666668
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Visuals/Sprite2D:texture")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.90000004, 0.9166667, 0.96666664),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 1,
+"values": [ExtResource("5_ked8f"), ExtResource("5_ked8f"), ExtResource("4_tlqsq"), ExtResource("4_tlqsq")]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Visuals/Sprite2D:hframes")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.90000004, 0.9166667, 0.96666664),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 1,
+"values": [22, 22, 11, 11]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("Visuals/Sprite2D:vframes")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 0.90000004, 0.9166667, 0.96666664),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 1,
+"values": [1, 1, 1, 1]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("Visuals/Sprite2D:position")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0, 0.13333334, 0.21666668, 0.90000004, 0.9166667, 0.96666664),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [Vector2(-22.000004, -9), Vector2(-26.000004, -9), Vector2(-19, -9), Vector2(-27, -9), Vector2(39.000004, 0), Vector2(39.000004, 0)]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("Visuals/Sprite2D:frame")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0, 0.016666668, 0.05, 0.083333336, 0.13333334, 0.16666666, 0.18333337, 0.20000002, 0.21666667, 0.25, 0.3, 0.35, 0.4, 0.45, 0.51666665, 0.5833333, 0.65, 0.71666664, 0.8, 0.8333333, 0.8666667, 0.9, 0.9166667),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 7]
+}
 
 [sub_resource type="Animation" id="Animation_38ety"]
 length = 0.001
@@ -1798,7 +1864,7 @@ tracks/10/keys = {
 [sub_resource type="Animation" id="Animation_rsphg"]
 resource_name = "idle"
 length = 1.33334
-step = 0.06666667
+step = 0.016666668
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
@@ -2963,6 +3029,39 @@ load_path = "res://.godot/imported/Chun_Super2.png-a08311767ddd4b29322368a026e21
 resource_name = "lightning_kicks"
 length = 0.9000017
 step = 0.016666668
+markers = [{
+"color": Color(1, 0, 0, 1),
+"name": &"1<",
+"time": 0.2
+}, {
+"color": Color(0.94627124, 0.14653826, 0.44779092, 1),
+"name": &">1",
+"time": 0.23333333
+}, {
+"color": Color(1, 0, 0, 1),
+"name": &"new_marker",
+"time": 0.3
+}, {
+"color": Color(0.94627124, 0.14653826, 0.44779092, 1),
+"name": &"new_marker_2",
+"time": 0.33333334
+}, {
+"color": Color(1, 0, 0, 1),
+"name": &"new_marker_3",
+"time": 0.4
+}, {
+"color": Color(0.9491296, 0.14232892, 0.45160243, 1),
+"name": &"new_marker_4",
+"time": 0.43333334
+}, {
+"color": Color(1, 0, 0, 1),
+"name": &"new_marker_5",
+"time": 0.51666665
+}, {
+"color": Color(0.94627124, 0.14653826, 0.44779092, 1),
+"name": &"new_marker_6",
+"time": 0.55
+}]
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
@@ -3574,6 +3673,7 @@ tracks/10/keys = {
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_1bj3w"]
 _data = {
+&"Kikoken": SubResource("Animation_h41fo"),
 &"RESET": SubResource("Animation_38ety"),
 &"anti_air": SubResource("Animation_bwbxn"),
 &"block_low": SubResource("Animation_amrqo"),
@@ -3681,7 +3781,16 @@ autoplay = &"idle"
 
 [node name="VoicePlayer" type="AudioStreamPlayer2D" parent="." unique_id=1953791716]
 
+[node name="MoveManager" type="Node2D" parent="." unique_id=1554879810]
+scale = Vector2(0.99999994, 0.99999994)
+script = ExtResource("30_0pe4i")
+
+[node name="SpecialAttacks" type="Node2D" parent="MoveManager" unique_id=1310149782]
+
+[node name="NormalAttacks" type="Node2D" parent="MoveManager" unique_id=803056639]
+
 [node name="UI" type="CanvasLayer" parent="." unique_id=1012230234]
+visible = false
 
 [node name="BufferRing" type="Label" parent="UI" unique_id=543497929]
 visible = false
@@ -3696,21 +3805,3 @@ texture_repeat = 1
 scale = Vector2(1.4, 1.4)
 texture = ExtResource("2_38ety")
 hframes = 20
-
-[node name="Mask2" type="Sprite2D" parent="." unique_id=956806840]
-visible = false
-modulate = Color(1.1291975, 1.1291975, 1.1291975, 0.34901962)
-texture_filter = 1
-texture_repeat = 1
-position = Vector2(-36.47041, 29.147173)
-scale = Vector2(1.4, 1.4)
-texture = ExtResource("4_3wvek")
-hframes = 16
-
-[node name="MoveManager" type="Node2D" parent="." unique_id=1554879810]
-scale = Vector2(0.99999994, 0.99999994)
-script = ExtResource("30_0pe4i")
-
-[node name="SpecialAttacks" type="Node2D" parent="MoveManager" unique_id=1310149782]
-
-[node name="NormalAttacks" type="Node2D" parent="MoveManager" unique_id=803056639]

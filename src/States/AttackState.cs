@@ -13,7 +13,6 @@ public class AttackState : BaseState
 
     public override void Enter()
     {
-        // Simply wake up the pre-existing node attached to the MoveManager
         _active.Initialize(_fighter);
         
         Vector2 vel = _fighter.Velocity;

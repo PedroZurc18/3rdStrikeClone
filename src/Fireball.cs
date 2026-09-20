@@ -1,60 +1,37 @@
 using Godot;
-namespace rdStrikeClone;
 
-public partial class Fireball : Node2D
+public partial class Fireball : Node2D // Changed back to Node2D to match your root!
 {
-    [Export] public int Speed;
-    private int _direction;
-    private Fighter _owner;
-
-    public void Initialize(Fighter owner,int direction, Vector2 spawnPosition, NormalAttack attackStats)
-    {
-        _owner = owner;
-        _direction = direction;
-        GlobalPosition = spawnPosition;
-
-        if (_direction == -1) Scale = new Vector2(-1, 1);
-
-        HitboxData myHitBox = GetNode<HitboxData>("HitboxData");
-        myHitBox.Parent = attackStats;
-
-    }
-
-    public override void _Ready()
-    {
-        HitboxData myHitbox = GetNode<HitboxData>("HitboxData");
-        myHitbox.AreaEntered += OnProjectileHit;
-        
-        VisibleOnScreenNotifier2D screenNotifier = GetNode<VisibleOnScreenNotifier2D>("VisibleOnScreenNotifier2D");
-        screenNotifier.ScreenExited += QueueFree;
-    }
+    [Export] public float Speed = 600f;
+    [Export] public int LifetimeFrames = 120;
     
+    private int _direction = 1;
+    private int _currentFrame = 0;
+
+    public void Fire(int facingDirection)
+    {
+        _direction = facingDirection;
+        Scale = new Vector2(_direction, 1); 
+    }
+
     public override void _PhysicsProcess(double delta)
     {
-        float step = Speed * _direction * (float)delta;
+        _currentFrame++;
         
-        Vector2 currentPosition = GlobalPosition;
-        currentPosition.X += step;
-        GlobalPosition = currentPosition;
-    }
+        Vector2 pos = GlobalPosition;
+        pos.X += Speed * _direction * (float)delta;
+        GlobalPosition = pos;
 
-    private void OnProjectileHit(Area2D area)
-    {
-        Fighter hitFighter = null;
-        Node current = area;
-        
-        while (current != null && !(current is Fighter))
+        if (_currentFrame >= LifetimeFrames)
         {
-            current = current.GetParent();
+            QueueFree();
         }
-        hitFighter = current as Fighter;
-
-        if (hitFighter == null || hitFighter == _owner) return;
+    }
+    
+    public void OnHitboxEntered(Area2D area)
+    {
+        // Deal damage logic here...
         
-        HitboxData myHitbox = GetNode<HitboxData>("HitboxData");
-
-        hitFighter.ReceiveHit(myHitbox.Parent, myHitbox);
-        
-        QueueFree();
+        QueueFree(); // Destroy the fireball on impact
     }
 }
