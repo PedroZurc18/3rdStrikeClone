@@ -1,3 +1,5 @@
+using rdStrikeClone.Data;
+
 namespace rdStrikeClone.States;
 
 using Godot;
@@ -33,19 +35,19 @@ public class CrouchState : BaseState
     {
         _fighter.TurnToFaceOpponent();
         
-        NormalAttack triggeredMove = _fighter.Moves.EvaluateAvailableMoves(_fighter.Buffer, false);
+        AttackData triggeredMove = _fighter.Moves.EvaluateAvailableMoves(_fighter.Buffer, false);
     
         if (triggeredMove != null)
         {
-            if (triggeredMove is SpecialAttack)
+            if (triggeredMove.RequiredMotion != AttackData.MotionType.None)
             {
                 // Specials triggered while crouching MUST go to the universal AttackState
-                _fighter.ChangeState(new AttackState(_fighter, triggeredMove));
+                _fighter.StateMachine.ChangeState(new AttackState(_fighter, triggeredMove));
             }
             else
             {
                 // Standard crouching jabs go to CrouchAttackState
-                _fighter.ChangeState(new CrouchAttackState(_fighter, triggeredMove));
+                _fighter.StateMachine.ChangeState(new CrouchAttackState(_fighter, triggeredMove));
             }
             return; 
         }
@@ -55,11 +57,11 @@ public class CrouchState : BaseState
             if (_fighter.Buffer.IsInputActive(InputBuffer.InputFlag.Left) || 
                 _fighter.Buffer.IsInputActive(InputBuffer.InputFlag.Right))
             {
-                _fighter.ChangeState(new IdleState(_fighter));
+                _fighter.StateMachine.ChangeState(new IdleState(_fighter));
             }
             else
             {
-                _fighter.ChangeState(new StandUpState(_fighter));
+                _fighter.StateMachine.ChangeState(new StandUpState(_fighter));
             }
             return; 
         }
@@ -67,10 +69,10 @@ public class CrouchState : BaseState
         if (!_fighter.IsOnFloor())
         {
             Vector2 vel = _fighter.Velocity;
-            vel.Y += _fighter.Gravity * (float)delta;
+            vel.Y += _fighter.Physics.Gravity * (float)delta;
             _fighter.Velocity = vel;
         }
         
-        _fighter.ApplyMovementAndPush();
+        _fighter.Physics.ApplyMovementAndPush();
     }
 }

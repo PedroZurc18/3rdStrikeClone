@@ -1,14 +1,14 @@
-using System.Collections.Generic;
 using Godot;
+using rdStrikeClone.Data;
 
 namespace rdStrikeClone;
 
-public partial class MoveManager : Node2D
+public partial class MoveManager : Node
 {
+    [Export] public Godot.Collections.Array<AttackData> AvailableMoves = new();
+
     private Fighter _fighter;
-    
-    private List<NormalAttack> _cachedMoves = new List<NormalAttack>();
-    
+
     private readonly int[][] _motionQCF = { 
         new[] { 2, 3, 6 }, 
         new[] { 2, 6 }     
@@ -28,75 +28,56 @@ public partial class MoveManager : Node2D
     public override void _Ready()
     {
         _fighter = GetParent<Fighter>();
-        
-        CacheMovesRecursively(this);
     }
-    
-    private void CacheMovesRecursively(Node parent)
-    {
-        foreach (Node child in parent.GetChildren())
-        {
-            if (child is NormalAttack attackNode)
-            {
-                _cachedMoves.Add(attackNode);
-            }
-            
-            if (child.GetChildCount() > 0)
-            {
-                CacheMovesRecursively(child);
-            }
-        }
-    }
-    
-    public NormalAttack EvaluateAvailableMoves(InputBuffer buffer, bool isAirborne)
-    {
-        foreach (NormalAttack attackNode in _cachedMoves)
-        {
-            if (attackNode.IsAirborneMove != isAirborne) continue;
 
-            if (attackNode is SpecialAttack specialNode)
+    public AttackData EvaluateAvailableMoves(InputBuffer buffer, bool isAirborne)
+    {
+        foreach (AttackData attack in AvailableMoves)
+        {
+            if (attack.IsAirborneMove != isAirborne) continue;
+
+            if (attack.RequiredMotion != AttackData.MotionType.None)
             {
-                int[][] requiredSequence = GetMotionSequence(specialNode.RequiredMotion);
+                int[][] requiredSequence = GetMotionSequence(attack.RequiredMotion);
     
                 bool motionCompleted = buffer.CheckMotion(
                     requiredSequence, 
-                    specialNode.RequiredButton, 
+                    attack.RequiredButton, 
                     _fighter.FacingDirection, 
-                    20
+                    30
                 );
 
                 if (motionCompleted)
                 {
-                    return specialNode;
+                    return attack;
                 }
             }
             else 
             {
-                if (!buffer.IsInputPressed(attackNode.RequiredButton)) continue;
+                if (!buffer.IsInputPressed(attack.RequiredButton)) continue;
 
-                bool directionMatches = CheckCommandDirection(attackNode.RequiredDirection, buffer);
-                if (directionMatches)
+                if (CheckCommandDirection(attack.RequiredDirection, buffer))
                 {
-                    return attackNode;
+                    return attack;
                 }
             }
         }
         
         return null;
     }
-    
-    private int[][] GetMotionSequence(SpecialAttack.MotionType motion)
+
+    private int[][] GetMotionSequence(AttackData.MotionType motion)
     {
-        if (motion == SpecialAttack.MotionType.DP) return _motionDP;
-        if (motion == SpecialAttack.MotionType.QCF) return _motionQCF;
-        if (motion == SpecialAttack.MotionType.QCB) return _motionQCB;
+        if (motion == AttackData.MotionType.DP) return _motionDP;
+        if (motion == AttackData.MotionType.QCF) return _motionQCF;
+        if (motion == AttackData.MotionType.QCB) return _motionQCB;
         
         return new int[0][];
     }
     
-    private bool CheckCommandDirection(NormalAttack.CommandDirection requiredDir, InputBuffer buffer)
+    private bool CheckCommandDirection(AttackData.CommandDirection requiredDir, InputBuffer buffer)
     {
-        if (requiredDir == NormalAttack.CommandDirection.Neutral)
+        if (requiredDir == AttackData.CommandDirection.Neutral)
         {
             return !buffer.IsInputActive(InputBuffer.InputFlag.Left) && 
                    !buffer.IsInputActive(InputBuffer.InputFlag.Right) && 
@@ -107,10 +88,10 @@ public partial class MoveManager : Node2D
         InputBuffer.InputFlag forwardFlag = (_fighter.FacingDirection == 1) ? InputBuffer.InputFlag.Right : InputBuffer.InputFlag.Left;
         InputBuffer.InputFlag backFlag = (_fighter.FacingDirection == 1) ? InputBuffer.InputFlag.Left : InputBuffer.InputFlag.Right;
 
-        if (requiredDir == NormalAttack.CommandDirection.Forward) return buffer.IsInputActive(forwardFlag);
-        if (requiredDir == NormalAttack.CommandDirection.Back) return buffer.IsInputActive(backFlag);
-        if (requiredDir == NormalAttack.CommandDirection.Down) return buffer.IsInputActive(InputBuffer.InputFlag.Down);
-        if (requiredDir == NormalAttack.CommandDirection.Up) return buffer.IsInputActive(InputBuffer.InputFlag.Up);
+        if (requiredDir == AttackData.CommandDirection.Forward) return buffer.IsInputActive(forwardFlag);
+        if (requiredDir == AttackData.CommandDirection.Back) return buffer.IsInputActive(backFlag);
+        if (requiredDir == AttackData.CommandDirection.Down) return buffer.IsInputActive(InputBuffer.InputFlag.Down);
+        if (requiredDir == AttackData.CommandDirection.Up) return buffer.IsInputActive(InputBuffer.InputFlag.Up);
 
         return false;
     }

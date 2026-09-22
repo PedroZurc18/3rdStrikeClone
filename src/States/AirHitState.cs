@@ -39,13 +39,13 @@ public class AirHitState : BaseState
         Vector2 vel = _fighter.Velocity;
 
         // 1. Apply gravity so they constantly fall
-        vel.Y += _fighter.Gravity * (float)delta;
+        vel.Y += _fighter.Physics.Gravity * (float)delta;
 
         // 2. Decelerate horizontal pushback blast
         vel.X = Mathf.MoveToward(vel.X, 0, AIR_HIT_DECELERATION * (float)delta);
         
         _fighter.Velocity = vel;
-        _fighter.ApplyMovementAndPush();
+        _fighter.Physics.ApplyMovementAndPush();
 
         // 3. Freeze the animation on its final frame so they don't awkwardly return to idle mid-air
         if (!_fighter.Anim.IsPlaying())
@@ -58,12 +58,12 @@ public class AirHitState : BaseState
         {
             if (_isJuggle)
             {
-                _fighter.ChangeState(new HardKnockdownState(_fighter, HARD_KNOCKDOWN_DURATION_FRAMES));
+                _fighter.StateMachine.ChangeState(new HardKnockdownState(_fighter, HARD_KNOCKDOWN_DURATION_FRAMES));
             }
             else 
             {
                 // Soft knockdown / standard landing
-                _fighter.ChangeState(new IdleState(_fighter, true)); 
+                _fighter.StateMachine.ChangeState(new IdleState(_fighter, true)); 
             }
         }
     }

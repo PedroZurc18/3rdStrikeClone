@@ -1,75 +1,227 @@
 namespace rdStrikeClone.States;
 
 using Godot;
+using rdStrikeClone.Data;
 
 public class AttackState : BaseState
 {
-    protected NormalAttack _active;
+    // Make this public so HitboxManager can read it
+    public AttackData AttackData => _data;
+    
+    protected AttackData _data;
+    protected bool _isAirborneState;
+    protected bool _isCrouchingState;
 
-    public AttackState(Fighter fighter, NormalAttack triggeredMove) : base(fighter)
+    private int _currentFrame = 0;
+    private AttackData _bufferedCancel = null;
+    private bool _launcherHanging = false;
+    private bool _hasLaunched = false;
+    private float _currentXSpeed = 0f;
+
+    public AttackState(Fighter fighter, AttackData triggeredMove, bool isAirborne = false, bool isCrouching = false) : base(fighter)
     {
-        _active = triggeredMove;
+        _data = triggeredMove;
+        _isAirborneState = isAirborne;
+        _isCrouchingState = isCrouching;
     }
 
     public override void Enter()
     {
-        _active.Initialize(_fighter);
-        
-        Vector2 vel = _fighter.Velocity;
-        vel.X = 0; 
-        _fighter.Velocity = vel;
+        _currentFrame = 0;
+        _hasLaunched = false;
+        _launcherHanging = false;
+        _bufferedCancel = null;
+        _currentXSpeed = 0f;
+
+        // Reset the physical hitbox
+        _fighter.HitManager.ResetHit();
+
+        _fighter.Anim.Stop();
+        _fighter.Anim.Play(_data.AnimationName);
+
+        if (_data.VoiceSound != null)
+        {
+            _fighter.VoicePlayer.Stream = _data.VoiceSound;
+            _fighter.VoicePlayer.VolumeDb = _data.VoiceVolumeDb;
+            _fighter.VoicePlayer.Play();
+        }
+
+        if (!_isAirborneState)
+        {
+            Vector2 vel = _fighter.Velocity;
+            vel.X = 0; 
+            _fighter.Velocity = vel;
+        }
     }
 
     public override void PhysicsUpdate(double delta)
     {
-        bool isMoveFinished = _active.ProcessMove();
-        bool isAirborneState = false; 
+        if (_fighter.Combat.HitStopTimer > 0) 
+        {
+            if (_fighter.Anim.IsPlaying()) _fighter.Anim.Pause(); 
+            return; 
+        }
         
-        _fighter.Velocity = _active.ProcessPhysics(_fighter.Velocity, _fighter.FacingDirection, delta, _fighter.Gravity, isAirborneState);
+        if (_bufferedCancel != null)
+        {
+            _fighter.StateMachine.ChangeState(new AttackState(_fighter, _bufferedCancel, _isAirborneState, _isCrouchingState));
+            return; 
+        }
         
+        if (!_fighter.Anim.IsPlaying() && !_launcherHanging)
+        {
+            _fighter.Anim.Play(); 
+        }
+
+        _currentFrame++;
+
+        ProcessAudio();
+        
+        bool isMoveFinished = _currentFrame > _data.TotalFrames;
+        
+        ApplyPhysics(delta);
         bool isFalling = _fighter.Velocity.Y > 0; 
         
-        _fighter.ApplyMovementAndPush();
+        _fighter.Physics.ApplyMovementAndPush();
         
-        if (_active.HasYProfile && _active.HasLaunched)
+        if (HasYProfile() && _hasLaunched)
         {
-            if (isMoveFinished && _fighter.Anim.IsPlaying())
+            if (isMoveFinished)
             {
-                _fighter.Anim.Pause();
+                _launcherHanging = true;
+                if (_fighter.Anim.IsPlaying()) _fighter.Anim.Pause();
             }
             
             if (isFalling && _fighter.IsOnFloor())
             {
-                _fighter.ChangeState(new IdleState(_fighter, true));
+                _fighter.StateMachine.ChangeState(new IdleState(_fighter, true));
             }
             return; 
         }
 
         if (isMoveFinished)
         {
-            _fighter.ChangeState(new IdleState(_fighter)); 
+            if (_isAirborneState) _fighter.StateMachine.ChangeState(new AirState(_fighter)); 
+            else if (_isCrouchingState) _fighter.StateMachine.ChangeState(new CrouchState(_fighter, false)); 
+            else _fighter.StateMachine.ChangeState(new IdleState(_fighter)); 
+        }
+        else if (_isAirborneState && isFalling && _fighter.IsOnFloor())
+        {
+            _fighter.StateMachine.ChangeState(new IdleState(_fighter, true));
         }
     }
 
+    private void ProcessAudio()
+    {
+        if (_currentFrame == _data.WhiffFrame && _data.WhiffSound != null)
+        {
+            _fighter.SfxPlayer.Stream = _data.WhiffSound;
+            _fighter.SfxPlayer.VolumeDb = _data.WhiffVolumeDb;
+            _fighter.SfxPlayer.Play();
+        }
+    }
+
+    private void ApplyPhysics(double delta)
+    {
+        Vector2 vel = _fighter.Velocity;
+        bool xSpeedJustChanged = false;
+        bool ySpeedJustChanged = false;
+
+        foreach (var keyframe in _data.XSpeedProfile)
+        {
+            if (keyframe.Frame == _currentFrame)
+            {
+                _currentXSpeed = keyframe.Speed;
+                xSpeedJustChanged = true;
+                break;
+            }
+        }
+
+        foreach (var keyframe in _data.YSpeedProfile)
+        {
+            if (keyframe.Frame == _currentFrame)
+            {
+                vel.Y = keyframe.Speed;
+                ySpeedJustChanged = true;
+                _hasLaunched = true;
+                break;
+            }
+        }
+
+        if (HasYProfile()) 
+        {
+            if (!_hasLaunched) 
+            {
+                vel.X = HasXProfile() ? _fighter.FacingDirection * _currentXSpeed : 0;
+            }
+            else 
+            {
+                if (xSpeedJustChanged) vel.X = _fighter.FacingDirection * _currentXSpeed; 
+                if (!ySpeedJustChanged) vel.Y += _fighter.Physics.Gravity * (float)delta;
+                
+                vel.X = Mathf.MoveToward(vel.X, 0, _data.AirDrag * (float)delta);
+            }
+        }
+        else 
+        {
+            if (HasXProfile()) vel.X = _fighter.FacingDirection * _currentXSpeed; 
+            else if (!_isAirborneState) vel.X = 0; 
+
+            if (_isAirborneState) vel.Y += _fighter.Physics.Gravity * (float)delta;
+        }
+
+        _fighter.Velocity = vel;
+    }
+
+    private bool HasYProfile() => _data.YSpeedProfile != null && _data.YSpeedProfile.Count > 0;
+    private bool HasXProfile() => _data.XSpeedProfile != null && _data.XSpeedProfile.Count > 0;
+
     public override void CheckForCancels()
     {
-        if (_active.IsSpecialCancelable && _active.HasHit && _active.IsInsideCancelWindow())
+        if (_bufferedCancel != null) return; 
+
+        // Uses a public boolean we will add to HitboxManager next
+        if (_data.IsSpecialCancelable && _fighter.HitManager.HasHit) 
         {
-            NormalAttack triggeredMove = _fighter.Moves.EvaluateAvailableMoves(_fighter.Buffer, false);
-            
-            if (triggeredMove is SpecialAttack)
+            bool isInsideCancelWindow = _currentFrame >= _data.CancelWindowStart && _currentFrame <= _data.CancelWindowEnd;
+
+            if (!isInsideCancelWindow) return;
+
+            AttackData triggeredMove = _fighter.Moves.EvaluateAvailableMoves(_fighter.Buffer, !_isAirborneState);
+
+            if (triggeredMove != null && triggeredMove.RequiredMotion != AttackData.MotionType.None) 
             {
-                _fighter.ChangeState(new SpecialAttackState(_fighter, triggeredMove));
-                return;
+                if (_fighter.Combat.HitStopTimer > 0)
+                {
+                    _bufferedCancel = triggeredMove;
+                }
+                else
+                {
+                    _fighter.StateMachine.ChangeState(new AttackState(_fighter, triggeredMove, _isAirborneState, _isCrouchingState));
+                }
             }
         }
     }
 
     public override void Exit()
     {
-        if (_active != null)
+        foreach (Node child in _fighter.HitManager.GetChildren())
         {
-            _active.SetBoxesActive(false);
+            if (child is CollisionShape2D shape)
+            {
+                shape.SetDeferred("disabled", true);
+            }
+        }
+        
+        if (_fighter.ExtendedHurtbox != null)
+        {
+            foreach (Node child in _fighter.ExtendedHurtbox.GetChildren())
+            {
+                if (child is CollisionShape2D shape)
+                {
+                    shape.SetDeferred("disabled", true);
+                }
+            }
         }
     }
 }

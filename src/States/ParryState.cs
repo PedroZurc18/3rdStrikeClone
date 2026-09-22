@@ -1,15 +1,17 @@
+using rdStrikeClone.Data;
+
 namespace rdStrikeClone.States;
 
 using Godot;
 
 public class ParryState : BaseState
 {
-    private NormalAttack.HitHeight _parryHeight;
+    private AttackData.HitHeight _parryHeight;
     private bool _isAirborne;
     
     public override bool CanBlock => true; 
 
-    public ParryState(Fighter fighter, NormalAttack.HitHeight parryHeight, bool isAirborne)
+    public ParryState(Fighter fighter, AttackData.HitHeight parryHeight, bool isAirborne)
         : base(fighter)
     {
         _parryHeight = parryHeight;
@@ -24,7 +26,7 @@ public class ParryState : BaseState
         {
             _fighter.Anim.Play("jump_parry");
         }
-        else if (_parryHeight == NormalAttack.HitHeight.Low)
+        else if (_parryHeight == AttackData.HitHeight.Low)
         {
             _fighter.Anim.Play("crouch_parry");
         }
@@ -38,30 +40,30 @@ public class ParryState : BaseState
     {
         if (!_fighter.Anim.IsPlaying())
         {
-            if (!_isAirborne && _parryHeight == NormalAttack.HitHeight.Low)
+            if (!_isAirborne && _parryHeight == AttackData.HitHeight.Low)
             {
-                _fighter.ChangeState(new CrouchState(_fighter, false));
+                _fighter.StateMachine.ChangeState(new CrouchState(_fighter, false));
             }
             else
             {
-                _fighter.ChangeState(new IdleState(_fighter, _isAirborne));
+                _fighter.StateMachine.ChangeState(new IdleState(_fighter, _isAirborne));
             }
         }
     }
 
     public override void CheckForCancels()
     {
-        NormalAttack triggeredMove = _fighter.Moves.EvaluateAvailableMoves(_fighter.Buffer, _isAirborne);
+        AttackData triggeredMove = _fighter.Moves.EvaluateAvailableMoves(_fighter.Buffer, _isAirborne);
         
         if (triggeredMove != null)
         {
             if (_isAirborne)
             {
-                _fighter.ChangeState(new AirAttackState(_fighter, triggeredMove));
+                _fighter.StateMachine.ChangeState(new AirAttackState(_fighter, triggeredMove));
             }
             else
             {
-                _fighter.ChangeState(new AttackState(_fighter, triggeredMove));
+                _fighter.StateMachine.ChangeState(new AttackState(_fighter, triggeredMove));
             }
             return;
         }

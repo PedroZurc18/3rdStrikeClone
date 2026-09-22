@@ -38,7 +38,7 @@ public partial class InputBuffer : Node
         _buffer = new InputFrame[BufferSize];
     }
 
-    public override void _PhysicsProcess(double delta)
+    public void Tick()
     {
         _currentFrame++;
 
@@ -181,7 +181,7 @@ public partial class InputBuffer : Node
         int[][] expectedMotions, 
         InputFlag requiredButton, 
         int facingDirection, 
-        int frameWindow = 30
+        int frameWindow = 15
     )
     {
             frameWindow = Math.Min(frameWindow, BufferSize - 1);

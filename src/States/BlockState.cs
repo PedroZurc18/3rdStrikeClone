@@ -1,6 +1,7 @@
 namespace rdStrikeClone.States;
 
 using Godot;
+using rdStrikeClone.Data;
 
 public class BlockState : BaseState
 {
@@ -9,7 +10,7 @@ public class BlockState : BaseState
     private bool _isCrouching;
     public override bool CanBlock => true;
 
-    public BlockState(Fighter fighter, int blockStun, float pushback, bool isCrouching, NormalAttack.HitHeight blockedHitHeight)
+    public BlockState(Fighter fighter, int blockStun, float pushback, bool isCrouching, AttackData.HitHeight blockedHitHeight)
         : base(fighter)
     {
         _blockStunTimer = blockStun;
@@ -39,21 +40,21 @@ public class BlockState : BaseState
         if (!_fighter.IsOnFloor())
         {
             Vector2 vel = _fighter.Velocity;
-            vel.Y += _fighter.Gravity * (float)delta;
+            vel.Y += _fighter.Physics.Gravity * (float)delta;
             _fighter.Velocity = vel;
 
         }
-        _fighter.ApplyMovementAndPush();
+        _fighter.Physics.ApplyMovementAndPush();
         _blockStunTimer--;
         if (_blockStunTimer <= 0)
         {
             if (_fighter.Buffer.IsInputActive(InputBuffer.InputFlag.Down))
             {
-                _fighter.ChangeState(new CrouchState(_fighter, false));
+                _fighter.StateMachine.ChangeState(new CrouchState(_fighter, false));
             }
             else
             {
-                _fighter.ChangeState(new IdleState(_fighter));
+                _fighter.StateMachine.ChangeState(new IdleState(_fighter));
             }
         }
     }

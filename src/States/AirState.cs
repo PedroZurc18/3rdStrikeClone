@@ -1,3 +1,5 @@
+using rdStrikeClone.Data;
+
 namespace rdStrikeClone.States;
 
 using Godot;
@@ -17,16 +19,16 @@ public class AirState : BaseState
         
         if (_isJumping)
         {
-            vel.Y = _fighter.JumpForce;
+            vel.Y = _fighter.Physics.JumpForce;
             
             if (_fighter.Buffer.IsInputActive(InputBuffer.InputFlag.Right))
             {
-                vel.X = _fighter.WalkSpeed;
+                vel.X = _fighter.Physics.WalkSpeed;
                 _fighter.Anim.Play((_fighter.FacingDirection == 1) ? "jump_forward" : "jump_backward");
             }
             else if (_fighter.Buffer.IsInputActive(InputBuffer.InputFlag.Left))
             {
-                vel.X = -_fighter.WalkSpeed;
+                vel.X = -_fighter.Physics.WalkSpeed;
                 _fighter.Anim.Play((_fighter.FacingDirection == -1) ? "jump_forward" : "jump_backward");
             }
             else
@@ -45,23 +47,23 @@ public class AirState : BaseState
 
     public override void PhysicsUpdate(double delta)
     {
-        NormalAttack triggeredMove = _fighter.Moves.EvaluateAvailableMoves(_fighter.Buffer, true);
+        AttackData triggeredMove = _fighter.Moves.EvaluateAvailableMoves(_fighter.Buffer, true);
         
         if (triggeredMove != null)
         {
-            _fighter.ChangeState(new AirAttackState(_fighter, triggeredMove));
+            _fighter.StateMachine.ChangeState(new AirAttackState(_fighter, triggeredMove));
             return;
         }
 
         Vector2 vel = _fighter.Velocity;
-        vel.Y += _fighter.Gravity * (float)delta;
+        vel.Y += _fighter.Physics.Gravity * (float)delta;
         _fighter.Velocity = vel;
         
-        _fighter.ApplyMovementAndPush();
+        _fighter.Physics.ApplyMovementAndPush();
         
         if (_fighter.IsOnFloor() && vel.Y > 0)
         {
-            _fighter.ChangeState(new IdleState(_fighter, true));
+            _fighter.StateMachine.ChangeState(new IdleState(_fighter, true));
         }
     }
 }

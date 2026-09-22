@@ -39,17 +39,17 @@ public class HardKnockdownState : BaseState
         // Re-apply gravity just in case they slide off an edge (if your stages have them!)
         if (!_fighter.IsOnFloor()) 
         {
-            vel.Y += _fighter.Gravity * (float)delta;
+            vel.Y += _fighter.Physics.Gravity * (float)delta;
         }
 
         _fighter.Velocity = vel;
-        _fighter.ApplyMovementAndPush();
+        _fighter.Physics.ApplyMovementAndPush();
 
         // 3. The Knockdown Timer
         _timer--;
         if (_timer <= 0)
         {
-            _fighter.ChangeState(new GetUpState(_fighter));
+            _fighter.StateMachine.ChangeState(new GetUpState(_fighter));
         }
     }
 }

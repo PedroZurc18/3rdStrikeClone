@@ -29,11 +29,11 @@ public class GetUpState : BaseState
         // Apply gravity just in case
         if (!_fighter.IsOnFloor()) 
         {
-            vel.Y += _fighter.Gravity * (float)delta;
+            vel.Y += _fighter.Physics.Gravity * (float)delta;
         }
 
         _fighter.Velocity = vel;
-        _fighter.ApplyMovementAndPush();
+        _fighter.Physics.ApplyMovementAndPush();
 
         // Check if the animation has finished naturally
         if (!_fighter.Anim.IsPlaying())
@@ -42,11 +42,11 @@ public class GetUpState : BaseState
             if (_fighter.Buffer.IsInputActive(InputBuffer.InputFlag.Down))
             {
                 // Assuming you can pass 'false' to skip the crouch_in transition animation
-                _fighter.ChangeState(new CrouchState(_fighter)); 
+                _fighter.StateMachine.ChangeState(new CrouchState(_fighter)); 
             }
             else
             {
-                _fighter.ChangeState(new IdleState(_fighter)); 
+                _fighter.StateMachine.ChangeState(new IdleState(_fighter)); 
             }
         }
     }

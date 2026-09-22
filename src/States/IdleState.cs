@@ -1,3 +1,5 @@
+using rdStrikeClone.Data;
+
 namespace rdStrikeClone.States;
 
 using Godot;
@@ -20,21 +22,21 @@ public class IdleState : BaseState
     {
         if (_fighter.Buffer.IsInputActive(InputBuffer.InputFlag.Up))
         {
-            _fighter.ChangeState(new AirState(_fighter));
+            _fighter.StateMachine.ChangeState(new AirState(_fighter));
             return;
         }
         
-        NormalAttack triggeredMove = _fighter.Moves.EvaluateAvailableMoves(_fighter.Buffer, false);
+        AttackData triggeredMove = _fighter.Moves.EvaluateAvailableMoves(_fighter.Buffer, false);
         
         if (triggeredMove != null)
         {
-            _fighter.ChangeState(new AttackState(_fighter, triggeredMove));
+            _fighter.StateMachine.ChangeState(new AttackState(_fighter, triggeredMove));
             return; 
         }
         
         if (_fighter.Buffer.IsInputActive(InputBuffer.InputFlag.Down))
         {
-            _fighter.ChangeState(new CrouchState(_fighter));
+            _fighter.StateMachine.ChangeState(new CrouchState(_fighter));
             return;
         }
         
@@ -77,14 +79,14 @@ public class IdleState : BaseState
             _fighter.Anim.Play("idle");
         }
         
-        currentVelocity.X = direction * _fighter.WalkSpeed;
+        currentVelocity.X = direction * _fighter.Physics.WalkSpeed;
         
         if (!_fighter.IsOnFloor())
         {
-            currentVelocity.Y += _fighter.Gravity * (float)delta;
+            currentVelocity.Y += _fighter.Physics.Gravity * (float)delta;
         }
         
         _fighter.Velocity = currentVelocity;
-        _fighter.ApplyMovementAndPush();
+        _fighter.Physics.ApplyMovementAndPush();
     }
 }
