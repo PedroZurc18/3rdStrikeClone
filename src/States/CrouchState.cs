@@ -47,7 +47,7 @@ public class CrouchState : BaseState
             else
             {
                 // Standard crouching jabs go to CrouchAttackState
-                _fighter.StateMachine.ChangeState(new CrouchAttackState(_fighter, triggeredMove));
+                _fighter.StateMachine.ChangeState(new AttackState(_fighter, triggeredMove, false, true));
             }
             return; 
         }
@@ -61,7 +61,7 @@ public class CrouchState : BaseState
             }
             else
             {
-                _fighter.StateMachine.ChangeState(new StandUpState(_fighter));
+                _fighter.StateMachine.ChangeState(new IdleState(_fighter, false, true));
             }
             return; 
         }

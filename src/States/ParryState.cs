@@ -59,7 +59,7 @@ public class ParryState : BaseState
         {
             if (_isAirborne)
             {
-                _fighter.StateMachine.ChangeState(new AirAttackState(_fighter, triggeredMove));
+                _fighter.StateMachine.ChangeState(new AttackState(_fighter, triggeredMove, true));
             }
             else
             {

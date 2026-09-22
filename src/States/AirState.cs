@@ -51,7 +51,7 @@ public class AirState : BaseState
         
         if (triggeredMove != null)
         {
-            _fighter.StateMachine.ChangeState(new AirAttackState(_fighter, triggeredMove));
+            _fighter.StateMachine.ChangeState(new AttackState(_fighter, triggeredMove, true));
             return;
         }
 

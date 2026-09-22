@@ -31,7 +31,7 @@ public partial class AttackData : Resource
     [Export] public float AirDrag = 0.0f;
 
     [ExportGroup("Hit Stats")]
-    [Export] public HitboxFrameData HitStats;
+    [Export] public Godot.Collections.Array<HitboxFrameData> HitStatsList = new();
 
     [ExportGroup("Audio")]
     [Export] public AudioStream WhiffSound;

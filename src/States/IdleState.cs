@@ -10,13 +10,28 @@ public class IdleState : BaseState
     private bool _isLanding;
     private int _landingFrames = 13;
     private int _currentFrame = 0;
+    
+    private bool _fromLanding;
+    private bool _wasCrouching;
 
-    public IdleState(Fighter fighter, bool isLanding = false) : base(fighter)
+    public IdleState(Fighter fighter, bool fromLanding = false, bool wasCrouching = false) : base(fighter)
     {
-        _isLanding = isLanding;
+        _fromLanding = fromLanding;
+        _wasCrouching = wasCrouching;
     }
 
-    public override void Enter() {}
+    public override void Enter()
+    {
+        if (_wasCrouching)
+        {
+            _fighter.Anim.Play("crouch_out");
+            _fighter.Anim.Queue("idle");
+        }
+        else
+        {
+            _fighter.Anim.Play("idle");
+        }
+    }
 
     public override void PhysicsUpdate(double delta)
     {

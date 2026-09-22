@@ -16,7 +16,15 @@ public partial class HitboxManager : Area2D
     }
 
     public void ResetHit() => _hasHit = false;
-
+    
+    public void SetHitbox(int index)
+    {
+        if (_fighter.StateMachine.CurrentState is rdStrikeClone.States.AttackState attackState)
+        {
+            attackState.SetHitIndex(index);
+        }
+    }
+    
     private void OnHitboxConnected(Area2D area)
     {
         if (_hasHit) return;
@@ -36,7 +44,7 @@ public partial class HitboxManager : Area2D
                 _hasHit = true;
                 _fighter.SfxPlayer.Stop();
                 
-                bool wasParried = hitFighter.Combat.ReceiveHit(attackState.AttackData, attackState.AttackData.HitStats);
+                bool wasParried = hitFighter.Combat.ReceiveHit(attackState.AttackData, attackState.CurrentHitStats);
                 
                 if (wasParried)
                 {
@@ -45,8 +53,8 @@ public partial class HitboxManager : Area2D
                 }
                 else
                 {
-                    _fighter.Combat.ApplyHitStop(attackState.AttackData.HitStats.HitStopFrames, true);
-                    hitFighter.Combat.ApplyHitStop(attackState.AttackData.HitStats.HitStopFrames, false); 
+                    _fighter.Combat.ApplyHitStop(attackState.CurrentHitStats.HitStopFrames, true);
+                    hitFighter.Combat.ApplyHitStop(attackState.CurrentHitStats.HitStopFrames, false); 
                 }
             }
         }

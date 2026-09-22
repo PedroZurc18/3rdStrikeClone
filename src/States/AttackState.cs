@@ -7,11 +7,13 @@ public class AttackState : BaseState
 {
     // Make this public so HitboxManager can read it
     public AttackData AttackData => _data;
+    public HitboxFrameData CurrentHitStats { get; private set; }
     
     protected AttackData _data;
     protected bool _isAirborneState;
     protected bool _isCrouchingState;
 
+    private int _currentHitIndex = -1;
     private int _currentFrame = 0;
     private AttackData _bufferedCancel = null;
     private bool _launcherHanging = false;
@@ -32,8 +34,7 @@ public class AttackState : BaseState
         _launcherHanging = false;
         _bufferedCancel = null;
         _currentXSpeed = 0f;
-
-        // Reset the physical hitbox
+        
         _fighter.HitManager.ResetHit();
 
         _fighter.Anim.Stop();
@@ -52,6 +53,13 @@ public class AttackState : BaseState
             vel.X = 0; 
             _fighter.Velocity = vel;
         }
+        
+        if (_data.HitStatsList != null && _data.HitStatsList.Count > 0)
+        {
+            CurrentHitStats = _data.HitStatsList[0];
+            _currentHitIndex = 0;
+        }
+        
     }
 
     public override void PhysicsUpdate(double delta)
@@ -202,7 +210,19 @@ public class AttackState : BaseState
             }
         }
     }
-
+    
+    public void SetHitIndex(int index)
+    {   
+        if (index == _currentHitIndex) return;
+        
+        if (_data.HitStatsList != null && index >= 0 && index < _data.HitStatsList.Count)
+        {
+            _currentHitIndex = index;
+            CurrentHitStats = _data.HitStatsList[index];
+            _fighter.HitManager.ResetHit();
+        }
+    }
+    
     public override void Exit()
     {
         foreach (Node child in _fighter.HitManager.GetChildren())

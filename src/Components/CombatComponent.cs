@@ -138,8 +138,8 @@ public partial class CombatComponent : Node
         
         if (pauseAnimation)
         {
-            _fighter.Anim.Seek(_fighter.Anim.CurrentAnimationPosition, true);
-            if (_fighter.Anim.IsPlaying()) _fighter.Anim.Pause();
+            _fighter.Anim.CallDeferred(AnimationPlayer.MethodName.Seek,_fighter.Anim.CurrentAnimationPosition, true);
+            if (_fighter.Anim.IsPlaying()) _fighter.Anim.CallDeferred(AnimationPlayer.MethodName.Pause);
         }
     }
 
@@ -208,7 +208,7 @@ public partial class CombatComponent : Node
         }
         
         bool isBusy = _fighter.StateMachine.CurrentState is HitState || _fighter.StateMachine.CurrentState is AirHitState || 
-                      _fighter.StateMachine.CurrentState is AttackState || _fighter.StateMachine.CurrentState is SpecialAttackState || _fighter.StateMachine.CurrentState is BlockState;
+                      _fighter.StateMachine.CurrentState is AttackState || _fighter.StateMachine.CurrentState is BlockState;
                       
         if (isBusy || _parryCooldownTimer > 0) 
         {
