@@ -46,7 +46,7 @@ public partial class CombatComponent : Node
         }
     }
 
-    public bool ReceiveHit(AttackData attack, rdStrikeClone.Data.HitboxFrameData hitbox)
+    public bool ReceiveHit(AttackData attack, HitboxFrameData hitbox)
     {   
         bool successfullyParried = CheckIfParried(hitbox.Height);
 
@@ -66,18 +66,9 @@ public partial class CombatComponent : Node
         bool successfullyBlocked = CheckIfBlocked(hitbox.Height);
         bool isCrouching = _fighter.Buffer.IsInputActive(InputBuffer.InputFlag.Down);
         float actualPushbackForce = hitbox.PushbackForce;
-        float pushAwayFromAttackerDirection;
         
-        if (!_fighter.IsOnFloor() && Mathf.Abs(_fighter.Velocity.X) > 0.01f)
-        {
-            pushAwayFromAttackerDirection = -Mathf.Sign(_fighter.Velocity.X);
-        }
-        else
-        {
-            pushAwayFromAttackerDirection = Mathf.Sign(_fighter.GlobalPosition.X - _fighter.Opponent.GlobalPosition.X);
-            if (pushAwayFromAttackerDirection == 0) pushAwayFromAttackerDirection = -_fighter.Opponent.FacingDirection;
-        }
-        
+        float pushAwayFromAttackerDirection = _fighter.Opponent.FacingDirection;
+
         var collision = _fighter.TestMove(_fighter.GlobalTransform, new Vector2(pushAwayFromAttackerDirection * 5.0f, 0));
         
         if (hitbox.Scoop != 0 && !successfullyBlocked)

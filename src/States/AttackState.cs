@@ -1,3 +1,5 @@
+using rdStrikeClone.Components;
+
 namespace rdStrikeClone.States;
 
 using Godot;
@@ -81,6 +83,8 @@ public class AttackState : BaseState
             _fighter.Anim.Play(); 
         }
 
+        CheckForCancels();
+        
         _currentFrame++;
 
         ProcessAudio();
@@ -184,30 +188,20 @@ public class AttackState : BaseState
     private bool HasYProfile() => _data.YSpeedProfile != null && _data.YSpeedProfile.Count > 0;
     private bool HasXProfile() => _data.XSpeedProfile != null && _data.XSpeedProfile.Count > 0;
 
-    public override void CheckForCancels()
+    private void CheckForCancels()
     {
-        if (_bufferedCancel != null) return; 
-
-        // Uses a public boolean we will add to HitboxManager next
-        if (_data.IsSpecialCancelable && _fighter.HitManager.HasHit) 
+        if (!_data.IsSpecialCancelable) return;
+        if (!_fighter.HitManager.HasHit) return;
+        
+        int cancelWindowEnd = _data.CancelWindowStart + _data.CancelWindow;
+        
+        if (_currentFrame < _data.CancelWindowStart || _currentFrame > cancelWindowEnd) return;
+        
+        AttackData triggeredMove = _fighter.Moves.EvaluateAvailableMoves(_fighter.Buffer, _isAirborneState);
+        
+        if (triggeredMove != null && triggeredMove.RequiredMotion != AttackData.MotionType.None && triggeredMove != _data)
         {
-            bool isInsideCancelWindow = _currentFrame >= _data.CancelWindowStart && _currentFrame <= _data.CancelWindowEnd;
-
-            if (!isInsideCancelWindow) return;
-
-            AttackData triggeredMove = _fighter.Moves.EvaluateAvailableMoves(_fighter.Buffer, !_isAirborneState);
-
-            if (triggeredMove != null && triggeredMove.RequiredMotion != AttackData.MotionType.None) 
-            {
-                if (_fighter.Combat.HitStopTimer > 0)
-                {
-                    _bufferedCancel = triggeredMove;
-                }
-                else
-                {
-                    _fighter.StateMachine.ChangeState(new AttackState(_fighter, triggeredMove, _isAirborneState, _isCrouchingState));
-                }
-            }
+            _fighter.StateMachine.ChangeState(new AttackState(_fighter, triggeredMove, _isAirborneState, _isCrouchingState));
         }
     }
     
@@ -221,6 +215,26 @@ public class AttackState : BaseState
             CurrentHitStats = _data.HitStatsList[index];
             _fighter.HitManager.ResetHit();
         }
+    }
+    
+    public void SpawnProjectile()
+    {
+        if (_data.ProjectilePrefab == null) return;
+
+        Projectile fireball = _data.ProjectilePrefab.Instantiate<Projectile>();
+        
+        fireball.OwnerFighter = _fighter;
+        fireball.MoveData = _data;
+        fireball.HitStats = CurrentHitStats;
+        fireball.Direction = _fighter.FacingDirection;
+        
+        Vector2 spawnOffset = _data.ProjectileSpawnOffset;
+        spawnOffset.X *= _fighter.FacingDirection; 
+        
+        fireball.GlobalPosition = _fighter.GlobalPosition + spawnOffset;
+        
+        _fighter.ActiveProjectile = fireball;
+        _fighter.GetTree().CurrentScene.AddChild(fireball);
     }
     
     public override void Exit()

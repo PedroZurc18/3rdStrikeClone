@@ -20,6 +20,8 @@ public partial class Fighter : CharacterBody2D
     private float _pillboxOffset = 3.0f;
     public Area2D ExtendedHurtbox { get; private set; }
 
+    public Projectile ActiveProjectile { get; set; }
+    
     [Export] public Fighter Opponent;
 
     public MoveManager Moves { get; private set; }
@@ -91,6 +93,14 @@ public partial class Fighter : CharacterBody2D
         if (PillboxShape != null)
         {
             PillboxShape.Position = new Vector2(_pillboxOffset * FacingDirection, PillboxShape.Position.Y);
+        }
+    }
+    
+    public void SpawnProjectile()
+    {
+        if (StateMachine.CurrentState is rdStrikeClone.States.AttackState attackState)
+        {
+            attackState.SpawnProjectile();
         }
     }
 }

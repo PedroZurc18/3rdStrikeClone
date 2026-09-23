@@ -23,7 +23,7 @@ public partial class AttackData : Resource
     [ExportGroup("Cancel Data")]
     [Export] public bool IsSpecialCancelable = false;
     [Export] public int CancelWindowStart = 0;
-    [Export] public int CancelWindowEnd = 99;
+    [Export] public int CancelWindow = 5;
 
     [ExportGroup("Physics & Movement")]
     [Export] public Godot.Collections.Array<SpeedKeyframe> XSpeedProfile = new();
@@ -43,4 +43,8 @@ public partial class AttackData : Resource
     [Export] public float BlockVolumeDb = 0.0f;
     [Export] public AudioStream VoiceSound;
     [Export] public float VoiceVolumeDb = 0.0f;
+    
+    [ExportGroup("Projectile")]
+    [Export] public PackedScene ProjectilePrefab;
+    [Export] public Vector2 ProjectileSpawnOffset = new Vector2(60, -80);
 }

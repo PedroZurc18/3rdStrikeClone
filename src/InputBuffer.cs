@@ -181,16 +181,14 @@ public partial class InputBuffer : Node
         int[][] expectedMotions, 
         InputFlag requiredButton, 
         int facingDirection, 
-        int frameWindow = 15
+        int frameWindow = 10
     )
     {
             frameWindow = Math.Min(frameWindow, BufferSize - 1);
-
-            // BUMPED TO 8 FRAMES: Gives you a realistic window to time your cancels!
+            
             if (!WasInputPressedWithin(requiredButton, 8))
                 return false;
-
-            // Check every valid shortcut path
+        
             foreach (var motion in expectedMotions)
             {
                 int motionIndex = motion.Length - 1;
@@ -207,7 +205,7 @@ public partial class InputBuffer : Node
                         motionIndex--;
                         if (motionIndex < 0)
                         {
-                            return true; // We found a valid sequence!
+                            return true;
                         }
                     }
                 }

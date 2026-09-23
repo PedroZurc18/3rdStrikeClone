@@ -41,12 +41,10 @@ public class CrouchState : BaseState
         {
             if (triggeredMove.RequiredMotion != AttackData.MotionType.None)
             {
-                // Specials triggered while crouching MUST go to the universal AttackState
                 _fighter.StateMachine.ChangeState(new AttackState(_fighter, triggeredMove));
             }
             else
             {
-                // Standard crouching jabs go to CrouchAttackState
                 _fighter.StateMachine.ChangeState(new AttackState(_fighter, triggeredMove, false, true));
             }
             return; 

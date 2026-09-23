@@ -32,8 +32,14 @@ public partial class MoveManager : Node
 
     public AttackData EvaluateAvailableMoves(InputBuffer buffer, bool isAirborne)
     {
+        bool fireballExists = IsInstanceValid(_fighter.ActiveProjectile);
         foreach (AttackData attack in AvailableMoves)
-        {
+        { 
+            if (fireballExists && attack.ProjectilePrefab != null)
+            {
+                continue; 
+            }
+            
             if (attack.IsAirborneMove != isAirborne) continue;
 
             if (attack.RequiredMotion != AttackData.MotionType.None)
@@ -44,7 +50,7 @@ public partial class MoveManager : Node
                     requiredSequence, 
                     attack.RequiredButton, 
                     _fighter.FacingDirection, 
-                    30
+                    10
                 );
 
                 if (motionCompleted)
