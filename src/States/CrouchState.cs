@@ -33,6 +33,12 @@ public class CrouchState : BaseState
 
     public override void PhysicsUpdate(double delta)
     {
+        if (_fighter.Combat.IsInProximity() && _fighter.Combat.IsHoldingBack())
+        {
+            _fighter.StateMachine.ChangeState(new BlockState(_fighter, isCrouching: true)); 
+            return;
+        }
+        
         _fighter.TurnToFaceOpponent();
         
         AttackData triggeredMove = _fighter.Moves.EvaluateAvailableMoves(_fighter.Buffer, false);

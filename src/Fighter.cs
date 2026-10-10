@@ -31,6 +31,11 @@ public partial class Fighter : CharacterBody2D
     public CombatComponent Combat { get; private set; }
     public StateMachineComponent StateMachine { get; private set; }
     public HitboxManager HitManager { get; private set; }
+    
+    [ExportGroup("Nodes")]
+    [Export] public Area2D Hurtbox;
+    
+    public Area2D ProximityBox;
 
     public override void _Ready()
     {
@@ -43,6 +48,7 @@ public partial class Fighter : CharacterBody2D
         VoicePlayer = GetNode<AudioStreamPlayer2D>("VoicePlayer");
         Moves = GetNode<MoveManager>("MoveManager");
         ExtendedHurtbox = GetNode<Area2D>("Visuals/ExtendedHurtbox");
+        ProximityBox = GetNode<Area2D>("ProximityBox");
         
         Physics = GetNode<PhysicsComponent>("PhysicsComponent");
         Combat = GetNode<CombatComponent>("CombatComponent");

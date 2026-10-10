@@ -66,6 +66,7 @@ public class AttackState : BaseState
 
     public override void PhysicsUpdate(double delta)
     {
+        if (_fighter.Combat.HitStopTimer > 0) return;
         if (_fighter.Combat.HitStopTimer > 0) 
         {
             if (_fighter.Anim.IsPlaying()) _fighter.Anim.Pause(); 
@@ -237,13 +238,23 @@ public class AttackState : BaseState
         _fighter.GetTree().CurrentScene.AddChild(fireball);
     }
     
+    private void ResetBox(CollisionShape2D box)
+    {
+        if (box == null) return;
+        
+        box.SetDeferred(CollisionShape2D.PropertyName.Disabled, true);
+        
+        box.Position = Vector2.Zero;
+        box.Scale = Vector2.One;
+    }
+    
     public override void Exit()
     {
         foreach (Node child in _fighter.HitManager.GetChildren())
         {
-            if (child is CollisionShape2D shape)
+            if (child is CollisionShape2D box)
             {
-                shape.SetDeferred("disabled", true);
+                ResetBox(box);
             }
         }
         
@@ -251,9 +262,20 @@ public class AttackState : BaseState
         {
             foreach (Node child in _fighter.ExtendedHurtbox.GetChildren())
             {
-                if (child is CollisionShape2D shape)
+                if (child is CollisionShape2D box)
                 {
-                    shape.SetDeferred("disabled", true);
+                    ResetBox(box);
+                }
+            }
+        }
+        
+        if (_fighter.ProximityBox != null)
+        {
+            foreach (Node child in _fighter.ProximityBox.GetChildren())
+            {
+                if (child is CollisionShape2D box)
+                {
+                    ResetBox(box); 
                 }
             }
         }

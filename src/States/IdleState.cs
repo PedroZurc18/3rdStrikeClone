@@ -14,9 +14,9 @@ public class IdleState : BaseState
     private bool _fromLanding;
     private bool _wasCrouching;
 
-    public IdleState(Fighter fighter, bool fromLanding = false, bool wasCrouching = false) : base(fighter)
-    {
-        _fromLanding = fromLanding;
+    public IdleState(Fighter fighter, bool isLanding = false, bool wasCrouching = false) : base(fighter)
+    { 
+        _isLanding = isLanding;
         _wasCrouching = wasCrouching;
     }
 
@@ -35,6 +35,12 @@ public class IdleState : BaseState
 
     public override void PhysicsUpdate(double delta)
     {
+        if (_fighter.Combat.IsInProximity() && _fighter.Combat.IsHoldingBack())
+        {
+            _fighter.StateMachine.ChangeState(new BlockState(_fighter, isCrouching: false)); 
+            return;
+        }
+        
         if (_fighter.Buffer.IsInputActive(InputBuffer.InputFlag.Up))
         {
             _fighter.StateMachine.ChangeState(new AirState(_fighter));

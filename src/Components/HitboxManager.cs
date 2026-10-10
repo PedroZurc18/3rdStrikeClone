@@ -19,7 +19,7 @@ public partial class HitboxManager : Area2D
     
     public void SetHitbox(int index)
     {
-        if (_fighter.StateMachine.CurrentState is rdStrikeClone.States.AttackState attackState)
+        if (_fighter.StateMachine.CurrentState is AttackState attackState)
         {
             attackState.SetHitIndex(index);
         }
@@ -54,7 +54,7 @@ public partial class HitboxManager : Area2D
                 else
                 {
                     _fighter.Combat.ApplyHitStop(attackState.CurrentHitStats.HitStopFrames, true);
-                    hitFighter.Combat.ApplyHitStop(attackState.CurrentHitStats.HitStopFrames, false); 
+                    hitFighter.Combat.ApplyHitStop(attackState.CurrentHitStats.HitStopFrames, true); 
                 }
             }
         }

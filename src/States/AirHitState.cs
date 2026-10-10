@@ -36,6 +36,10 @@ public class AirHitState : BaseState
 
     public override void PhysicsUpdate(double delta)
     {
+        if (_fighter.Combat.HitStopTimer > 0) return;
+        
+        _fighter.Anim.Play();
+        
         Vector2 vel = _fighter.Velocity;
 
         // 1. Apply gravity so they constantly fall

@@ -43,6 +43,7 @@ public partial class CombatComponent : Node
         if (HitStopTimer > 0)
         {
             HitStopTimer--;
+            
         }
     }
 
@@ -93,8 +94,16 @@ public partial class CombatComponent : Node
                 _fighter.HitPlayer.VolumeDb = attack.BlockVolumeDb;
                 _fighter.HitPlayer.Play();
             }
-            _fighter.StateMachine.ChangeState(new BlockState(_fighter, hitbox.BlockStunFrames, actualPushbackForce, isCrouching, hitbox.Height));
-            if (actualPushbackForce > 0) _fighter.Physics.ApplyUniversalPushback(actualPushbackForce, pushAwayFromAttackerDirection);
+            
+            _fighter.StateMachine.ChangeState(new BlockState(_fighter, isCrouching, hitbox.BlockStunFrames, actualPushbackForce, hitbox.Height));
+            if (actualPushbackForce > 0) 
+            {
+                _fighter.Physics.ApplyUniversalPushback(actualPushbackForce, pushAwayFromAttackerDirection);
+            }
+            else if (hitbox.Pull > 0) 
+            {
+                _fighter.Physics.ApplyUniversalPushback(hitbox.Pull, -pushAwayFromAttackerDirection); 
+            }
         }
         else
         {
@@ -147,6 +156,20 @@ public partial class CombatComponent : Node
         if (height == AttackData.HitHeight.Low && !isHoldingDown) return false; 
 
         return true;
+    }
+    
+    public bool IsInProximity()
+    {
+        Godot.Collections.Array<Area2D> overlappingAreas = _fighter.Hurtbox.GetOverlappingAreas();
+        
+        foreach (Area2D area in overlappingAreas)
+        {
+            if (area is ProximityBox)
+            {
+                return true;
+            }
+        }
+        return false;
     }
     
     public bool CheckIfParried(AttackData.HitHeight attackHeight)
