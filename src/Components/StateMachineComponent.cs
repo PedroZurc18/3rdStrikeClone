@@ -8,7 +8,6 @@ public partial class StateMachineComponent : Node
     public BaseState CurrentState { get; private set; }
     
     private Fighter _fighter;
-
     public override void _Ready()
     {
         _fighter = GetParent<Fighter>();

@@ -43,19 +43,6 @@ debug_color = Color(0.8156863, 0.11372549, 0.7921569, 0.41960785)
 position = Vector2(576, 322)
 position_smoothing_enabled = true
 
-[node name="Player1" parent="." unique_id=961281130 node_paths=PackedStringArray("Opponent") instance=ExtResource("3_kaalw")]
-position = Vector2(333, 501.99997)
-scale = Vector2(1.7, 1.7)
-Opponent = NodePath("../Player2")
-
-[node name="Player2" parent="." unique_id=155574547 node_paths=PackedStringArray("Opponent") instance=ExtResource("3_kaalw")]
-position = Vector2(798.99994, 506)
-scale = Vector2(1.7, 1.7)
-Opponent = NodePath("../Player1")
-
-[node name="InputBuffer" parent="Player2" index="2" unique_id=2128503683]
-PlayerId = 2
-
 [node name="HUD" type="CanvasLayer" parent="." unique_id=306791544]
 
 [node name="P1HealthBar" type="ProgressBar" parent="HUD" unique_id=851921744]
@@ -81,7 +68,18 @@ rounded = true
 fill_mode = 1
 show_percentage = false
 
+[node name="Player1" parent="." unique_id=961281130 node_paths=PackedStringArray("Opponent") instance=ExtResource("3_kaalw")]
+position = Vector2(394, 505)
+scale = Vector2(1.7, 1.7)
+Opponent = NodePath("../Player2")
+
+[node name="Player2" parent="." unique_id=336916040 node_paths=PackedStringArray("Opponent") instance=ExtResource("3_kaalw")]
+position = Vector2(811.99994, 504)
+scale = Vector2(1.7, 1.7)
+Opponent = NodePath("../Player1")
+
+[node name="InputBuffer" parent="Player2" index="6" unique_id=2128503683]
+PlayerId = 2
+
 [editable path="Player1"]
-[editable path="Player1/MoveManager/NormalAttacks/Chun_cMk"]
 [editable path="Player2"]
-[editable path="Player2/MoveManager/NormalAttacks/Chun_cMk"]

@@ -48,7 +48,7 @@ public partial class Fighter : CharacterBody2D
         VoicePlayer = GetNode<AudioStreamPlayer2D>("VoicePlayer");
         Moves = GetNode<MoveManager>("MoveManager");
         ExtendedHurtbox = GetNode<Area2D>("Visuals/ExtendedHurtbox");
-        ProximityBox = GetNode<Area2D>("ProximityBox");
+        ProximityBox = GetNode<Area2D>("Visuals/ProximityBox");
         
         Physics = GetNode<PhysicsComponent>("PhysicsComponent");
         Combat = GetNode<CombatComponent>("CombatComponent");

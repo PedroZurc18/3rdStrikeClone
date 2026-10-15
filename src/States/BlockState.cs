@@ -54,7 +54,6 @@ public class BlockState : BaseState
 
     public override void PhysicsUpdate(double delta)
     {
-        GD.Print(_flowFramesCounter);
         // HITSTOP
         if (_fighter.Combat.HitStopTimer > 0) return;
         
