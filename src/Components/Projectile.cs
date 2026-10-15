@@ -30,8 +30,22 @@ public partial class Projectile : Area2D
 
     private void OnAreaEntered(Area2D area)
     {
+        // Projectile Collision
+        if (area is Projectile projectile)
+        {
+            if (projectile.OwnerFighter != OwnerFighter)
+            {
+                // SPARKS BOOOM BANG
+                QueueFree();
+                return;
+            }
+        }
+        
+        // Opponent Collision
         if (area.GetParent() is Fighter hitFighter && hitFighter == OwnerFighter.Opponent)
         {
+            // SPARKS BOOOM BANG
+            
             hitFighter.Combat.ReceiveHit(MoveData, HitStats);
             
             QueueFree();
@@ -40,7 +54,6 @@ public partial class Projectile : Area2D
     
     private void OnScreenExited()
     {
-        GD.Print("Fireball left the screen! Destroying...");
         QueueFree();
     }
     
