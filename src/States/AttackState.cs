@@ -7,7 +7,6 @@ using rdStrikeClone.Data;
 
 public class AttackState : BaseState
 {
-    // Make this public so HitboxManager can read it
     public AttackData AttackData => _data;
     public HitboxFrameData CurrentHitStats { get; private set; }
     
@@ -66,7 +65,6 @@ public class AttackState : BaseState
 
     public override void PhysicsUpdate(double delta)
     {
-        if (_fighter.Combat.HitStopTimer > 0) return;
         if (_fighter.Combat.HitStopTimer > 0) 
         {
             if (_fighter.Anim.IsPlaying()) _fighter.Anim.Pause(); 
@@ -114,7 +112,7 @@ public class AttackState : BaseState
 
         if (isMoveFinished)
         {
-            if (_isAirborneState) _fighter.StateMachine.ChangeState(new AirState(_fighter)); 
+            if (_isAirborneState) _fighter.StateMachine.ChangeState(new AirState(_fighter, false)); 
             else if (_isCrouchingState) _fighter.StateMachine.ChangeState(new CrouchState(_fighter, false)); 
             else _fighter.StateMachine.ChangeState(new IdleState(_fighter)); 
         }

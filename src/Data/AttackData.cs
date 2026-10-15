@@ -7,7 +7,7 @@ public partial class AttackData : Resource
 {
     public enum HitHeight { High, Mid, Low }
     public enum AttackStrength { Light, Medium, Heavy }
-    public enum CommandDirection { Neutral, Forward, Back, Down, Up }
+    public enum CommandDirection {None, Neutral, Forward, Back, Down, Up }
     public enum MotionType { None, QCF, QCB, DP, HalfCircleBack }
 
     [ExportGroup("Execution Requirements")]

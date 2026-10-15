@@ -83,6 +83,8 @@ public partial class MoveManager : Node
     
     private bool CheckCommandDirection(AttackData.CommandDirection requiredDir, InputBuffer buffer)
     {
+        if (requiredDir == AttackData.CommandDirection.None) return true;
+        
         if (requiredDir == AttackData.CommandDirection.Neutral)
         {
             return !buffer.IsInputActive(InputBuffer.InputFlag.Left) && 
