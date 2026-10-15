@@ -15,6 +15,9 @@ public partial class Projectile : Area2D
     {
         AreaEntered += OnAreaEntered;
         
+        var notifier = GetNode<VisibleOnScreenNotifier2D>("VisibleOnScreenNotifier2D");
+        notifier.ScreenExited += OnScreenExited;
+        
         Vector2 currentScale = Scale;
         currentScale.X *= Direction; 
         Scale = currentScale;
@@ -35,8 +38,10 @@ public partial class Projectile : Area2D
         }
     }
     
-    public void OnVisibilityNotifierScreenExited()
+    private void OnScreenExited()
     {
+        GD.Print("Fireball left the screen! Destroying...");
         QueueFree();
     }
+    
 }

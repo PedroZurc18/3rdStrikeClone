@@ -38,9 +38,12 @@ public partial class InputBuffer : Node
         _buffer = new InputFrame[BufferSize];
     }
 
-    public void Tick()
+    public void Tick(bool isHitStopActive)
     {
-        _currentFrame++;
+        if (!isHitStopActive)
+        {
+            _currentFrame++;
+        }
 
         InputFlag currentInput = GetCurrentInputState();
         AddInputToBuffer(currentInput);

@@ -62,7 +62,7 @@ public partial class Fighter : CharacterBody2D
 
     public void Tick(double delta)
     {
-        Buffer.Tick();
+        Buffer.Tick(Combat.HitStopTimer > 0);
         Combat.Tick();
         StateMachine.Tick(delta);
         Physics.Tick(delta); 

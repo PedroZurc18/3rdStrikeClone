@@ -50,7 +50,7 @@ public partial class MoveManager : Node
                     requiredSequence, 
                     attack.RequiredButton, 
                     _fighter.FacingDirection, 
-                    10
+                    18
                 );
 
                 if (motionCompleted)
