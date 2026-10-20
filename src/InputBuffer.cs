@@ -150,6 +150,26 @@ public partial class InputBuffer : Node
         return false;
     }
 
+    public bool CheckDoubleTap(InputFlag direction, int frameWindow = 15)
+    {
+        int currentIndex = _headIndex;
+        bool isCurrentlyPressed = (_buffer[currentIndex].State & direction) == direction;
+        if (!isCurrentlyPressed) return false;
+        
+        int prevIndex = (_headIndex - 1 + BufferSize) % BufferSize;
+        bool wasPressedPreviously = (_buffer[prevIndex].State & direction) == direction;
+        if (wasPressedPreviously) return false;
+
+        for (int i = 2; i <= frameWindow; i++)
+        {
+            int index = (_headIndex - i + BufferSize) % BufferSize;
+            bool isPressed = (_buffer[index].State & direction) == direction;
+            
+            if (isPressed) return true;
+        }
+        return false;
+    }
+    
     public int GetNumpadDirection(InputFlag state, int facingDirection)
     {
         bool down = (state & InputFlag.Down) == InputFlag.Down;

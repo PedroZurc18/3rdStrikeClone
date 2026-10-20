@@ -33,7 +33,9 @@
 [ext_resource type="Texture2D" uid="uid://xdq3fok355cc" path="res://Assets/Chun_cParry.png" id="17_54n24"]
 [ext_resource type="Texture2D" uid="uid://br80x4tfviypv" path="res://Assets/Chun_jMk.png" id="24_gwjn0"]
 [ext_resource type="Texture2D" uid="uid://by21b1ev8v6om" path="res://Assets/Chun_BlockH.png" id="24_w1t5c"]
+[ext_resource type="Texture2D" uid="uid://bi1hya1rauq2i" path="res://Assets/Chun_DashB.png" id="27_m4pat"]
 [ext_resource type="Texture2D" uid="uid://cetm0p31xr2vi" path="res://Assets/Chun_sParry.png" id="28_0pe4i"]
+[ext_resource type="Texture2D" uid="uid://dlhra8jxttg5e" path="res://Assets/Chun_DashF.png" id="28_8wd7x"]
 [ext_resource type="Script" uid="uid://cauvt0o6gk4xu" path="res://src/MoveManager.cs" id="30_0pe4i"]
 [ext_resource type="Script" uid="uid://bu01jtmtmagru" path="res://src/Data/AttackData.cs" id="31_0pe4i"]
 [ext_resource type="Resource" uid="uid://wjuatv5i61j1" path="res://Data/AttackData/crouch_medium.tres" id="32_80g32"]
@@ -1584,6 +1586,136 @@ tracks/4/keys = {
 "transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
 "update": 1,
 "values": [0, 1, 2, 3, 4, 5]
+}
+
+[sub_resource type="Animation" id="Animation_p4kxn"]
+resource_name = "dash_back"
+length = 0.38333502
+step = 0.016666668
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Visuals/Sprite2D:texture")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [ExtResource("27_m4pat")]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Visuals/Sprite2D:hframes")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [12]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("Visuals/Sprite2D:vframes")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [1]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("Visuals/Sprite2D:position")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0, 0.01666667, 0.050000004, 0.10000001, 0.16666667, 0.2, 0.23333335, 0.26666668, 0.28333333, 0.31666666, 0.35, 0.36666667),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [Vector2(-82, -9.000002), Vector2(-61.000004, -9.000002), Vector2(-52.999992, -9.000002), Vector2(-31.999987, -9.000001), Vector2(-4.999984, -9.000002), Vector2(8.000018, -9.000002), Vector2(15.000015, -9.000001), Vector2(58.000015, -9.000002), Vector2(74.000015, -9.000001), Vector2(79.00001, -9.000001), Vector2(81.00001, -9.000001), Vector2(86.000015, -9.000002)]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("Visuals/Sprite2D:frame")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0, 0.01666667, 0.050000004, 0.1, 0.16666667, 0.2, 0.23333333, 0.26666668, 0.28333333, 0.31666666, 0.35, 0.36666667),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
+}
+
+[sub_resource type="Animation" id="Animation_f77hm"]
+resource_name = "dash_forward"
+length = 0.26666835
+step = 0.016666668
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Visuals/Sprite2D:texture")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [ExtResource("28_8wd7x")]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Visuals/Sprite2D:hframes")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [13]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("Visuals/Sprite2D:vframes")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [1]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("Visuals/Sprite2D:position")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0, 0.033333335, 0.050000004, 0.06666667, 0.083333336, 0.10000001, 0.116666675, 0.13333334, 0.15, 0.20000002, 0.25),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [Vector2(42.000008, 0), Vector2(30.000011, 0), Vector2(17.000008, 0), Vector2(2.0000076, 0), Vector2(-8.999993, 0), Vector2(-32, 0), Vector2(-42.000008, 0), Vector2(-55.00002, 0), Vector2(-91.000015, 0), Vector2(-92.999985, 0), Vector2(-92.99999, 0)]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("Visuals/Sprite2D:frame")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0, 0.016666668, 0.033333335, 0.050000004, 0.06666667, 0.083333336, 0.10000001, 0.116666675, 0.13333334, 0.15, 0.2, 0.25),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
 }
 
 [sub_resource type="Animation" id="Animation_ked8f"]
@@ -4617,6 +4749,8 @@ _data = {
 &"crouch_in": SubResource("Animation_siwl3"),
 &"crouch_out": SubResource("Animation_sfxrq"),
 &"crouch_parry": SubResource("Animation_80g32"),
+&"dash_back": SubResource("Animation_p4kxn"),
+&"dash_forward": SubResource("Animation_f77hm"),
 &"get_up": SubResource("Animation_ked8f"),
 &"hard_knockdown": SubResource("Animation_oqe08"),
 &"hit_air": SubResource("Animation_xbu8a"),
@@ -4696,6 +4830,7 @@ texture = ExtResource("2_38ety")
 hframes = 20
 
 [node name="Hurtbox" type="Area2D" parent="Visuals" unique_id=919541009]
+visible = false
 scale = Vector2(1.0000001, 1.0000001)
 collision_layer = 4
 collision_mask = 2

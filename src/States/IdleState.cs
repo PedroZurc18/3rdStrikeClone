@@ -35,26 +35,40 @@ public class IdleState : BaseState
 
     public override void PhysicsUpdate(double delta)
     {
+        // DASH
+        if (_fighter.Buffer.CheckDoubleTap(InputBuffer.InputFlag.Right, 8))
+        {
+            _fighter.StateMachine.ChangeState(new DashState(_fighter, 1));
+            return;
+        }
+        if (_fighter.Buffer.CheckDoubleTap(InputBuffer.InputFlag.Left, 8))
+        {
+            _fighter.StateMachine.ChangeState(new DashState(_fighter, -1));
+            return;
+        }
+        
+        // PROXIMITY GUARD
         if (_fighter.Combat.IsInProximity() && _fighter.Combat.IsHoldingBack())
         {
             _fighter.StateMachine.ChangeState(new BlockState(_fighter, isCrouching: false)); 
             return;
         }
-        
+        // JUMP
         if (_fighter.Buffer.IsInputActive(InputBuffer.InputFlag.Up))
         {
             _fighter.StateMachine.ChangeState(new AirState(_fighter));
             return;
         }
         
+        // ATTACK
         AttackData triggeredMove = _fighter.Moves.EvaluateAvailableMoves(_fighter.Buffer, false);
-        
         if (triggeredMove != null)
         {
             _fighter.StateMachine.ChangeState(new AttackState(_fighter, triggeredMove));
             return; 
         }
         
+        // CROUCH
         if (_fighter.Buffer.IsInputActive(InputBuffer.InputFlag.Down))
         {
             _fighter.StateMachine.ChangeState(new CrouchState(_fighter));
