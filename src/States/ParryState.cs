@@ -65,7 +65,6 @@ public class ParryState : BaseState
             {
                 _fighter.StateMachine.ChangeState(new AttackState(_fighter, triggeredMove));
             }
-            return;
         }
     }
 }

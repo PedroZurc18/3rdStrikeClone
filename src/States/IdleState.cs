@@ -78,7 +78,6 @@ public class IdleState : BaseState
             _isLanding = false;
         }
         
-        // 5. WALK AND TURN LOGIC
         _fighter.TurnToFaceOpponent();
         
         Vector2 currentVelocity = _fighter.Velocity;

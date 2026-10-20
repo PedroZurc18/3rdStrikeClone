@@ -10,12 +10,12 @@ public partial class PhysicsComponent : Node
     [Export] public float Gravity = 5500.0f;
     [Export] public float CoreOverlapLimit = 25.0f;
 
-    // --- Pushbox ---
+    // PUSHBOX
     private float _maxPushboxForce = 15.0f;
     private float _minPushboxForce = 2.0f;
     private float _pushboxWidth = 80.0f;
 
-    // --- Pushback ---
+    // PUSHBACK
     private bool _isPushed;
     private float _pushSpeed;
     private const float PushDecel = 1500.0f;

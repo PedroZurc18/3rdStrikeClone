@@ -332,6 +332,7 @@ tracks/20/keys = {
 
 [sub_resource type="Animation" id="Animation_38ety"]
 length = 0.001
+step = 0.016666668
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
@@ -4638,6 +4639,7 @@ _data = {
 }
 
 [node name="Fighter" type="CharacterBody2D" unique_id=961281130 node_paths=PackedStringArray("PillboxShape", "Hurtbox")]
+position = Vector2(1, 0)
 collision_layer = 0
 script = ExtResource("1_umvcx")
 PillboxShape = NodePath("Pillbox")
@@ -4694,7 +4696,6 @@ texture = ExtResource("2_38ety")
 hframes = 20
 
 [node name="Hurtbox" type="Area2D" parent="Visuals" unique_id=919541009]
-visible = false
 scale = Vector2(1.0000001, 1.0000001)
 collision_layer = 4
 collision_mask = 2

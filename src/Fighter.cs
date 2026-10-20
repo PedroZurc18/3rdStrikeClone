@@ -7,36 +7,32 @@ using rdStrikeClone.Data;
 public partial class Fighter : CharacterBody2D
 {
     public int FacingDirection = 1;
-
     public InputBuffer Buffer;
     public Node2D Visuals;
     public AnimationPlayer Anim;
+    public Label DebugLabel;
+    // AUDIO
     public AudioStreamPlayer2D SfxPlayer;
     public AudioStreamPlayer2D HitPlayer;
     public AudioStreamPlayer2D VoicePlayer;
-    public Label DebugLabel;
+    // BOXES
     public Area2D Pushbox;
     [Export] public CollisionShape2D PillboxShape;
     private float _pillboxOffset = 3.0f;
     public Area2D ExtendedHurtbox { get; private set; }
-
     public Projectile ActiveProjectile { get; set; }
-    
-    [Export] public Fighter Opponent;
-
+    public Area2D ProximityBox;
+    [ExportGroup("Nodes")]
+    [Export] public Area2D Hurtbox;
+    // COMPONENTS
     public MoveManager Moves { get; private set; }
-    
-    // --- Components ---
     public PhysicsComponent Physics { get; private set; }
     public CombatComponent Combat { get; private set; }
     public StateMachineComponent StateMachine { get; private set; }
     public HitboxManager HitManager { get; private set; }
     
-    [ExportGroup("Nodes")]
-    [Export] public Area2D Hurtbox;
+    [Export] public Fighter Opponent;
     
-    public Area2D ProximityBox;
-
     public override void _Ready()
     {
         Buffer = GetNode<InputBuffer>("InputBuffer");
@@ -49,14 +45,11 @@ public partial class Fighter : CharacterBody2D
         Moves = GetNode<MoveManager>("MoveManager");
         ExtendedHurtbox = GetNode<Area2D>("Visuals/ExtendedHurtbox");
         ProximityBox = GetNode<Area2D>("Visuals/ProximityBox");
-        
         Physics = GetNode<PhysicsComponent>("PhysicsComponent");
         Combat = GetNode<CombatComponent>("CombatComponent");
         StateMachine = GetNode<StateMachineComponent>("StateMachineComponent");
         HitManager = GetNode<HitboxManager>("Visuals/ActiveHitbox");
-        
         StateMachine.ChangeState(new IdleState(this));
-
         DebugLabel = GetNode<Label>("UI/BufferRing");
     }
 

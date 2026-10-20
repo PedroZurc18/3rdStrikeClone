@@ -4,7 +4,6 @@ using Godot;
 
 public class AirHitState : BaseState
 {
-    // Constants for air hit parameters
     public const float AIR_HIT_DECELERATION = 0f;
     public const int HARD_KNOCKDOWN_DURATION_FRAMES = 60;
     
@@ -42,22 +41,21 @@ public class AirHitState : BaseState
         
         Vector2 vel = _fighter.Velocity;
 
-        // 1. Apply gravity so they constantly fall
+        // GRAVITY
         vel.Y += _fighter.Physics.Gravity * (float)delta;
 
-        // 2. Decelerate horizontal pushback blast
+        // HORIZONTAL DECEL
         vel.X = Mathf.MoveToward(vel.X, 0, AIR_HIT_DECELERATION * (float)delta);
         
         _fighter.Velocity = vel;
         _fighter.Physics.ApplyMovementAndPush();
 
-        // 3. Freeze the animation on its final frame so they don't awkwardly return to idle mid-air
+        // WAIT BEFORE TOUCHING GROUND
         if (!_fighter.Anim.IsPlaying())
         {
             _fighter.Anim.Pause();
         }
-
-        // 4. THE ONLY WAY OUT: Touching the floor!
+        
         if (_fighter.IsOnFloor() && vel.Y > 0) 
         {
             if (_isJuggle)
@@ -66,7 +64,7 @@ public class AirHitState : BaseState
             }
             else 
             {
-                // Soft knockdown / standard landing
+                // SOFT KNOCKDOWN
                 _fighter.StateMachine.ChangeState(new IdleState(_fighter, true)); 
             }
         }

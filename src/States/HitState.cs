@@ -52,7 +52,7 @@ public class HitState : BaseState
         // HITSTOP
         if (_fighter.Combat.HitStopTimer > 0) return;
         
-        //IMPACT POSE
+        // IMPACT POSE
         if (!_hasReachedImpactPose)
         {
             _hasReachedImpactPose = true;

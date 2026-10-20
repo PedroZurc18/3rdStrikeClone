@@ -101,7 +101,7 @@ public class BlockState : BaseState
                 return;
             }
 
-            //  swapping between high/low guard
+            //  SWAPING HIGH/LOW GUARD
             if (wantsToCrouch != _isCrouching)
             {
                 _isCrouching = wantsToCrouch;

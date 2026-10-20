@@ -6,7 +6,7 @@ public partial class InputBuffer : Node
     [Export]
     public int PlayerId = 1;
 
-    // 1. Possible inputs using flags
+    // INPUT FLAGS
     [Flags]
     public enum InputFlag
     {
@@ -19,14 +19,14 @@ public partial class InputBuffer : Node
         Kick = 1 << 5,
     }
 
-    // 2. Structure for a single frame
+    // FRAME STRUCTURE
     public struct InputFrame
     {
         public InputFlag State;
         public int FrameNumber;
     }
 
-    // 3. The Ring Buffer
+    // RING BUFFER
     private const int BufferSize = 60;
     private InputFrame[] _buffer;
     private int _headIndex = 0;
@@ -37,7 +37,7 @@ public partial class InputBuffer : Node
     {
         _buffer = new InputFrame[BufferSize];
     }
-
+    
     public void Tick(bool isHitStopActive)
     {
         if (!isHitStopActive)
