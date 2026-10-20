@@ -9,7 +9,6 @@ public class HitState : BaseState
     private int _hitstun;
     private float _pull;
     private AttackData.HitHeight _height;
-    private AttackData.AttackStrength _strength;
     private bool _hasReachedImpactPose;
 
     public HitState(
@@ -17,7 +16,6 @@ public class HitState : BaseState
         int stunFrames,
         float pushback,
         float pull,
-        AttackData.AttackStrength strength,
         AttackData.HitHeight height
     ) 
         : base(fighter) 
@@ -25,7 +23,6 @@ public class HitState : BaseState
         _hitstun = stunFrames;
         _pull = pull;
         _height = height;
-        _strength = strength;
     }
 
     public override void Enter()
@@ -33,7 +30,6 @@ public class HitState : BaseState
         _fighter.Anim.Stop();
             
         string height = (_height == AttackData.HitHeight.Low) ? "low" : "low";
-        string strength = _strength.ToString().ToLower();
         string animation = $"hit_stand_medium_{height}";
         
         _fighter.Anim.Play(animation);

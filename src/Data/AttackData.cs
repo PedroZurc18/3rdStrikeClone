@@ -6,12 +6,19 @@ namespace rdStrikeClone.Data;
 public partial class AttackData : Resource
 {
     public enum HitHeight { High, Mid, Low }
-    public enum AttackStrength { Light, Medium, Heavy }
+
     public enum CommandDirection {None, Neutral, Forward, Back, Down, Up }
     public enum MotionType { None, QCF, QCB, DP, HalfCircleBack }
 
+    public enum AttackButton 
+    {
+        Light = (int)InputBuffer.InputFlag.Light, 
+        Medium = (int)InputBuffer.InputFlag.Medium,
+        Heavy = (int)InputBuffer.InputFlag.Heavy
+    }
+    
     [ExportGroup("Execution Requirements")]
-    [Export] public InputBuffer.InputFlag RequiredButton;
+    [Export] public AttackButton RequiredButton;
     [Export] public CommandDirection RequiredDirection = CommandDirection.Neutral;
     [Export] public MotionType RequiredMotion = MotionType.None;
     [Export] public bool IsAirborneMove = false;

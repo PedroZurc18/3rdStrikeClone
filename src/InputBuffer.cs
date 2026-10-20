@@ -15,8 +15,9 @@ public partial class InputBuffer : Node
         Down = 1 << 1,
         Left = 1 << 2,
         Right = 1 << 3,
-        Punch = 1 << 4,
-        Kick = 1 << 5,
+        Light = 1 << 4,
+        Medium = 1 << 5,
+        Heavy = 1 << 6,
     }
 
     // FRAME STRUCTURE
@@ -67,10 +68,12 @@ public partial class InputBuffer : Node
         if (Input.IsActionPressed($"p{PlayerId}_right"))
             state |= InputFlag.Right;
 
-        if (Input.IsActionPressed($"p{PlayerId}_punch"))
-            state |= InputFlag.Punch;
-        if (Input.IsActionPressed($"p{PlayerId}_kick"))
-            state |= InputFlag.Kick;
+        if (Input.IsActionPressed($"p{PlayerId}_light"))
+            state |= InputFlag.Light;
+        if (Input.IsActionPressed($"p{PlayerId}_medium"))
+            state |= InputFlag.Medium;
+        if (Input.IsActionPressed($"p{PlayerId}_heavy"))
+            state |= InputFlag.Heavy;
 
         return state;
     }

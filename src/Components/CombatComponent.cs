@@ -125,7 +125,7 @@ public partial class CombatComponent : Node
             }
             else
             {
-                _fighter.StateMachine.ChangeState(new HitState(_fighter, hitbox.HitStunFrames, actualPushbackForce, hitbox.Pull, hitbox.Strength, hitbox.Height));
+                _fighter.StateMachine.ChangeState(new HitState(_fighter, hitbox.HitStunFrames, actualPushbackForce, hitbox.Pull, hitbox.Height));
                 if (actualPushbackForce > 0) _fighter.Physics.ApplyUniversalPushback(actualPushbackForce, pushAwayFromAttackerDirection);
             }
         }

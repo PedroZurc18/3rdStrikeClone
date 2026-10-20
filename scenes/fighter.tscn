@@ -19,9 +19,10 @@
 [ext_resource type="Texture2D" uid="uid://dn5pu72l6fl2s" path="res://Assets/Chun_jHk.png" id="8_bysjc"]
 [ext_resource type="Texture2D" uid="uid://dq02ahpips180" path="res://Assets/Chun_cMk.png" id="8_o4lsg"]
 [ext_resource type="Texture2D" uid="uid://ct34qrxrqa6ct" path="res://Assets/Chun_Super3.png" id="8_oqe08"]
+[ext_resource type="Resource" uid="uid://bi6nvlgg6hmky" path="res://Data/AttackData/lightning_kicksH.tres" id="9_8wd7x"]
 [ext_resource type="Resource" uid="uid://dawneuoutnvip" path="res://Data/AttackData/tensho_kicks.tres" id="10_3wnqi"]
 [ext_resource type="Resource" uid="uid://cej8sxbhhmwp5" path="res://Data/AttackData/kikouken.tres" id="10_xqcs3"]
-[ext_resource type="Resource" uid="uid://n8g1wfohiff0" path="res://Data/AttackData/jump_heavy.tres" id="11_pu3vh"]
+[ext_resource type="Resource" uid="uid://n8g1wfohiff0" path="res://Data/AttackData/jH.tres" id="11_pu3vh"]
 [ext_resource type="Texture2D" uid="uid://b4ebr33tfqx7c" path="res://Assets/Chun_jumpB.png" id="12_6d7ge"]
 [ext_resource type="Texture2D" uid="uid://crhvfuq1yf7o0" path="res://Assets/Chun_jumpF.png" id="12_amrqo"]
 [ext_resource type="Texture2D" uid="uid://2oc2cf4kupb1" path="res://Assets/Chun_Juggle.png" id="13_e0pca"]
@@ -38,8 +39,8 @@
 [ext_resource type="Texture2D" uid="uid://dlhra8jxttg5e" path="res://Assets/Chun_DashF.png" id="28_8wd7x"]
 [ext_resource type="Script" uid="uid://cauvt0o6gk4xu" path="res://src/MoveManager.cs" id="30_0pe4i"]
 [ext_resource type="Script" uid="uid://bu01jtmtmagru" path="res://src/Data/AttackData.cs" id="31_0pe4i"]
-[ext_resource type="Resource" uid="uid://wjuatv5i61j1" path="res://Data/AttackData/crouch_medium.tres" id="32_80g32"]
-[ext_resource type="Resource" uid="uid://cmjnjrxq8xev3" path="res://Data/AttackData/lightning_kicks.tres" id="33_41sin"]
+[ext_resource type="Resource" uid="uid://wjuatv5i61j1" path="res://Data/AttackData/2M.tres" id="32_80g32"]
+[ext_resource type="Resource" uid="uid://cmjnjrxq8xev3" path="res://Data/AttackData/lightning_kicksM.tres" id="33_41sin"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_eelhu"]
 radius = 24.285727
@@ -4773,7 +4774,6 @@ _data = {
 }
 
 [node name="Fighter" type="CharacterBody2D" unique_id=961281130 node_paths=PackedStringArray("PillboxShape", "Hurtbox")]
-position = Vector2(1, 0)
 collision_layer = 0
 script = ExtResource("1_umvcx")
 PillboxShape = NodePath("Pillbox")
@@ -4793,7 +4793,7 @@ script = ExtResource("5_41sin")
 position = Vector2(-4.999999, 0)
 scale = Vector2(0.99999994, 0.99999994)
 script = ExtResource("30_0pe4i")
-AvailableMoves = Array[ExtResource("31_0pe4i")]([ExtResource("10_3wnqi"), ExtResource("33_41sin"), ExtResource("10_xqcs3"), ExtResource("32_80g32"), ExtResource("11_pu3vh")])
+AvailableMoves = Array[ExtResource("31_0pe4i")]([ExtResource("10_3wnqi"), ExtResource("9_8wd7x"), ExtResource("33_41sin"), ExtResource("10_xqcs3"), ExtResource("11_pu3vh"), ExtResource("32_80g32")])
 
 [node name="Pillbox" type="CollisionShape2D" parent="." unique_id=1918110751]
 visible = false

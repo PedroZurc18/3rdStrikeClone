@@ -48,7 +48,7 @@ public partial class MoveManager : Node
     
                 bool motionCompleted = buffer.CheckMotion(
                     requiredSequence, 
-                    attack.RequiredButton, 
+                    (InputBuffer.InputFlag)attack.RequiredButton,
                     _fighter.FacingDirection, 
                     18
                 );
@@ -60,7 +60,7 @@ public partial class MoveManager : Node
             }
             else 
             {
-                if (!buffer.IsInputPressed(attack.RequiredButton)) continue;
+                if (!buffer.IsInputPressed((InputBuffer.InputFlag)attack.RequiredButton)) continue;
 
                 if (CheckCommandDirection(attack.RequiredDirection, buffer))
                 {

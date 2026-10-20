@@ -16,7 +16,6 @@ public partial class HitboxFrameData : Resource
 
     [ExportGroup("Hit Properties")]
     [Export] public AttackData.HitHeight Height = AttackData.HitHeight.Mid;
-    [Export] public AttackData.AttackStrength Strength = AttackData.AttackStrength.Medium;
     [Export] public bool Juggle = false;
     [Export] public float AirLaunchY = -1200.0f;
     [Export] public float AirPushX = 200.0f;
