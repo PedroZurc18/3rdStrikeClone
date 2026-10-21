@@ -1,0 +1,34 @@
+[gd_resource type="Resource" script_class="AttackData" format=3 uid="uid://wjuatv5i61j1"]
+
+[ext_resource type="Script" uid="uid://0mxlet1vlsar" path="res://src/Data/HitboxFrameData.cs" id="1_k5exq"]
+[ext_resource type="Script" uid="uid://cchjrs726aeo1" path="res://src/SpeedKeyframe.cs" id="2_r2qtm"]
+[ext_resource type="AudioStream" uid="uid://wqebabefclq7" path="res://Assets/sfx/whiff_medium.wav" id="2_rdaru"]
+[ext_resource type="AudioStream" uid="uid://jljc1k24eqc3" path="res://Assets/sfx/block.wav" id="2_w56hk"]
+[ext_resource type="AudioStream" uid="uid://ivksaa0ucl0g" path="res://Assets/sfx/hit_05.wav" id="3_6lvdd"]
+[ext_resource type="Script" uid="uid://bu01jtmtmagru" path="res://src/Data/AttackData.cs" id="3_rdaru"]
+[ext_resource type="AudioStream" uid="uid://cnbnijx8kr6ak" path="res://Assets/sfx/ChunLi/cMk.wav" id="4_1h6fj"]
+
+[sub_resource type="Resource" id="Resource_y2kyf"]
+script = ExtResource("1_k5exq")
+HitStunFrames = 21
+BlockStunFrames = 15
+Height = 2
+metadata/_custom_type_script = "uid://0mxlet1vlsar"
+
+[resource]
+script = ExtResource("3_rdaru")
+RequiredButton = 32
+RequiredDirection = 4
+AnimationName = "2M"
+TotalFrames = 28
+IsSpecialCancelable = true
+CancelWindowStart = 7
+CancelWindow = 3
+HitStatsList = Array[ExtResource("1_k5exq")]([SubResource("Resource_y2kyf")])
+WhiffSound = ExtResource("2_rdaru")
+WhiffVolumeDb = -7.0
+WhiffFrame = 5
+HitSound = ExtResource("3_6lvdd")
+BlockSound = ExtResource("2_w56hk")
+VoiceSound = ExtResource("4_1h6fj")
+metadata/_custom_type_script = "uid://bu01jtmtmagru"

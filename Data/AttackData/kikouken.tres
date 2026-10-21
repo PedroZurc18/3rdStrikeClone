@@ -1,0 +1,27 @@
+[gd_resource type="Resource" script_class="AttackData" format=3 uid="uid://cej8sxbhhmwp5"]
+
+[ext_resource type="AudioStream" uid="uid://jljc1k24eqc3" path="res://Assets/sfx/block.wav" id="1_ehm5r"]
+[ext_resource type="Script" uid="uid://0mxlet1vlsar" path="res://src/Data/HitboxFrameData.cs" id="1_fanhn"]
+[ext_resource type="Script" uid="uid://cchjrs726aeo1" path="res://src/SpeedKeyframe.cs" id="2_mefuh"]
+[ext_resource type="AudioStream" uid="uid://cfqhe3ac80jx5" path="res://Assets/sfx/hit_01.wav" id="2_pi4ob"]
+[ext_resource type="PackedScene" uid="uid://b0i2koaxdw4l6" path="res://scenes/moves/fireball.tscn" id="2_ubluc"]
+[ext_resource type="AudioStream" uid="uid://w82617a2vo2l" path="res://Assets/sfx/ChunLi/sMp.wav" id="3_jcltu"]
+[ext_resource type="Script" uid="uid://bu01jtmtmagru" path="res://src/Data/AttackData.cs" id="3_ubluc"]
+
+[sub_resource type="Resource" id="Resource_ubluc"]
+script = ExtResource("1_fanhn")
+metadata/_custom_type_script = "uid://0mxlet1vlsar"
+
+[resource]
+script = ExtResource("3_ubluc")
+RequiredButton = 16
+RequiredMotion = 1
+AnimationName = "Kikoken"
+TotalFrames = 57
+HitStatsList = Array[ExtResource("1_fanhn")]([SubResource("Resource_ubluc")])
+HitSound = ExtResource("2_pi4ob")
+BlockSound = ExtResource("1_ehm5r")
+VoiceSound = ExtResource("3_jcltu")
+ProjectilePrefab = ExtResource("2_ubluc")
+ProjectileSpawnOffset = Vector2(100, -30)
+metadata/_custom_type_script = "uid://bu01jtmtmagru"

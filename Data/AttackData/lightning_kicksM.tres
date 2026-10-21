@@ -1,0 +1,69 @@
+[gd_resource type="Resource" script_class="AttackData" format=3 uid="uid://cmjnjrxq8xev3"]
+
+[ext_resource type="AudioStream" uid="uid://jljc1k24eqc3" path="res://Assets/sfx/block.wav" id="1_3datd"]
+[ext_resource type="AudioStream" uid="uid://d8gxx65ksw1l" path="res://Assets/sfx/hit_07.wav" id="2_pktpm"]
+[ext_resource type="Script" uid="uid://0mxlet1vlsar" path="res://src/Data/HitboxFrameData.cs" id="3_hde7e"]
+[ext_resource type="AudioStream" uid="uid://dm3bmnqqt55k7" path="res://Assets/sfx/ChunLi/lightningKicks.wav" id="4_o4v0f"]
+[ext_resource type="AudioStream" uid="uid://gdjceac58eed" path="res://Assets/sfx/whiff_light.wav" id="5_r77pa"]
+[ext_resource type="Script" uid="uid://cchjrs726aeo1" path="res://src/SpeedKeyframe.cs" id="6_xp1f4"]
+[ext_resource type="Script" uid="uid://bu01jtmtmagru" path="res://src/Data/AttackData.cs" id="7_nb7vr"]
+
+[sub_resource type="Resource" id="Resource_yhkvw"]
+script = ExtResource("3_hde7e")
+HitStunFrames = 20
+BlockStunFrames = 15
+HitStopFrames = 3
+PushbackForce = 0.0
+Pull = 100.0
+metadata/_custom_type_script = "uid://0mxlet1vlsar"
+
+[sub_resource type="Resource" id="Resource_ducnu"]
+script = ExtResource("3_hde7e")
+HitStunFrames = 20
+BlockStunFrames = 15
+HitStopFrames = 3
+PushbackForce = 0.0
+Pull = 100.0
+metadata/_custom_type_script = "uid://0mxlet1vlsar"
+
+[sub_resource type="Resource" id="Resource_pn8ja"]
+script = ExtResource("3_hde7e")
+HitStunFrames = 20
+BlockStunFrames = 15
+HitStopFrames = 3
+PushbackForce = 0.0
+Pull = 100.0
+metadata/_custom_type_script = "uid://0mxlet1vlsar"
+
+[sub_resource type="Resource" id="Resource_7cmfm"]
+script = ExtResource("3_hde7e")
+HitStunFrames = 20
+BlockStunFrames = 20
+HitStopFrames = 3
+metadata/_custom_type_script = "uid://0mxlet1vlsar"
+
+[sub_resource type="Resource" id="Resource_opp2v"]
+script = ExtResource("6_xp1f4")
+Frame = 1
+Speed = 1000.0
+metadata/_custom_type_script = "uid://cchjrs726aeo1"
+
+[sub_resource type="Resource" id="Resource_4pxia"]
+script = ExtResource("6_xp1f4")
+Frame = 8
+metadata/_custom_type_script = "uid://cchjrs726aeo1"
+
+[resource]
+script = ExtResource("7_nb7vr")
+RequiredButton = 32
+RequiredMotion = 1
+AnimationName = "lightning_kicks"
+TotalFrames = 53
+XSpeedProfile = Array[ExtResource("6_xp1f4")]([SubResource("Resource_opp2v"), SubResource("Resource_4pxia")])
+HitStatsList = Array[ExtResource("3_hde7e")]([SubResource("Resource_yhkvw"), SubResource("Resource_ducnu"), SubResource("Resource_pn8ja"), SubResource("Resource_7cmfm")])
+WhiffSound = ExtResource("5_r77pa")
+WhiffFrame = 5
+HitSound = ExtResource("2_pktpm")
+BlockSound = ExtResource("1_3datd")
+VoiceSound = ExtResource("4_o4v0f")
+metadata/_custom_type_script = "uid://bu01jtmtmagru"

@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="AttackData" format=3 uid="uid://b5ccqcc73beqc"]
+
+[ext_resource type="Script" uid="uid://0mxlet1vlsar" path="res://src/Data/HitboxFrameData.cs" id="1_vkjhx"]
+[ext_resource type="Script" uid="uid://cchjrs726aeo1" path="res://src/SpeedKeyframe.cs" id="2_b5n6w"]
+[ext_resource type="Script" uid="uid://bu01jtmtmagru" path="res://src/Data/AttackData.cs" id="3_wcn45"]
+
+[resource]
+script = ExtResource("3_wcn45")
+RequiredButton = 32
+RequiredDirection = 0
+AnimationName = "5M"
+TotalFrames = 23

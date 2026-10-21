@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="AttackData" format=3 uid="uid://b5krctqk2r5l5"]
+
+[ext_resource type="Script" uid="uid://0mxlet1vlsar" path="res://src/Data/HitboxFrameData.cs" id="1_fmkbh"]
+[ext_resource type="Script" uid="uid://cchjrs726aeo1" path="res://src/SpeedKeyframe.cs" id="2_s6ps7"]
+[ext_resource type="Script" uid="uid://bu01jtmtmagru" path="res://src/Data/AttackData.cs" id="3_ilkxv"]
+
+[resource]
+script = ExtResource("3_ilkxv")
+RequiredButton = 16
+RequiredDirection = 0
+AnimationName = "5L"
+TotalFrames = 12
+IsSpecialCancelable = true
+CancelWindowStart = 4

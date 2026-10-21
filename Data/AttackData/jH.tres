@@ -1,0 +1,29 @@
+[gd_resource type="Resource" script_class="AttackData" format=3 uid="uid://n8g1wfohiff0"]
+
+[ext_resource type="AudioStream" uid="uid://jljc1k24eqc3" path="res://Assets/sfx/block.wav" id="1_myiio"]
+[ext_resource type="AudioStream" uid="uid://bsafq2jbj2c14" path="res://Assets/sfx/hit_06.wav" id="2_4vgqq"]
+[ext_resource type="Script" uid="uid://0mxlet1vlsar" path="res://src/Data/HitboxFrameData.cs" id="3_moh7a"]
+[ext_resource type="AudioStream" uid="uid://cnbnijx8kr6ak" path="res://Assets/sfx/ChunLi/cMk.wav" id="4_mvx41"]
+[ext_resource type="AudioStream" uid="uid://b8qwjl4kne5uf" path="res://Assets/sfx/whiff_heavy.wav" id="5_roiqo"]
+[ext_resource type="Script" uid="uid://cchjrs726aeo1" path="res://src/SpeedKeyframe.cs" id="6_nih82"]
+[ext_resource type="Script" uid="uid://bu01jtmtmagru" path="res://src/Data/AttackData.cs" id="7_beskj"]
+
+[sub_resource type="Resource" id="Resource_ajma8"]
+script = ExtResource("3_moh7a")
+Height = 0
+metadata/_custom_type_script = "uid://0mxlet1vlsar"
+
+[resource]
+script = ExtResource("7_beskj")
+RequiredButton = 64
+RequiredDirection = 0
+IsAirborneMove = true
+AnimationName = "jH"
+TotalFrames = 30
+HitStatsList = Array[ExtResource("3_moh7a")]([SubResource("Resource_ajma8")])
+WhiffSound = ExtResource("5_roiqo")
+WhiffFrame = 10
+HitSound = ExtResource("2_4vgqq")
+BlockSound = ExtResource("1_myiio")
+VoiceSound = ExtResource("4_mvx41")
+metadata/_custom_type_script = "uid://bu01jtmtmagru"

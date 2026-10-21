@@ -1,0 +1,70 @@
+[gd_resource type="Resource" script_class="AttackData" format=3 uid="uid://dawneuoutnvip"]
+
+[ext_resource type="Script" uid="uid://0mxlet1vlsar" path="res://src/Data/HitboxFrameData.cs" id="1_6x6sr"]
+[ext_resource type="AudioStream" uid="uid://jljc1k24eqc3" path="res://Assets/sfx/block.wav" id="1_bal57"]
+[ext_resource type="AudioStream" uid="uid://bsafq2jbj2c14" path="res://Assets/sfx/hit_06.wav" id="2_0smpv"]
+[ext_resource type="Script" uid="uid://cchjrs726aeo1" path="res://src/SpeedKeyframe.cs" id="2_mhwsk"]
+[ext_resource type="Script" uid="uid://bu01jtmtmagru" path="res://src/Data/AttackData.cs" id="3_vl5ge"]
+[ext_resource type="AudioStream" uid="uid://dm3bmnqqt55k7" path="res://Assets/sfx/ChunLi/lightningKicks.wav" id="4_0d8r6"]
+[ext_resource type="AudioStream" uid="uid://b8qwjl4kne5uf" path="res://Assets/sfx/whiff_heavy.wav" id="5_vrnsc"]
+
+[sub_resource type="Resource" id="Resource_bal57"]
+script = ExtResource("1_6x6sr")
+HitStopFrames = 5
+Scoop = 80.0
+Juggle = true
+AirLaunchY = -2000.0
+metadata/_custom_type_script = "uid://0mxlet1vlsar"
+
+[sub_resource type="Resource" id="Resource_0smpv"]
+script = ExtResource("1_6x6sr")
+HitStopFrames = 5
+PushbackForce = 0.0
+Scoop = 80.0
+Juggle = true
+AirLaunchY = -700.0
+metadata/_custom_type_script = "uid://0mxlet1vlsar"
+
+[sub_resource type="Resource" id="Resource_0d8r6"]
+script = ExtResource("1_6x6sr")
+HitStopFrames = 5
+Juggle = true
+AirLaunchY = -700.0
+metadata/_custom_type_script = "uid://0mxlet1vlsar"
+
+[sub_resource type="Resource" id="Resource_vrnsc"]
+script = ExtResource("1_6x6sr")
+HitStopFrames = 5
+Juggle = true
+AirLaunchY = -500.0
+AirPushX = 800.0
+metadata/_custom_type_script = "uid://0mxlet1vlsar"
+
+[sub_resource type="Resource" id="Resource_j3kfo"]
+script = ExtResource("2_mhwsk")
+Frame = 1
+Speed = 500.0
+metadata/_custom_type_script = "uid://cchjrs726aeo1"
+
+[sub_resource type="Resource" id="Resource_wxdki"]
+script = ExtResource("2_mhwsk")
+Frame = 3
+Speed = -2000.0
+metadata/_custom_type_script = "uid://cchjrs726aeo1"
+
+[resource]
+script = ExtResource("3_vl5ge")
+RequiredButton = 16
+RequiredMotion = 3
+AnimationName = "anti_air"
+TotalFrames = 53
+XSpeedProfile = Array[ExtResource("2_mhwsk")]([SubResource("Resource_j3kfo")])
+YSpeedProfile = Array[ExtResource("2_mhwsk")]([SubResource("Resource_wxdki")])
+AirDrag = 300.0
+HitStatsList = Array[ExtResource("1_6x6sr")]([SubResource("Resource_bal57"), SubResource("Resource_0smpv"), SubResource("Resource_0d8r6"), SubResource("Resource_vrnsc")])
+WhiffSound = ExtResource("5_vrnsc")
+WhiffFrame = 4
+HitSound = ExtResource("2_0smpv")
+BlockSound = ExtResource("1_bal57")
+VoiceSound = ExtResource("4_0d8r6")
+metadata/_custom_type_script = "uid://bu01jtmtmagru"

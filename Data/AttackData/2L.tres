@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="AttackData" format=3 uid="uid://bv0x7qfxu22d5"]
+
+[ext_resource type="Script" uid="uid://0mxlet1vlsar" path="res://src/Data/HitboxFrameData.cs" id="1_w8htv"]
+[ext_resource type="Script" uid="uid://cchjrs726aeo1" path="res://src/SpeedKeyframe.cs" id="2_t1k3l"]
+[ext_resource type="Script" uid="uid://bu01jtmtmagru" path="res://src/Data/AttackData.cs" id="3_v0yqt"]
+
+[resource]
+script = ExtResource("3_v0yqt")
+RequiredButton = 16
+RequiredDirection = 4
+AnimationName = "2L"
+TotalFrames = 12
