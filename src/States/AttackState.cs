@@ -79,7 +79,10 @@ public class AttackState : BaseState
         
         if (!_fighter.Anim.IsPlaying() && !_launcherHanging)
         {
-            _fighter.Anim.Play(); 
+            if (_fighter.Anim.CurrentAnimationPosition < _fighter.Anim.CurrentAnimationLength)
+            {
+                _fighter.Anim.Play(); 
+            }
         }
 
         CheckForCancels();
