@@ -35,7 +35,7 @@ public partial class Projectile : Area2D
         {
             if (projectile.OwnerFighter != OwnerFighter)
             {
-                // SPARKS BOOOM BANG
+                // TODO: SPARKS BOOOM BANG 
                 QueueFree();
                 return;
             }
@@ -44,7 +44,7 @@ public partial class Projectile : Area2D
         // Opponent Collision
         if (area.GetParent() is Fighter hitFighter && hitFighter == OwnerFighter.Opponent)
         {
-            // SPARKS BOOOM BANG
+            // TODO: SPARKS BOOOM BANG 
             
             hitFighter.Combat.ReceiveHit(MoveData, HitStats);
             

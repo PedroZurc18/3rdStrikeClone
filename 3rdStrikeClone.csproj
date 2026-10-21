@@ -8,4 +8,7 @@
   <ItemGroup>
     <Folder Include="scenes\" />
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="TODO.txt" />
+  </ItemGroup>
 </Project>
